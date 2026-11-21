@@ -34,6 +34,7 @@ LOCALE_FOLDERS = {
     "ru_ru": "ru",
     "es_es": "es",
     "pt_br": "pt-rBR",
+    "vi_vn": "vi",
 }
 
 CJK_REQUIRED = {"zh-rCN", "zh-rTW", "ja"}

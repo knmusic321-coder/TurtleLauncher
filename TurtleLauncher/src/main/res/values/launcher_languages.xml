@@ -25,6 +25,7 @@
         <item>Русский</item>
         <item>Español</item>
         <item>Português (Brasil)</item>
+        <item>Tiếng Việt</item>
     </string-array>
 
     <!-- Values use Minecraft-style codes so LocaleHelper.localeFor() parses both
@@ -39,6 +40,7 @@
         <item>ru_ru</item>
         <item>es_es</item>
         <item>pt_br</item>
+        <item>vi_vn</item>
     </string-array>
 
     <string name="setting_launcher_language_summary">Applies immediately. Screens that have no translation yet stay in English.</string>

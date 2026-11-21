@@ -10,6 +10,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-24.04
+    # Needed by the last step, which attaches the APK to a release so it has a
+    # download link that does not require a GitHub login. Everything else only reads.
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v5
 
@@ -182,3 +186,24 @@ jobs:
         with:
           name: TurtleLauncher-release-apk
           path: "**/build/outputs/apk/release/*.apk"
+
+      # Artifacts need a GitHub login and expire after 90 days, so the same APK is
+      # attached to a release as well. That gives a stable, public download URL:
+      #   https://github.com/knmusic321-coder/TurtleLauncher/releases/download/latest-apk/<file>.apk
+      # The release is reused, so a later build replaces its assets instead of piling up
+      # one release per commit.
+      - name: Publish the APK to a release
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        working-directory: ${{ steps.locate.outputs.dir }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: latest-apk
+        run: |
+          set -euo pipefail
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" --target "$GITHUB_SHA" \
+              --title "TurtleLauncher APK (ban moi nhat / latest build)" \
+              --notes "APK dung tu dong boi GitHub Actions tu commit $GITHUB_SHA tren nhanh $GITHUB_REF_NAME. Ban universal cai duoc tren ca 4 ABI (arm64-v8a, armeabi-v7a, x86, x86_64)."
+          fi
+          find . -path '*/build/outputs/apk/release/*.apk' -print0 \
+            | xargs -0 -r -n1 gh release upload "$TAG" --clobber
