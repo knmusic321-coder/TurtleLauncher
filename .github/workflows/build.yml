@@ -205,5 +205,6 @@ jobs:
               --title "TurtleLauncher APK (ban moi nhat / latest build)" \
               --notes "APK dung tu dong boi GitHub Actions tu commit $GITHUB_SHA tren nhanh $GITHUB_REF_NAME. Ban universal cai duoc tren ca 4 ABI (arm64-v8a, armeabi-v7a, x86, x86_64)."
           fi
-          find . -path '*/build/outputs/apk/release/*.apk' -print0 \
-            | xargs -0 -r -n1 gh release upload "$TAG" --clobber
+          find . -path '*/build/outputs/apk/release/*.apk' \
+            -exec gh release upload "$TAG" {} --clobber \;
+          gh release view "$TAG" --json assets --jq '.assets[] | "\(.name) \(.size) bytes"'
