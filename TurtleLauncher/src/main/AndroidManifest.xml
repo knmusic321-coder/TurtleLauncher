@@ -24758,7 +24758,7 @@
 
         <provider
             android:name="net.endiq.launcher.scoped.FolderProvider"
-            android:authorities="@string/storageProviderAuthorities"
+            android:authorities="${storageProviderAuthorities}"
             android:exported="true"
             android:grantUriPermissions="true"
             android:permission="android.permission.MANAGE_DOCUMENTS">

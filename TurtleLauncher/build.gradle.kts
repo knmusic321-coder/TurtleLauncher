@@ -51,6 +51,14 @@ val nameId = "com.endiq.turtlelauncher"
 // Turtle rebrand renamed the source tree to com.endiq.turtlelauncher.*, namespace and
 // applicationId now coincide.
 val namespaceId = "com.endiq.turtlelauncher"
+// The DocumentsProvider's authority. FolderProvider and the file-sharing helpers read it back as
+// R.string.storageProviderAuthorities, but the manifest cannot use that reference: the installer
+// reads android:authorities before the APK's resources are usable, so a `@string/...` reference
+// there is not resolved and the install dies with
+//   INSTALL_PARSE_FAILED_MANIFEST_MALFORMED: <provider> does not include authorities attribute.
+// The manifest placeholder below is substituted by the manifest merger, which leaves a plain
+// literal authority in the binary manifest.
+val storageProviderId = "$nameId.storage_provider"
 val generatedTurtleDir = file("$buildDir/generated/source/turtle/java")
 val launcherAPPName = project.findProperty("launcher_app_name") as? String ?: error("The \"launcher_app_name\" property is not set in gradle.properties.")
 val launcherName = project.findProperty("launcher_name") as? String ?: error("The \"launcher_name\" property is not set in gradle.properties.")
@@ -145,6 +153,7 @@ android {
         versionName = launcherVersionName
         multiDexEnabled = true //important
         manifestPlaceholders["launcher_name"] = launcherAPPName
+        manifestPlaceholders["storageProviderAuthorities"] = storageProviderId
 
         // Every ABI by default; only the requested one when ARCH/-Darch names a single ABI.
         // This also limits what the native build (CMake) compiles for.
@@ -221,8 +230,6 @@ android {
     }
 
     buildTypes {
-        val storageProviderId = "$nameId.storage_provider"
-
         getByName("debug") {
             applicationIdSuffix = ".debug"
             isMinifyEnabled = false
@@ -230,6 +237,9 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("customDebug")
             resValue("string", "storageProviderAuthorities", "$storageProviderId.debug")
+            // Dotted with the .debug applicationIdSuffix-free id, exactly as before; only the
+            // manifest copy of it changes from a resource reference to a literal string.
+            manifestPlaceholders["storageProviderAuthorities"] = "$storageProviderId.debug"
         }
         create("proguard") {
             initWith(getByName("debug"))
