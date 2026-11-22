@@ -269,9 +269,10 @@ jobs:
       - name: Grant execute permission to gradlew
         run: chmod +x "${{ steps.locate.outputs.dir }}/gradlew"
 
-      # -Darch selects the ABI split (TurtleLauncher/build.gradle.kts, `splits` block), so the
-      # APK carries only arm64-v8a native libraries. check_apk.py is not run here: it asserts
-      # the universal APK contains all four ABIs, which an arm64-only build must not.
+      # ARCH/-Darch selects a single ABI through ndk.abiFilters (TurtleLauncher/build.gradle.kts,
+      # buildAbi), so the APK is a normal standalone package that carries only arm64-v8a native
+      # libraries, the arm64-v8a Horizon engine and the arm64 JRE archive. check_apk.py is not run
+      # here: it asserts the universal APK contains all four ABIs, which this build must not.
       - name: Build arm64-v8a release APK
         working-directory: ${{ steps.locate.outputs.dir }}
         env:
@@ -279,7 +280,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ENDIQ_KEYSTORE_PASSWORD: ${{ secrets.ENDIQ_KEYSTORE_PASSWORD }}
           ZL_BUILD_TYPE: RELEASE
-          # Read by the `splits` block in TurtleLauncher/build.gradle.kts.
+          # Read by the buildAbi block in TurtleLauncher/build.gradle.kts.
           ARCH: arm64
         run: |
           set -o pipefail
@@ -306,11 +307,34 @@ jobs:
           # Stable asset name, so the download link never depends on the version string.
           cp "$APK" ./TurtleLauncher-arm64-v8a.apk
 
+      # The published file has to be installable, not merely built. apksigner verifies the APK
+      # signatures the way Android's PackageManager does, aapt2 parses the manifest back out of
+      # the APK, zipalign confirms the archive layout Android's AssetManager needs, and the
+      # SHA-256 is published with the APK so a download can be checked on the phone - that is how
+      # a truncated download is told apart from a broken build.
+      - name: Verify the arm64-v8a APK
+        working-directory: ${{ steps.locate.outputs.dir }}
+        run: |
+          set -euo pipefail
+          APK=./TurtleLauncher-arm64-v8a.apk
+          ls -l "$APK"
+          SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          BT=$(ls -d "$SDK"/build-tools/* 2>/dev/null | sort -V | tail -n1)
+          echo "build-tools: $BT"
+          test -x "$BT/apksigner"
+          "$BT/aapt2" dump badging "$APK" | grep -E '^(package|sdkVersion|targetSdkVersion|native-code|launchable-activity)' || true
+          "$BT/apksigner" verify --verbose --print-certs "$APK"
+          "$BT/zipalign" -c 4 "$APK" && echo "zipalign: OK"
+          echo "native libraries in the APK:"
+          unzip -l "$APK" 'lib/*' | awk '{print $4}' | grep -E '^lib/' | cut -d/ -f2 | sort -u
+          sha256sum "$APK" > "$APK.sha256"
+          cat "$APK.sha256"
+
       - name: Upload arm64-v8a APK artifact
         uses: actions/upload-artifact@v6
         with:
           name: TurtleLauncher-arm64-v8a-apk
-          path: "${{ steps.locate.outputs.dir }}/TurtleLauncher-arm64-v8a.apk"
+          path: "${{ steps.locate.outputs.dir }}/TurtleLauncher-arm64-v8a.apk*"
 
       - name: Publish the arm64-v8a APK to a release
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
@@ -328,5 +352,5 @@ jobs:
               --notes "APK dung tu dong boi GitHub Actions. TurtleLauncher-arm64-v8a.apk chi chua thu vien native arm64-v8a (dien thoai Android 64-bit)." \
               || true
           fi
-          gh release upload "$TAG" ./TurtleLauncher-arm64-v8a.apk --clobber
+          gh release upload "$TAG" ./TurtleLauncher-arm64-v8a.apk ./TurtleLauncher-arm64-v8a.apk.sha256 --clobber
           gh release view "$TAG" --json assets --jq '.assets[] | "\(.name) \(.size) bytes"'

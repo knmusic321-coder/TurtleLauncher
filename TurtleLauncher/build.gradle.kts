@@ -64,6 +64,25 @@ configurations {
     }
 }
 
+// ── Single-ABI builds ─────────────────────────────────────────────────────────────────────
+// A CI job can narrow the whole build to one ABI with ARCH=<arm|arm64|x86|x86_64> (or
+// -Darch=...). The environment variable is read first so a workflow can set it once for the
+// whole invocation, including the single-use Gradle daemon.
+//
+// Narrowing is done through ndk.abiFilters, NOT through ABI splits. An abi split APK is a
+// *split* package, and installing one straight from a browser download is what makes some
+// installers (notably MIUI/HyperOS) answer "There was a problem parsing the package". An
+// abiFilters build is an ordinary standalone APK that simply carries one ABI's native
+// libraries, so it installs exactly the way the universal build does.
+val buildArchToken = (System.getenv("ARCH") ?: System.getProperty("arch", "all")).trim()
+val buildAbi: String? = when (buildArchToken) {
+    "arm" -> "armeabi-v7a"
+    "arm64" -> "arm64-v8a"
+    "x86" -> "x86"
+    "x86_64" -> "x86_64"
+    else -> null
+}
+
 // Stage only Discord's headers/native binaries. Enabling global Prefab also imports
 // MMKV's statically-linked-STL package, which cannot participate in this CMake graph.
 val discordSdkDir = layout.buildDirectory.dir("discord-social-sdk")
@@ -126,6 +145,12 @@ android {
         versionName = launcherVersionName
         multiDexEnabled = true //important
         manifestPlaceholders["launcher_name"] = launcherAPPName
+
+        // Every ABI by default; only the requested one when ARCH/-Darch names a single ABI.
+        // This also limits what the native build (CMake) compiles for.
+        ndk {
+            buildAbi?.let { abiFilters += it }
+        }
 
         // The Gemini API key, baked into BuildConfig so a build can ship with the AI working
         // without the user pasting anything. Read in this order:
@@ -247,23 +272,31 @@ android {
                     afterEvaluate {
                         val task = tasks.named("merge${variantName}Assets").get() as MergeSourceSetFolders
                         task.doLast {
-                            val arch = System.getenv("ARCH") ?: System.getProperty("arch", "all")
+                            val arch = buildArchToken
                             val assetsDir = task.outputDir.get().asFile
-                            val jreList = listOf("jre-8", "jre-17", "jre-21", "jre-25")
+                            val componentsDir = File(assetsDir, "components")
+                            // The runtimes live in components/jre8 (see Jre.kt's "components/jre8"),
+                            // not in "jre-8": the previous fixed list never matched a directory, so
+                            // every ABI's runtime archive shipped in every build. Scan the real
+                            // component directories instead and keep only the ones this build runs.
                             println("arch:$arch")
-                            jreList.forEach { jreVersion ->
-                                val runtimeDir = File("$assetsDir/components/$jreVersion")
-                                println("runtimeDir:${runtimeDir.absolutePath}")
-                                runtimeDir.listFiles()?.forEach {
-                                    if (arch != "all" && it.name != "version" && !it.name.contains("universal") && it.name != "bin-${arch}.tar.xz") {
-                                        println("delete:${it} : ${it.delete()}")
+                            componentsDir.listFiles()?.forEach { componentDir ->
+                                if (!componentDir.isDirectory || !componentDir.name.startsWith("jre")) {
+                                    return@forEach
+                                }
+                                println("runtimeDir:${componentDir.absolutePath}")
+                                componentDir.listFiles()?.forEach { file ->
+                                    if (arch != "all" && file.name.startsWith("bin-") &&
+                                        file.name.endsWith(".tar.xz") && file.name != "bin-$arch.tar.xz"
+                                    ) {
+                                        println("delete:${file} : ${file.delete()}")
                                     }
                                 }
                             }
                         }
                     }
 
-                    (output.getFilter(ABI)?.identifier ?: "all").let { abi ->
+                    (output.getFilter(ABI)?.identifier ?: buildAbi ?: "all").let { abi ->
                         val baseName = "$launcherName-${if (variant.buildType == "release") defaultConfig.versionName else "Debug-${defaultConfig.versionName}"}"
                         output.outputFileName = if (abi == "all") "$baseName.apk" else "$baseName-$abi.apk"
                     }
@@ -272,24 +305,8 @@ android {
         }
     }
 
-    splits {
-        // -Darch=<abi> or ARCH=<abi> narrows the APK to one ABI. The environment variable is
-        // checked first because a CI step can set it for the whole build invocation (including
-        // the single-use Gradle daemon), while -D only reaches the build when it is forwarded.
-        val arch = System.getenv("ARCH") ?: System.getProperty("arch", "all")
-        if (arch != "all") {
-            abi {
-                isEnable = true
-                reset()
-                when (arch) {
-                    "arm" -> include("armeabi-v7a")
-                    "arm64" -> include("arm64-v8a")
-                    "x86" -> include("x86")
-                    "x86_64" -> include("x86_64")
-                }
-            }
-        }
-    }
+    // No `splits { abi { ... } }` here on purpose: see buildAbi above. A per-ABI build is a
+    // normal APK with ndk.abiFilters applied, not a split package.
 
     ndkVersion = "27.2.12479018"
     externalNativeBuild {
@@ -550,7 +567,10 @@ val bundleHorizonEngine by tasks.registering {
     val outDir = horizonEngineAssetDir
     val template = horizonEngineUrlTemplate
     val version = horizonEngineVersion
-    val abis = horizonEngineAbis
+    // A single-ABI build only carries the engine it can actually run; the other three would be
+    // ~100 MB of dead weight in the download (and every extra 100 MB is another chance for a
+    // mobile download to arrive truncated).
+    val abis = buildAbi?.let { listOf(it) } ?: horizonEngineAbis
     val minBytes = horizonEngineMinBytes
     val committed = layout.projectDirectory.dir("src/main/assets/horizon")
     outputs.dir(outDir)
