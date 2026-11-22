@@ -140,6 +140,11 @@ class PhoneSettingsFragment : AbstractSettingsFragment(R.layout.settings_fragmen
         SwitchSettingsWrapper(context, AllSettings.nativeObjectPooling, binding.nativeObjectPoolingLayout, binding.nativeObjectPooling)
         SwitchSettingsWrapper(context, AllSettings.reducedJniCalls, binding.reducedJniCallsLayout, binding.reducedJniCalls)
 
+        // ── Device benchmark ────────────────────────────────────────────────
+        com.endiq.turtlelauncher.feature.benchmark.BenchmarkRow.bind(
+            this, binding.deviceBenchmarkLayout, binding.deviceBenchmarkValue
+        )
+
         computeVisibility()
     }
 

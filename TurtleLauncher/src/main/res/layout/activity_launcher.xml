@@ -15,6 +15,17 @@
         android:scaleType="centerCrop"
         android:alpha="0.18"/>
 
+    <!-- Optional looping background video (with its own audio), drawn above the still
+         wallpaper and below the launcher UI. Hidden unless a video was chosen in
+         Settings -> Launcher -> Custom background. -->
+    <com.endiq.turtlelauncher.ui.view.BackgroundVideoView
+        android:id="@+id/background_video"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:visibility="gone"
+        tools:ignore="ContentDescription"/>
+
     <!-- Hidden top bar kept for code compatibility, zero height -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_layout"

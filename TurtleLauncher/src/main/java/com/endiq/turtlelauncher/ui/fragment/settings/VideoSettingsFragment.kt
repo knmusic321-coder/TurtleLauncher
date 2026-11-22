@@ -175,6 +175,11 @@ class VideoSettingsFragment : AbstractSettingsFragment(R.layout.settings_fragmen
         )
         binding.driverDownload.setOnClickListener { ZHTools.openLink(context, UrlManager.URL_FCL_DRIVER_PLUGIN) }
 
+        // Benchmark lives next to the renderer and driver choice it is meant to evaluate.
+        com.endiq.turtlelauncher.feature.benchmark.BenchmarkRow.bind(
+            this, binding.graphicsBenchmarkLayout, binding.graphicsBenchmarkValue
+        )
+
         // ── Notch ─────────────────────────────────────────────────────────────
         val ignoreNotch = SwitchSettingsWrapper(
             context, AllSettings.ignoreNotch,
@@ -266,6 +271,7 @@ class VideoSettingsFragment : AbstractSettingsFragment(R.layout.settings_fragmen
         SwitchSettingsWrapper(context, AllSettings.autoSettingsOptimizer,
             binding.autoSettingsOptimizerLayout, binding.autoSettingsOptimizer)
 
+        com.endiq.turtlelauncher.feature.benchmark.BenchmarkRow.refresh(this, binding.graphicsBenchmarkValue)
         changeResolutionRatioPreview(AllSettings.resolutionRatio.getValue())
         computeVisibility()
     }

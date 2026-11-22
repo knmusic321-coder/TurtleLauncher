@@ -31,8 +31,6 @@ import com.endiq.turtlelauncher.event.single.LaunchGameEvent;
 import com.endiq.turtlelauncher.event.single.RefreshVersionsEvent;
 import com.endiq.turtlelauncher.event.value.InstallLocalModpackEvent;
 import com.endiq.turtlelauncher.feature.mod.modpack.install.InstallExtra;
-import com.endiq.turtlelauncher.feature.log.CrashAnalyzer;
-import com.endiq.turtlelauncher.feature.turtle.DailyPlaytimeStats;
 import com.endiq.turtlelauncher.feature.version.Version;
 import com.endiq.turtlelauncher.feature.version.utils.VersionIconUtils;
 import com.endiq.turtlelauncher.feature.version.VersionInfo;
@@ -42,7 +40,6 @@ import com.endiq.turtlelauncher.ui.fragment.AboutFragment;
 import com.endiq.turtlelauncher.ui.fragment.ControlButtonFragment;
 import com.endiq.turtlelauncher.ui.fragment.FilesFragment;
 import com.endiq.turtlelauncher.ui.fragment.FragmentWithAnim;
-import com.endiq.turtlelauncher.ui.fragment.LogViewerFragment;
 import com.endiq.turtlelauncher.ui.fragment.AccountFragment;
 import com.endiq.turtlelauncher.ui.fragment.VersionsListFragment;
 import com.endiq.turtlelauncher.ui.subassembly.version.VersionManagerDropdown;
@@ -106,9 +103,6 @@ public class MainMenuFragment extends FragmentWithAnim {
             runInstallerWithConfirmation(true);
             return true;
         });
-        binding.terracottaButton.setOnClickListener(v -> ZHTools.swapFragmentWithAnim(this,
-            com.endiq.turtlelauncher.ui.fragment.TerracottaFragment.class,
-            com.endiq.turtlelauncher.ui.fragment.TerracottaFragment.TAG, null));
         binding.friendsButton.setOnClickListener(v -> ZHTools.swapFragmentWithAnim(this,
                 com.endiq.turtlelauncher.ui.fragment.friends.FriendsFragment.class,
                 com.endiq.turtlelauncher.ui.fragment.friends.FriendsFragment.TAG, null));
@@ -145,11 +139,6 @@ public class MainMenuFragment extends FragmentWithAnim {
         });
 
         binding.playButton.setOnClickListener(v -> EventBus.getDefault().post(new LaunchGameEvent()));
-
-        // Community links
-        binding.linkDiscordButton.setOnClickListener(v -> openUrl("https://discord.gg/8TfuMhM8tD"));
-        binding.linkWebsiteButton.setOnClickListener(v -> openUrl("https://endiq-jar.github.io/endiq-shop/"));
-        binding.linkYoutubeButton.setOnClickListener(v -> openUrl("https://youtube.com/@endiq-jar?si=9sb9OnKDJG2kUnO1"));
 
         binding.versionName.setSelected(true);
         binding.versionInfo.setSelected(true);
@@ -189,10 +178,6 @@ public class MainMenuFragment extends FragmentWithAnim {
         updateTasksBadge(ProgressKeeper.getTaskCount());
         setupDynamicIsland();
 
-        // Today's Statistics dashboard
-        refreshStatistics();
-        refreshLastGameLog();
-
         populateFeaturePlugins();
         refreshCurrentVersion();
     }
@@ -228,60 +213,7 @@ public class MainMenuFragment extends FragmentWithAnim {
     public void onResume() {
         super.onResume();
         if (binding == null) return;
-        refreshLastGameLog();
         populateFeaturePlugins();
-    }
-
-    /** Populates the weekly playtime chart and today's total from {@link DailyPlaytimeStats}. */
-    private void refreshStatistics() {
-        long[] weekMs = DailyPlaytimeStats.getThisWeekMs();
-        float[] weekHours = new float[weekMs.length];
-        for (int i = 0; i < weekMs.length; i++) weekHours[i] = weekMs[i] / 3600000f;
-        binding.statsChart.setData(weekHours);
-    }
-
-    private void refreshLastGameLog() {
-        String lastLogText = CrashAnalyzer.INSTANCE.getLastLogText();
-        File logFile = com.endiq.turtlelauncher.feature.log.LatestLogResolver.resolveLastGameLogFile();
-
-        if ((lastLogText == null || lastLogText.isEmpty()) && logFile == null) {
-            binding.lastLogPreview.setText(R.string.main_last_log_none);
-            binding.lastLogCard.setOnClickListener(null);
-            return;
-        }
-
-        String previewSource = (lastLogText != null && !lastLogText.isEmpty())
-                ? lastLogText
-                : CrashAnalyzer.tailOf(logFile, 8 * 1024);
-        String preview = lastNonEmptyLine(previewSource);
-        if (preview.isEmpty()) {
-            binding.lastLogPreview.setText(R.string.main_last_log_none);
-        } else {
-            binding.lastLogPreview.setText(preview);
-        }
-
-        final File targetLogFile = logFile;
-        binding.lastLogCard.setOnClickListener(v -> {
-            File toOpen = targetLogFile != null
-                    ? targetLogFile
-                    : com.endiq.turtlelauncher.feature.log.LatestLogResolver.resolveLatestLogFile();
-            if (toOpen != null && toOpen.isFile()) {
-                ZHTools.swapFragmentWithAnim(this, LogViewerFragment.class, LogViewerFragment.TAG,
-                    LogViewerFragment.Companion.createArgs(toOpen));
-            }
-        });
-    }
-
-    private static String lastNonEmptyLine(String text) {
-        if (text == null) return "";
-        String[] lines = text.split("\n");
-        for (int i = lines.length - 1; i >= 0; i--) {
-            String trimmed = lines[i].trim();
-            if (trimmed.isEmpty()) continue;
-            if (trimmed.startsWith("Java Exit code")) continue;
-            return trimmed.length() > 200 ? trimmed.substring(trimmed.length() - 200) : trimmed;
-        }
-        return "";
     }
 
     private void populateFeaturePlugins() {

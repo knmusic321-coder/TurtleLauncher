@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.endiq.turtlelauncher.InfoDistributor
 import com.endiq.turtlelauncher.R
 import com.endiq.turtlelauncher.feature.log.Logging
@@ -20,36 +21,32 @@ object BackgroundManager {
     private val FILE_BACKGROUND_PROPERTIES: File = File(PathManager.DIR_DATA, "background.properties")
     const val NULL: String = "null"
 
+    /** Property suffixes for the optional looping background video of each surface. */
+    private const val VIDEO_SUFFIX = "_VIDEO"
+    private const val VIDEO_LOOP_SUFFIX = "_VIDEO_LOOP"
+    private val VIDEO_EXTENSIONS = listOf("mp4", "webm", "mkv", "m4v", "3gp", "mov")
+
     private val defaultProperties: Properties
         get() {
             val properties = Properties()
-            properties.setProperty(BackgroundType.MAIN_MENU.name, NULL)
-            properties.setProperty(BackgroundType.CUSTOM_CONTROLS.name, NULL)
-            properties.setProperty(BackgroundType.IN_GAME.name, NULL)
+            BackgroundType.values().forEach { type ->
+                properties.setProperty(type.name, NULL)
+                properties.setProperty(type.name + VIDEO_SUFFIX, NULL)
+                properties.setProperty(type.name + VIDEO_LOOP_SUFFIX, "true")
+            }
             return properties
         }
 
     val properties: Properties
         get() {
-            FILE_BACKGROUND_PROPERTIES.apply {
-                if (!exists()) {
-                    return@apply
-                }
-
-                val properties = Properties()
-                runCatching {
-                    FileReader(this).use { fileReader ->
-                        properties.load(fileReader)
-                    }
-                }.getOrElse { e ->
-                    Logging.e("BackgroundManager", Tools.printToString(e))
-                    return@apply
-                }
-
-                return properties
+            val properties = defaultProperties
+            if (!FILE_BACKGROUND_PROPERTIES.isFile) return properties
+            runCatching {
+                FileReader(FILE_BACKGROUND_PROPERTIES).use { fileReader -> properties.load(fileReader) }
+            }.onFailure { e ->
+                Logging.e("BackgroundManager", Tools.printToString(e))
             }
-
-            return defaultProperties
+            return properties
         }
 
     @JvmStatic
@@ -71,6 +68,9 @@ object BackgroundManager {
 
         Glide.with(backgroundView).load(backgroundImage)
             .centerCrop()
+            // A cross-fade makes a wallpaper change read as one scene turning into the
+            // next instead of a hard cut between two bitmaps.
+            .transition(DrawableTransitionOptions.withCrossFade(320))
             .into(CallbackDrawableImageViewTarget(backgroundView, callback))
     }
 
@@ -110,6 +110,50 @@ object BackgroundManager {
         return image.takeIf { it.isFile && isImage(it) }
     }
 
+    // ================================ Video ================================
+
+    /** The imported looping video for [backgroundType], if one was selected. */
+    @JvmStatic
+    fun getBackgroundVideo(backgroundType: BackgroundType): File? {
+        val name = properties.getProperty(backgroundType.name + VIDEO_SUFFIX) ?: return null
+        if (name.isBlank() || name == NULL) return null
+        val video = File(PathManager.DIR_BACKGROUND, name)
+        if (video.parentFile?.canonicalFile != PathManager.DIR_BACKGROUND.canonicalFile) return null
+        return video.takeIf { it.isFile && isVideo(it) }
+    }
+
+    @JvmStatic
+    fun hasBackgroundVideo(backgroundType: BackgroundType): Boolean =
+        getBackgroundVideo(backgroundType) != null
+
+    /** Defaults to looping, which is what a background video is expected to do. */
+    @JvmStatic
+    fun isVideoLoopEnabled(backgroundType: BackgroundType): Boolean =
+        properties.getProperty(backgroundType.name + VIDEO_LOOP_SUFFIX)?.toBooleanStrictOrNull() ?: true
+
+    @JvmStatic
+    fun setVideoLoop(backgroundType: BackgroundType, enabled: Boolean) {
+        val props = properties
+        props.setProperty(backgroundType.name + VIDEO_LOOP_SUFFIX, enabled.toString())
+        saveProperties(props)
+    }
+
+    /** Pass `null` (or a blank name) to remove the video background of [backgroundType]. */
+    @JvmStatic
+    fun setBackgroundVideo(backgroundType: BackgroundType, fileName: String?) {
+        val props = properties
+        props.setProperty(
+            backgroundType.name + VIDEO_SUFFIX,
+            fileName?.takeIf { it.isNotBlank() } ?: NULL
+        )
+        saveProperties(props)
+    }
+
+    /** Extension check only: the file is played by the platform decoder, not by Glide. */
+    @JvmStatic
+    fun isVideo(file: File?): Boolean =
+        file != null && file.isFile && VIDEO_EXTENSIONS.contains(file.extension.lowercase())
+
     private fun saveProperties(properties: Properties) {
         PathManager.DIR_BACKGROUND.apply {
             if (!exists()) mkdirs(this)
@@ -122,21 +166,13 @@ object BackgroundManager {
         }.getOrElse { e -> Logging.e("saveProperties", Tools.printToString(e)) }
     }
 
+    /**
+     * Saves the image selections. The video keys already stored for the same surfaces are
+     * kept, so picking a new image never silently forgets the user's video choice.
+     */
     fun saveProperties(map: Map<BackgroundType, String>) {
-        val properties = Properties()
-        properties.setProperty(
-            BackgroundType.MAIN_MENU.name,
-            map[BackgroundType.MAIN_MENU] ?: NULL
-        )
-        properties.setProperty(
-            BackgroundType.CUSTOM_CONTROLS.name,
-            map[BackgroundType.CUSTOM_CONTROLS] ?: NULL
-        )
-        properties.setProperty(
-            BackgroundType.IN_GAME.name,
-            map[BackgroundType.IN_GAME] ?: NULL
-        )
-
-        saveProperties(properties)
+        val props = properties
+        map.forEach { (type, value) -> props.setProperty(type.name, value) }
+        saveProperties(props)
     }
 }

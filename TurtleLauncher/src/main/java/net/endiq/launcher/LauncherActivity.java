@@ -142,6 +142,21 @@ public class LauncherActivity extends BaseActivity {
             } else {
                 mSettingsButtonWrapper.setButtonType(ButtonType.HOME);
             }
+            // Every screen is a fresh view tree, so re-apply the transparency setting to
+            // the one that just became visible instead of only to the home screen.
+            if (f.getView() != null) {
+                setPageOpacity(AllSettings.getPageOpacity().getValue());
+            }
+            // The clip belongs to the home screen: keep it prepared, but stop its audio
+            // while a settings/files screen covers it and resume when home is back.
+            com.endiq.turtlelauncher.ui.view.BackgroundVideoView backgroundVideo = binding.backgroundVideo;
+            if (backgroundVideo != null && backgroundVideo.getVisibility() == View.VISIBLE) {
+                if (f instanceof MainMenuFragment) {
+                    backgroundVideo.resumePlayback();
+                } else {
+                    backgroundVideo.pausePlayback();
+                }
+            }
         }
     };
 
@@ -657,6 +672,10 @@ public class LauncherActivity extends BaseActivity {
         com.endiq.turtlelauncher.task.TaskExecutors.setGameSessionActive(false);
         com.endiq.turtlelauncher.feature.turtle.BackgroundServiceManager.onGameSessionEnd();
         setPageOpacity(AllSettings.getPageOpacity().getValue());
+        com.endiq.turtlelauncher.ui.view.BackgroundVideoView backgroundVideo = binding.backgroundVideo;
+        if (backgroundVideo != null && backgroundVideo.getVisibility() == View.VISIBLE) {
+            backgroundVideo.resumePlayback();
+        }
         VersionsManager.INSTANCE.refresh("LauncherActivity:onResume", false);
         com.endiq.turtlelauncher.feature.turtle.AssetPrefetcher.prefetch(this);
         com.endiq.turtlelauncher.feature.turtle.LauncherWarmStart.warmStart(this);
@@ -666,6 +685,17 @@ public class LauncherActivity extends BaseActivity {
             UpdateUtils.checkDownloadedPackage(this, false, true);
             return null;
         }).execute();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // A background video must not keep playing its audio behind the game or the
+        // notification shade; it resumes in onResume.
+        com.endiq.turtlelauncher.ui.view.BackgroundVideoView backgroundVideo = binding.backgroundVideo;
+        if (backgroundVideo != null && backgroundVideo.getVisibility() == View.VISIBLE) {
+            backgroundVideo.pausePlayback();
+        }
     }
 
     @Override
@@ -805,6 +835,32 @@ public class LauncherActivity extends BaseActivity {
 
     private void refreshBackground() {
         BackgroundManager.setBackgroundImage(this, BackgroundType.MAIN_MENU, binding.backgroundView, this::refreshTopBarColor);
+        refreshBackgroundVideo();
+    }
+
+    /**
+     * Plays the optional looping background video, with the video's own audio track.
+     *
+     * The still wallpaper stays underneath as a poster, so a codec the device cannot
+     * decode leaves the normal background in place instead of an empty screen.
+     */
+    private void refreshBackgroundVideo() {
+        com.endiq.turtlelauncher.ui.view.BackgroundVideoView view = binding.backgroundVideo;
+        if (view == null) return;
+
+        view.stopPlayback();
+        view.animate().cancel();
+        view.setAlpha(0f);
+
+        File video = BackgroundManager.getBackgroundVideo(BackgroundType.MAIN_MENU);
+        if (video == null) {
+            view.setVisibility(View.GONE);
+            return;
+        }
+
+        view.setVisibility(View.VISIBLE);
+        view.play(video, BackgroundManager.isVideoLoopEnabled(BackgroundType.MAIN_MENU));
+        view.animate().alpha(0.3f).setDuration(420).start();
     }
 
     private void refreshTopBarColor(boolean loadFromBackground) {
@@ -903,17 +959,11 @@ public class LauncherActivity extends BaseActivity {
     }
 
     private void setPageOpacity(int pageOpacity) {
-        BigDecimal opacity = BigDecimal.valueOf(pageOpacity).divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
-        float v = opacity.floatValue();
-
-        binding.containerFragment.setAlpha(v);
-
-        BigDecimal adjustedOpacity = BackgroundManager.hasBackgroundImage(BackgroundType.MAIN_MENU)
-                ? opacity.subtract(BigDecimal.valueOf(0.1)).max(BigDecimal.ZERO)
-                : BigDecimal.ONE;
-
-        if (binding.topLayout != null && binding.topLayout.getVisibility() != android.view.View.GONE)
-            binding.topLayout.setAlpha(adjustedOpacity.floatValue());
+        // Only the launcher's own surfaces (cards, panels, the fragment background) fade.
+        // Fading the whole container used to dim every label, slider and switch with it;
+        // view-drawable alpha leaves that content at full opacity - see PageTransparency.
+        binding.containerFragment.setAlpha(1f);
+        com.endiq.turtlelauncher.utils.anim.PageTransparency.apply(binding.containerFragment, pageOpacity);
     }
 
     private void showWhatsNewIfNeeded() {

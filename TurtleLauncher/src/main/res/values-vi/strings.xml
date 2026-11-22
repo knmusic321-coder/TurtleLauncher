@@ -459,6 +459,16 @@
     <string name="custom_background_selected">Đã đặt ảnh nền thành công cho %s:</string>
     <string name="custom_background_reset">Đặt lại ảnh nền cho %s</string>
     <string name="custom_background_nothing">Chưa có ảnh nền nào ở đây, vui lòng thêm trước!</string>
+    <string name="custom_background_add_video">Thêm video nền</string>
+    <string name="custom_background_loop_video">Lặp video</string>
+    <string name="custom_background_video_none">Chưa có video nền (nhấn giữ nút để xoá video)</string>
+    <string name="custom_background_video_selected">Đã đặt video nền: %1$s\nNhấn giữ nút để xoá video</string>
+    <string name="custom_background_video_removed">Đã xoá video nền</string>
+    <string name="custom_background_video_unsupported">Tệp này không phải video được hỗ trợ</string>
+    <string name="custom_background_video_failed">Không thêm được video: %1$s</string>
+    <string name="setting_category_phone_benchmark">Benchmark thiết bị</string>
+    <string name="setting_device_benchmark_title">Đo hiệu năng thiết bị</string>
+    <string name="setting_device_benchmark_desc">Chạy thử GPU trong khoảng hai giây kèm thông tin CPU/RAM, để biết máy đang ở mức nào trước khi chỉnh cấu hình.</string>
     <string name="file_folder_dialog_insert_name">Nhập tên thư mục</string>
     <string name="file_create_folder">Tạo thư mục</string>
     <string name="file_select_folder">Chọn thư mục</string>
@@ -1345,7 +1355,7 @@
     <string name="whats_new_feature_1">🎭 Emote: phụ thuộc tự cài đặt</string>
     <string name="whats_new_feature_1_desc">Khi cài mod Emotecraft, trình khởi chạy tự tải phụ thuộc Player Animation Library bắt buộc (đọc trực tiếp từ siêu dữ liệu của mod), nên game không còn bị sự cố lúc chạy vì thiếu phụ thuộc.</string>
     <string name="whats_new_feature_2">📜 Nhật ký game đã được lưu lại</string>
-    <string name="whats_new_feature_2_desc">Đầu ra của game — bộ tải mod, thông báo console, dấu vết sự cố — được ghi vào nhật ký của trình khởi chạy. Thẻ Nhật ký game gần nhất ở trang chủ hiện phiên chơi cuối qua các lần khởi động lại, và Trợ lý có thể đọc khi bạn hỏi vì sao game bị sự cố.</string>
+    <string name="whats_new_feature_2_desc">Đầu ra của game — bộ tải mod, thông báo console, dấu vết sự cố — được ghi vào nhật ký của trình khởi chạy, và Trợ lý có thể đọc khi bạn hỏi vì sao game bị sự cố.</string>
     <string name="whats_new_feature_3">📤 Chia sẻ nhật ký thẳng vào Trợ lý</string>
     <string name="whats_new_feature_3_desc">Turtle Launcher giờ có trong menu chia sẻ của Android. Chia sẻ nhật ký game (tệp hoặc văn bản) từ bất kỳ ứng dụng nào và Trợ lý sẽ phân tích ngay — không cần sao chép dán.</string>
     <string name="whats_new_warning">🧩 Ứng dụng plugin trình kết xuất (ví dụ MobileGlues) hiện trong danh sách ngay sau khi bạn cài — không cần khởi động lại — và khoảng phiên bản Minecraft được hỗ trợ của nó được tôn trọng như mọi trình kết xuất tích hợp.</string>

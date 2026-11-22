@@ -143,13 +143,13 @@ if "@+id/friends_button" not in launcher_text:
     errors.append("fragment_launcher.xml: missing friends_button")
 else:
     rail = launcher_text.index("@+id/quick_actions_rail")
-    content = launcher_text.index("@+id/terracotta_button")
+    content = launcher_text.index("android:id=\"@+id/play_layout\"")
     friends = launcher_text.index("@+id/friends_button")
     share = launcher_text.index("@+id/share_logs_button")
     if not rail < friends < share < content:
         errors.append(
             "fragment_launcher.xml: friends_button belongs in the quick actions rail, "
-            "next to share_logs_button (the rail sits left of the Friends/LAN card)"
+            "next to share_logs_button (the rail sits left of the play panel)"
         )
 menu = (main / "java/net/endiq/launcher/fragments/MainMenuFragment.java").read_text()
 if "binding.friendsButton.setOnClickListener" not in menu:

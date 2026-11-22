@@ -51,9 +51,13 @@ class CustomBackgroundFragment : FragmentWithAnim(R.layout.fragment_custom_backg
     private val backgroundMap: MutableMap<BackgroundType, String> = EnumMap(BackgroundType::class.java)
     private var openDocumentLauncher: ActivityResultLauncher<Array<String>>? = null
     private var backgroundType: BackgroundType = BackgroundType.MAIN_MENU
+    private var videoPicker: ActivityResultLauncher<String>? = null
+    /** Guards the loop switch while its value is being loaded from storage. */
+    private var updatingVideoUi = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        registerVideoPicker()
         openDocumentLauncher = registerForActivityResult<Array<String>, Uri>(ActivityResultContracts.OpenDocument()) { result: Uri? ->
             result?.let { uri ->
                 val dialog = ZHTools.showTaskRunningDialog(requireContext())
@@ -71,6 +75,12 @@ class CustomBackgroundFragment : FragmentWithAnim(R.layout.fragment_custom_backg
                     dialog.dismiss()
                 }.execute()
             }
+        }
+    }
+
+    private fun registerVideoPicker() {
+        videoPicker = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let { importVideo(it) }
         }
     }
 
@@ -118,7 +128,10 @@ class CustomBackgroundFragment : FragmentWithAnim(R.layout.fragment_custom_backg
                         filesDialog.setMoreButtonClick {
                             backgroundMap[backgroundType] = fileName
                             BackgroundManager.saveProperties(backgroundMap)
+                            // An image replaces the clip; the two are never layered.
+                            BackgroundManager.setBackgroundVideo(backgroundType, null)
                             refreshBackground()
+                            refreshVideoUi()
 
                             Toast.makeText(requireActivity(),
                                 StringUtils.insertSpace(getString(R.string.custom_background_selected, currentStatusName), fileName),
@@ -159,19 +172,34 @@ class CustomBackgroundFragment : FragmentWithAnim(R.layout.fragment_custom_backg
                     .setSingleChoiceItems(labels, selected) { dialog, index ->
                         backgroundMap[backgroundType] = keys[index]
                         BackgroundManager.saveProperties(backgroundMap)
+                        BackgroundManager.setBackgroundVideo(backgroundType, null)
                         refreshBackground()
+                        refreshVideoUi()
                         dialog.dismiss()
                     }
                     .setNegativeButton(android.R.string.cancel, null)
                     .show()
             }
 
+            videoBackgroundButton.setOnClickListener { videoPicker?.launch("video/*") }
+            videoBackgroundButton.setOnLongClickListener {
+                removeVideo()
+                true
+            }
+            videoLoopSwitch.setOnCheckedChangeListener { _, isChecked ->
+                if (!updatingVideoUi) {
+                    BackgroundManager.setVideoLoop(BackgroundType.MAIN_MENU, isChecked)
+                }
+            }
+
             actionBar.apply {
                 pasteButton.setOnClickListener { _: View? ->
                     backgroundMap[backgroundType] = NULL
                     BackgroundManager.saveProperties(backgroundMap)
+                    BackgroundManager.setBackgroundVideo(backgroundType, null)
                     Toast.makeText(requireActivity(), getString(R.string.custom_background_reset, currentStatusName), Toast.LENGTH_SHORT).show()
                     refreshBackground()
+                    refreshVideoUi()
                 }
 
                 returnButton.setOnClickListener { ZHTools.onBackPressed(requireActivity()) }
@@ -239,6 +267,71 @@ class CustomBackgroundFragment : FragmentWithAnim(R.layout.fragment_custom_backg
         }
 
         refreshBackgroundPreview()
+        refreshVideoUi()
+    }
+
+    /**
+     * Copies the picked clip into the background folder and makes it the looping main-menu
+     * background. Only the main menu plays video - the in-game surface stays a still image
+     * so decoding a second video never competes with the game for GPU time.
+     */
+    private fun importVideo(uri: Uri) {
+        val context = requireContext()
+        val appContext = context.applicationContext
+        val destination = backgroundPath().absolutePath
+        val dialog = ZHTools.showTaskRunningDialog(context)
+        Task.runTask {
+            val copied = FileTools.copyFileInBackground(appContext, uri, destination)
+            if (!BackgroundManager.isVideo(copied)) {
+                copied.delete()
+                throw IllegalArgumentException(appContext.getString(R.string.custom_background_video_unsupported))
+            }
+            copied
+        }.ended(TaskExecutors.getAndroidUI()) { file ->
+            if (!isAdded || file == null) return@ended
+            BackgroundManager.setBackgroundVideo(BackgroundType.MAIN_MENU, file.name)
+            EventBus.getDefault().post(MainBackgroundChangeEvent())
+            refreshBackgroundPreview()
+            refreshVideoUi()
+            Toast.makeText(requireActivity(), getString(R.string.custom_background_video_selected, file.name), Toast.LENGTH_LONG).show()
+        }.onThrowable { error ->
+            if (!isAdded) return@onThrowable
+            Toast.makeText(
+                requireActivity(),
+                getString(R.string.custom_background_video_failed, error.message ?: ""),
+                Toast.LENGTH_LONG
+            ).show()
+        }.finallyTask(TaskExecutors.getAndroidUI()) {
+            dialog.dismiss()
+        }.execute()
+    }
+
+    private fun removeVideo() {
+        val hadVideo = BackgroundManager.hasBackgroundVideo(BackgroundType.MAIN_MENU)
+        BackgroundManager.setBackgroundVideo(BackgroundType.MAIN_MENU, null)
+        refreshVideoUi()
+        if (!hadVideo) return
+        EventBus.getDefault().post(MainBackgroundChangeEvent())
+        Toast.makeText(requireActivity(), R.string.custom_background_video_removed, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun refreshVideoUi() {
+        val isMainMenu = backgroundType == BackgroundType.MAIN_MENU
+        val visibility = if (isMainMenu) View.VISIBLE else View.GONE
+        binding.videoBackgroundButton.visibility = visibility
+        binding.videoLoopRow.visibility = visibility
+        binding.videoStatusText.visibility = visibility
+        if (!isMainMenu) return
+
+        val video = BackgroundManager.getBackgroundVideo(BackgroundType.MAIN_MENU)
+        updatingVideoUi = true
+        binding.videoLoopSwitch.isChecked = BackgroundManager.isVideoLoopEnabled(BackgroundType.MAIN_MENU)
+        updatingVideoUi = false
+        binding.videoStatusText.text = if (video != null) {
+            getString(R.string.custom_background_video_selected, video.name)
+        } else {
+            getString(R.string.custom_background_video_none)
+        }
     }
 
     private fun refreshBackgroundPreview() {

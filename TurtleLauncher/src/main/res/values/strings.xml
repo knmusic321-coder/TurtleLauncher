@@ -469,6 +469,16 @@
     <string name="custom_background_selected">Successfully set background image for %s:</string>
     <string name="custom_background_reset">Reset background image for %s</string>
     <string name="custom_background_nothing">There are no background images here, please add some first!</string>
+    <string name="custom_background_add_video">Add Background Video</string>
+    <string name="custom_background_loop_video">Loop video</string>
+    <string name="custom_background_video_none">No background video yet (long-press the button to remove one)</string>
+    <string name="custom_background_video_selected">Background video set: %1$s\nLong-press the button to remove it</string>
+    <string name="custom_background_video_removed">Background video removed</string>
+    <string name="custom_background_video_unsupported">That file is not a supported video</string>
+    <string name="custom_background_video_failed">Could not add the video: %1$s</string>
+    <string name="setting_category_phone_benchmark">Device benchmark</string>
+    <string name="setting_device_benchmark_title">Measure device performance</string>
+    <string name="setting_device_benchmark_desc">Runs a two-second GPU test and reads the CPU/RAM figures, so you can see the tier this phone is in before tuning settings.</string>
     <!-- File -->
     <string name="file_folder_dialog_insert_name">Insert folder name</string>
     <string name="file_create_folder">Create folder</string>
@@ -1408,7 +1418,7 @@
     <string name="whats_new_feature_1">🎭 Emotes: dependencies install themselves</string>
     <string name="whats_new_feature_1_desc">Installing the Emotecraft mod now automatically fetches its required Player Animation Library dependency (read straight from the mod\'s own metadata), so the game no longer crashes on launch with a missing-dependency error.</string>
     <string name="whats_new_feature_2">📜 Game logs are finally saved</string>
-    <string name="whats_new_feature_2_desc">The game\'s own output — mod loaders, console messages, crash traces — is captured into the launcher log. The home screen\'s Last Game Log card shows the last session across restarts, and the Assistant can read it when you ask why the game crashed.</string>
+    <string name="whats_new_feature_2_desc">The game\'s own output — mod loaders, console messages, crash traces — is captured into the launcher log, and the Assistant can read it when you ask why the game crashed.</string>
     <string name="whats_new_feature_3">📤 Share logs straight into the Assistant</string>
     <string name="whats_new_feature_3_desc">Turtle Launcher now appears in Android\'s share menu. Share any game log (file or text) from any app and the Assistant analyzes it on the spot — no copy-paste.</string>
     <string name="whats_new_warning">🧩 Renderer plugin apps (e.g. MobileGlues) show up in the renderer list right after you install them — no restart needed — and their supported Minecraft version range is honored like any built-in renderer.</string>
