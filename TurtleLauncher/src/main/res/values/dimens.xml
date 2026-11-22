@@ -24,6 +24,9 @@
     <dimen name="radius_chip">8dp</dimen>
     <dimen name="radius_item">12dp</dimen>
     <dimen name="radius_panel">20dp</dimen>
+    <!-- Dynamic island: the outer capsule and the tap targets inside it. -->
+    <dimen name="radius_island">28dp</dimen>
+    <dimen name="radius_island_inner">22dp</dimen>
 
     <!-- 4dp baseline spacing scale, referenced by the gallery and settings layouts. -->
     <dimen name="space_xs">4dp</dimen>

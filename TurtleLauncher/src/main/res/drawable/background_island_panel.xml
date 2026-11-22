@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Floating glass panel for the right-hand launch column: same visual family as the
+     dynamic island, so the whole home screen reads as layered surfaces instead of
+     full-bleed blocks. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/island_panel" />
+    <stroke
+        android:width="1dp"
+        android:color="@color/island_stroke_soft" />
+    <corners android:radius="@dimen/radius_panel" />
+</shape>

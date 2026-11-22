@@ -247,7 +247,7 @@ android {
                     afterEvaluate {
                         val task = tasks.named("merge${variantName}Assets").get() as MergeSourceSetFolders
                         task.doLast {
-                            val arch = System.getProperty("arch", "all")
+                            val arch = System.getenv("ARCH") ?: System.getProperty("arch", "all")
                             val assetsDir = task.outputDir.get().asFile
                             val jreList = listOf("jre-8", "jre-17", "jre-21", "jre-25")
                             println("arch:$arch")
@@ -273,7 +273,10 @@ android {
     }
 
     splits {
-        val arch = System.getProperty("arch", "all")
+        // -Darch=<abi> or ARCH=<abi> narrows the APK to one ABI. The environment variable is
+        // checked first because a CI step can set it for the whole build invocation (including
+        // the single-use Gradle daemon), while -D only reaches the build when it is forwarded.
+        val arch = System.getenv("ARCH") ?: System.getProperty("arch", "all")
         if (arch != "all") {
             abi {
                 isEnable = true

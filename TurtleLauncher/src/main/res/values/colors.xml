@@ -3,6 +3,16 @@
     <!-- ── Core ─────────────────────────────────────────────────────── -->
     <color name="black_or_white">#F2F5F0</color>
 
+    <!-- ── Dynamic island ───────────────────────────────────────────── -->
+    <!-- The floating capsule at the top of the home screen. Near-black (not pure) so the
+         hairline stroke and the top light gradient stay visible on OLED panels. -->
+    <color name="island_surface">#F2080A09</color>
+    <color name="island_stroke">#3DC7E8B0</color>
+    <color name="island_stroke_soft">#1FFFFFFF</color>
+    <color name="island_divider">#1FFFFFFF</color>
+    <color name="island_ripple">#33C7E8B0</color>
+    <color name="island_panel">#F2141613</color>
+
     <!-- ── Canonical palette ───────────────────────────────────────── -->
     <color name="palette_primary">#C7E8B0</color>
     <color name="palette_secondary">#9CCF93</color>

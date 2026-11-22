@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tap target inside the dynamic island: invisible until pressed, then a soft accent
+     wash fills the capsule. Used by the header row and every quick-action chip. -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/island_ripple">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#00000000" />
+            <corners android:radius="@dimen/radius_island_inner" />
+        </shape>
+    </item>
+</ripple>

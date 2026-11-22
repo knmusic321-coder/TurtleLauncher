@@ -208,3 +208,125 @@ jobs:
           find . -path '*/build/outputs/apk/release/*.apk' \
             -exec gh release upload "$TAG" {} --clobber \;
           gh release view "$TAG" --json assets --jq '.assets[] | "\(.name) \(.size) bytes"'
+
+  # A separate job, not a second Gradle invocation in the job above: the ABI is read with
+  # System.getProperty("arch") at configuration time, so a second assembleRelease in the same
+  # workspace would reuse the already-configured project and could silently keep the
+  # universal (all-ABI) packaging. A fresh runner guarantees the arm64-only variant, and
+  # running in parallel with the universal build does not lengthen the pipeline.
+  build-arm64:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Locate the Android project root
+        id: locate
+        run: |
+          GRADLEW_PATH=$(find . -maxdepth 3 -name gradlew | head -n1)
+          if [ -z "$GRADLEW_PATH" ]; then
+            echo "::error::No gradlew found anywhere in this repo (checked 3 levels deep)."
+            exit 1
+          fi
+          PROJECT_DIR=$(dirname "$GRADLEW_PATH")
+          echo "dir=$PROJECT_DIR" >> "$GITHUB_OUTPUT"
+          echo "Found Android project at: $PROJECT_DIR"
+
+          PROPS="$PROJECT_DIR/gradle/wrapper/gradle-wrapper.properties"
+          if [ -f "$PROPS" ]; then
+            VERSION=$(grep -oE 'gradle-[0-9.]+-(bin|all)' "$PROPS" | head -n1 | sed -E 's/gradle-([0-9.]+)-(bin|all)/\1/')
+          fi
+          VERSION=${VERSION:-8.9}
+          echo "gradle_version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Provision Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          gradle-version: ${{ steps.locate.outputs.gradle_version }}
+
+      - name: Regenerate the Gradle wrapper jar
+        working-directory: ${{ steps.locate.outputs.dir }}
+        run: |
+          gradle wrapper --gradle-version ${{ steps.locate.outputs.gradle_version }} \
+            || echo "::warning::Could not regenerate the Gradle wrapper jar - using the one in the repo."
+
+      - name: Remove Termux-only aapt2 override
+        run: sed -i '/android.aapt2FromMavenOverride/d' "${{ steps.locate.outputs.dir }}/gradle.properties" || true
+
+      - name: Tune Gradle for the runner
+        working-directory: ${{ steps.locate.outputs.dir }}
+        run: |
+          sed -i '/^org.gradle.workers.max=/d;/^org.gradle.parallel=/d;/^org.gradle.jvmargs=/d;/^org.gradle.configuration-cache=/d' gradle.properties
+          printf '\n# CI overrides (see the "Tune Gradle for the runner" step)\norg.gradle.jvmargs=-Xmx4g -Dfile.encoding=UTF-8\norg.gradle.parallel=true\norg.gradle.workers.max=4\norg.gradle.configuration-cache=false\n' >> gradle.properties
+
+      - name: Grant execute permission to gradlew
+        run: chmod +x "${{ steps.locate.outputs.dir }}/gradlew"
+
+      # -Darch selects the ABI split (TurtleLauncher/build.gradle.kts, `splits` block), so the
+      # APK carries only arm64-v8a native libraries. check_apk.py is not run here: it asserts
+      # the universal APK contains all four ABIs, which an arm64-only build must not.
+      - name: Build arm64-v8a release APK
+        working-directory: ${{ steps.locate.outputs.dir }}
+        env:
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ENDIQ_KEYSTORE_PASSWORD: ${{ secrets.ENDIQ_KEYSTORE_PASSWORD }}
+          ZL_BUILD_TYPE: RELEASE
+          # Read by the `splits` block in TurtleLauncher/build.gradle.kts.
+          ARCH: arm64
+        run: |
+          set -o pipefail
+          GRADLE_CMD=./gradlew
+          if ! $GRADLE_CMD --version >/dev/null 2>&1; then
+            echo "::warning::./gradlew is not usable - building with the provisioned Gradle instead."
+            GRADLE_CMD=gradle
+          fi
+          $GRADLE_CMD :TurtleLauncher:assembleRelease --no-daemon --stacktrace \
+            -Darch=arm64 -Parch=arm64 2>&1 | tee /tmp/gradle-arm64.log
+
+      - name: Collect the arm64-v8a APK
+        working-directory: ${{ steps.locate.outputs.dir }}
+        run: |
+          set -euo pipefail
+          APK=$(find . -path '*/build/outputs/apk/release/*arm64*.apk' | head -n1)
+          if [ -z "$APK" ]; then
+            echo "::error::No arm64-v8a APK was produced. Release APKs found:"
+            find . -path '*/build/outputs/apk/release/*.apk' || true
+            tail -60 /tmp/gradle-arm64.log || true
+            exit 1
+          fi
+          echo "Built: $APK"
+          # Stable asset name, so the download link never depends on the version string.
+          cp "$APK" ./TurtleLauncher-arm64-v8a.apk
+
+      - name: Upload arm64-v8a APK artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: TurtleLauncher-arm64-v8a-apk
+          path: "${{ steps.locate.outputs.dir }}/TurtleLauncher-arm64-v8a.apk"
+
+      - name: Publish the arm64-v8a APK to a release
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        working-directory: ${{ steps.locate.outputs.dir }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: latest-apk
+        run: |
+          set -euo pipefail
+          # The universal job may be creating the same release concurrently; losing that race
+          # is fine as long as the tag exists by the time the asset is uploaded.
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" --target "$GITHUB_SHA" \
+              --title "TurtleLauncher APK (ban moi nhat / latest build)" \
+              --notes "APK dung tu dong boi GitHub Actions. TurtleLauncher-arm64-v8a.apk chi chua thu vien native arm64-v8a (dien thoai Android 64-bit)." \
+              || true
+          fi
+          gh release upload "$TAG" ./TurtleLauncher-arm64-v8a.apk --clobber
+          gh release view "$TAG" --json assets --jq '.assets[] | "\(.name) \(.size) bytes"'

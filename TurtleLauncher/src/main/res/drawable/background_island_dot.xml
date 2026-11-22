@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Status dot in the collapsed dynamic island: a small accent-green lamp that makes the
+     capsule look alive even before it is opened. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <gradient
+        android:endColor="@color/accent_cyan"
+        android:startColor="@color/accent_primary"
+        android:type="radial"
+        android:gradientRadius="6dp" />
+</shape>

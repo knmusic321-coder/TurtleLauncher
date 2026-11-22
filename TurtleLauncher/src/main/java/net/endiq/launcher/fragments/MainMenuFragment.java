@@ -6,9 +6,14 @@ import static com.endiq.turtlelauncher.event.single.RefreshVersionsEvent.MODE.EN
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.transition.ChangeBounds;
+import android.transition.Fade;
+import android.transition.TransitionManager;
+import android.transition.TransitionSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -67,6 +72,8 @@ public class MainMenuFragment extends FragmentWithAnim {
     public static final String TAG = "MainMenuFragment";
     private FragmentLauncherBinding binding;
     private ActivityResultLauncher<Object> modpackImportLauncher;
+    /** Whether the dynamic island at the top of the screen is currently opened. */
+    private boolean islandExpanded;
     private final net.endiq.launcher.progresskeeper.TaskCountListener tasksBadgeListener = this::updateTasksBadge;
 
     public MainMenuFragment() {
@@ -180,6 +187,7 @@ public class MainMenuFragment extends FragmentWithAnim {
             com.endiq.turtlelauncher.ui.fragment.AiChatFragment.TAG, null));
         binding.topBarTasksButton.setOnClickListener(v -> showRunningTasksDialog());
         updateTasksBadge(ProgressKeeper.getTaskCount());
+        setupDynamicIsland();
 
         // Today's Statistics dashboard
         refreshStatistics();
@@ -187,6 +195,33 @@ public class MainMenuFragment extends FragmentWithAnim {
 
         populateFeaturePlugins();
         refreshCurrentVersion();
+    }
+
+    /**
+     * Dynamic island: the collapsed capsule shows the launcher name and a status lamp;
+     * tapping it morphs the capsule into a wider slab holding every quick action, and
+     * tapping again folds it back. ChangeBounds animates the capsule's own bounds, so the
+     * morph reads as one continuous shape and the panels below slide out of the way
+     * instead of being covered.
+     */
+    private void setupDynamicIsland() {
+        binding.islandHeader.setOnClickListener(v -> {
+            islandExpanded = !islandExpanded;
+            ViewGroup root = (ViewGroup) binding.homeTopBar.getParent();
+            if (root != null) {
+                TransitionSet morph = new TransitionSet()
+                        .addTransition(new ChangeBounds())
+                        .addTransition(new Fade().addTarget(binding.islandExpanded));
+                morph.setDuration(280L);
+                morph.setInterpolator(new OvershootInterpolator(1.05f));
+                TransitionManager.beginDelayedTransition(root, morph);
+            }
+            binding.islandExpanded.setVisibility(islandExpanded ? View.VISIBLE : View.GONE);
+            binding.islandToggleIcon.animate()
+                    .rotation(islandExpanded ? 180f : 0f)
+                    .setDuration(280L)
+                    .start();
+        });
     }
 
     @Override
@@ -496,7 +531,7 @@ public class MainMenuFragment extends FragmentWithAnim {
                 animPlayer,
                 java.util.Arrays.asList(binding.launcherMenu, binding.playLayout),
                 55L);
-        addDelayed(animPlayer, binding.homeTopBar, Animations.FadeIn, 0L);
+        addDelayed(animPlayer, binding.homeTopBar, Animations.BounceEnlarge, 0L);
         addDelayed(animPlayer, binding.quickActionsRail, Animations.FadeIn, 55L);
         addDelayed(animPlayer, binding.launcherFooter, Animations.FadeIn, 165L);
         animPlayer.apply(new AnimPlayer.Entry(binding.playButtonsLayout, Animations.BounceEnlarge));

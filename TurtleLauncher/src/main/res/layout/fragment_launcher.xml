@@ -9,172 +9,250 @@
     android:background="@color/background_app"
     tools:ignore="ContentDescription">
 
-    <!-- TOP APP BAR: launcher title/subtitle on the left, quick-action icons on the right -
-         spans the full width above both the left content panel and the right play panel. -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- DYNAMIC ISLAND TOP BAR: a floating, near-black capsule that holds the launcher name
+         and a status lamp. Tapping it morphs the capsule into a wider slab with every quick
+         action, tapping again folds it back - see MainMenuFragment.setupDynamicIsland().
+         The capsule is in normal layout flow (the panels below are anchored to its bottom),
+         so opening it never covers the content underneath. -->
+    <LinearLayout
         android:id="@+id/home_top_bar"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/space_l"
-        android:paddingTop="@dimen/space_m"
-        android:paddingBottom="@dimen/space_xs"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/space_s"
+        android:background="@drawable/background_dynamic_island"
+        android:elevation="14dp"
+        android:orientation="vertical"
+        android:padding="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/home_top_bar_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/main_top_bar_title"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="@color/turtle_primary_text"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/home_top_bar_actions"/>
-
-        <TextView
-            android:id="@+id/home_top_bar_subtitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:text="@string/main_top_bar_subtitle"
-            android:textSize="12sp"
-            android:textColor="@color/turtle_text_secondary"
-            app:layout_constraintTop_toBottomOf="@id/home_top_bar_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/home_top_bar_actions"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
+        <!-- Collapsed content: dot + title/subtitle + chevron. The whole row is the toggle. -->
         <LinearLayout
-            android:id="@+id/home_top_bar_actions"
+            android:id="@+id/island_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:background="@drawable/background_island_action"
+            android:clickable="true"
+            android:focusable="true"
             android:gravity="center_vertical"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:minHeight="40dp"
+            android:orientation="horizontal"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp">
 
-            <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
-                android:id="@+id/top_bar_logo_button"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_filetype_image"
-                android:padding="9dp"
-                android:tint="@color/turtle_text_secondary"
-                android:contentDescription="@string/main_nav_logo"/>
+            <View
+                android:id="@+id/island_status_dot"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/background_island_dot" />
 
-            <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
-                android:id="@+id/top_bar_account_button"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_help"
-                android:padding="9dp"
-                android:tint="@color/turtle_text_secondary"
-                android:contentDescription="@string/main_nav_account"/>
-
-            <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
-                android:id="@+id/top_bar_storage_button"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_folder"
-                android:padding="9dp"
-                android:tint="@color/turtle_text_secondary"
-                android:contentDescription="@string/main_nav_files"/>
-
-            <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
-                android:id="@+id/top_bar_download_button"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_download"
-                android:padding="9dp"
-                android:tint="@color/turtle_text_secondary"
-                android:contentDescription="@string/main_nav_download"/>
-
-            <FrameLayout
-                android:layout_width="40dp"
-                android:layout_height="40dp">
-
-                <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
-                    android:id="@+id/top_bar_tasks_button"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_tasks"
-                    android:padding="9dp"
-                    android:tint="@color/turtle_text_secondary"
-                    android:contentDescription="@string/main_nav_tasks"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/top_bar_tasks_badge"
+                    android:id="@+id/home_top_bar_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="top|end"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="4dp"
-                    android:minWidth="14dp"
-                    android:minHeight="14dp"
-                    android:background="@drawable/background_task_badge"
-                    android:gravity="center"
-                    android:includeFontPadding="false"
-                    android:textSize="9sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/turtle_text_on_accent"
-                    android:paddingHorizontal="3dp"
-                    android:visibility="gone"
-                    tools:text="2"/>
+                    android:singleLine="true"
+                    android:text="@string/main_top_bar_title"
+                    android:textColor="@color/turtle_primary_text"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
 
-            </FrameLayout>
+                <TextView
+                    android:id="@+id/home_top_bar_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:singleLine="true"
+                    android:text="@string/main_top_bar_subtitle"
+                    android:textColor="@color/turtle_text_secondary"
+                    android:textSize="10sp" />
 
-            <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
-                android:id="@+id/top_bar_music_button"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_music_note"
-                android:padding="9dp"
-                android:tint="@color/turtle_text_secondary"
-                android:contentDescription="@string/music_title"/>
+            </LinearLayout>
 
-            <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
-                android:id="@+id/top_bar_cursor_button"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_cursor"
-                android:padding="9dp"
-                android:tint="@color/turtle_text_secondary"
-                android:contentDescription="@string/main_nav_cursor"/>
-
-            <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
-                android:id="@+id/top_bar_ai_button"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_ai_assistant"
-                android:padding="9dp"
-                android:tint="@color/turtle_text_secondary"
-                android:contentDescription="@string/main_nav_assistant"/>
-
-            <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
-                android:id="@+id/top_bar_settings_button"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_menu_settings"
-                android:padding="9dp"
-                android:tint="@color/turtle_text_secondary"
-                android:contentDescription="@string/main_nav_settings"/>
+            <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                android:id="@+id/island_toggle_icon"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="12dp"
+                android:padding="2dp"
+                android:src="@drawable/ic_chevron_down"
+                android:tint="@color/turtle_text_secondary" />
 
         </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Expanded content: the quick-action grid. Fixed width so the capsule has a
+             defined size to grow into; hidden (GONE) while collapsed. -->
+        <LinearLayout
+            android:id="@+id/island_expanded"
+            android:layout_width="288dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="4dp"
+                android:layout_marginBottom="6dp"
+                android:background="@color/island_divider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
+                    android:id="@+id/top_bar_logo_button"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/background_island_action"
+                    android:contentDescription="@string/main_nav_logo"
+                    android:padding="11dp"
+                    android:src="@drawable/ic_filetype_image"
+                    android:tint="@color/turtle_text_secondary" />
+
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
+                    android:id="@+id/top_bar_account_button"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/background_island_action"
+                    android:contentDescription="@string/main_nav_account"
+                    android:padding="11dp"
+                    android:src="@drawable/ic_help"
+                    android:tint="@color/turtle_text_secondary" />
+
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
+                    android:id="@+id/top_bar_storage_button"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/background_island_action"
+                    android:contentDescription="@string/main_nav_files"
+                    android:padding="11dp"
+                    android:src="@drawable/ic_folder"
+                    android:tint="@color/turtle_text_secondary" />
+
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
+                    android:id="@+id/top_bar_download_button"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/background_island_action"
+                    android:contentDescription="@string/main_nav_download"
+                    android:padding="11dp"
+                    android:src="@drawable/ic_download"
+                    android:tint="@color/turtle_text_secondary" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1">
+
+                    <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
+                        android:id="@+id/top_bar_tasks_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/background_island_action"
+                        android:contentDescription="@string/main_nav_tasks"
+                        android:padding="11dp"
+                        android:src="@drawable/ic_tasks"
+                        android:tint="@color/turtle_text_secondary" />
+
+                    <TextView
+                        android:id="@+id/top_bar_tasks_badge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|end"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="6dp"
+                        android:background="@drawable/background_task_badge"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:minWidth="14dp"
+                        android:minHeight="14dp"
+                        android:paddingHorizontal="3dp"
+                        android:textColor="@color/turtle_text_on_accent"
+                        android:textSize="9sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        tools:text="2" />
+
+                </FrameLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
+                    android:id="@+id/top_bar_music_button"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/background_island_action"
+                    android:contentDescription="@string/music_title"
+                    android:padding="11dp"
+                    android:src="@drawable/ic_music_note"
+                    android:tint="@color/turtle_text_secondary" />
+
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
+                    android:id="@+id/top_bar_cursor_button"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/background_island_action"
+                    android:contentDescription="@string/main_nav_cursor"
+                    android:padding="11dp"
+                    android:src="@drawable/ic_cursor"
+                    android:tint="@color/turtle_text_secondary" />
+
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
+                    android:id="@+id/top_bar_ai_button"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/background_island_action"
+                    android:contentDescription="@string/main_nav_assistant"
+                    android:padding="11dp"
+                    android:src="@drawable/ic_ai_assistant"
+                    android:tint="@color/turtle_text_secondary" />
+
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
+                    android:id="@+id/top_bar_settings_button"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/background_island_action"
+                    android:contentDescription="@string/main_nav_settings"
+                    android:padding="11dp"
+                    android:src="@drawable/ic_menu_settings"
+                    android:tint="@color/turtle_text_secondary" />
+
+                <!-- Keeps the second row on the same five-column grid as the first. -->
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <!-- LEFT PANEL -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -637,7 +715,10 @@
         android:id="@+id/play_layout"
         android:layout_width="200dp"
         android:layout_height="0dp"
-        android:background="@color/background_menu_element"
+        android:layout_marginTop="@dimen/space_s"
+        android:layout_marginEnd="@dimen/space_s"
+        android:layout_marginBottom="@dimen/space_s"
+        android:background="@drawable/background_island_panel"
         android:paddingHorizontal="@dimen/space_m"
         android:paddingTop="@dimen/space_m"
         android:paddingBottom="@dimen/space_m"
