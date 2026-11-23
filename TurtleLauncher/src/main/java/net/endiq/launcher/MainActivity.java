@@ -1186,6 +1186,7 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
             View[] pages = { binding.tabPageDebug, binding.tabPageRecording, binding.tabPageControl, binding.tabPageHotbar };
             for (int i = 0; i < buttons.length; i++) {
                 boolean isSelected = buttons[i] == selected;
+                buttons[i].setSelected(isSelected);
                 buttons[i].setTypeface(null, isSelected ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
                 pages[i].setVisibility(isSelected ? View.VISIBLE : View.GONE);
             }

@@ -530,6 +530,66 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/home_top_bar">
 
+        <!-- Optional picture or looping clip chosen by the user, shown above the version card.
+             The small button in the header row below picks or clears it (MainMenuFragment); the
+             empty state is only a translucent outline, never a dark block over the video. -->
+        <FrameLayout
+            android:id="@+id/panel_media_frame"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="@dimen/space_s"
+            app:layout_constraintBottom_toTopOf="@+id/play_buttons_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_min="76dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/panel_media_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/background_panel_media"
+                android:clipToOutline="true"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                tools:ignore="ContentDescription"/>
+
+            <com.endiq.turtlelauncher.ui.view.BackgroundVideoView
+                android:id="@+id/panel_media_video"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                tools:ignore="ContentDescription"/>
+
+            <LinearLayout
+                android:id="@+id/panel_media_empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/background_panel_media"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="@dimen/space_s">
+
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:alpha="0.75"
+                    android:src="@drawable/ic_add"
+                    android:tint="@color/accent_primary"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xs"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:text="@string/panel_media_hint"
+                    android:textColor="@color/turtle_text_secondary"
+                    android:textSize="10sp"/>
+            </LinearLayout>
+
+        </FrameLayout>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/play_buttons_layout"
             android:layout_width="match_parent"
@@ -551,8 +611,22 @@
                 android:layout_marginBottom="@dimen/space_s"
                 app:layout_constraintBottom_toTopOf="@+id/version"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/panel_media_pick_button"
                 app:layout_constraintTop_toTopOf="parent"/>
+
+            <!-- Small picker for the media slot above: picture, video or clear it. -->
+            <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
+                android:id="@+id/panel_media_pick_button"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:background="@drawable/background_icon_chip"
+                android:contentDescription="@string/panel_media_pick_title"
+                android:padding="6dp"
+                android:src="@drawable/ic_add"
+                android:tint="@color/accent_primary"
+                app:layout_constraintBottom_toBottomOf="@id/selected_version_header"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/selected_version_header"/>
 
             <!-- Version selector -->
             <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout

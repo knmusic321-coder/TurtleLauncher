@@ -9,19 +9,36 @@
     android:padding="@dimen/_8sdp"
     tools:ignore="UseSwitchCompatOrMaterialXml">
 
-    <TextView
+    <!-- Compact header: a grab pill plus the panel name. The whole header stays the drag
+         handle, so the panel still moves exactly as before. -->
+    <LinearLayout
         android:id="@+id/menu_drag_handle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="@dimen/_6sdp"
-        style="@style/TextAppearance.Material3.TitleMedium"
         android:gravity="center_horizontal"
-        android:text="@string/setting_category_game_menu"/>
+        android:orientation="vertical"
+        android:paddingVertical="@dimen/_4sdp">
+
+        <View
+            android:layout_width="@dimen/_36sdp"
+            android:layout_height="3dp"
+            android:background="@drawable/background_menu_handle"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:text="@string/setting_category_game_menu"
+            android:textColor="@color/turtle_text_primary"
+            android:textSize="13sp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
 
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_6sdp"
+        android:layout_marginTop="@dimen/_4sdp"
         android:scrollbars="none"
         android:fillViewport="true">
 
@@ -29,17 +46,20 @@
             android:id="@+id/menu_tab_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:background="@drawable/background_menu_tab_bar"
+            android:orientation="horizontal"
+            android:padding="3dp">
 
             <TextView
                 android:id="@+id/tab_btn_debug"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/_4sdp"
-                android:background="@drawable/background_item"
-                android:paddingVertical="@dimen/_8sdp"
-                android:paddingHorizontal="@dimen/_12sdp"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/background_menu_tab"
+                android:paddingVertical="@dimen/_5sdp"
+                android:paddingHorizontal="@dimen/_10sdp"
                 android:textColor="@color/turtle_primary_text"
+                android:textSize="11sp"
                 android:textStyle="bold"
                 android:clickable="true"
                 android:focusable="true"
@@ -49,11 +69,12 @@
                 android:id="@+id/tab_btn_recording"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/_4sdp"
-                android:background="@drawable/background_item"
-                android:paddingVertical="@dimen/_8sdp"
-                android:paddingHorizontal="@dimen/_12sdp"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/background_menu_tab"
+                android:paddingVertical="@dimen/_5sdp"
+                android:paddingHorizontal="@dimen/_10sdp"
                 android:textColor="@color/turtle_primary_text"
+                android:textSize="11sp"
                 android:clickable="true"
                 android:focusable="true"
                 android:text="@string/option_category_recording"/>
@@ -62,11 +83,12 @@
                 android:id="@+id/tab_btn_control"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/_4sdp"
-                android:background="@drawable/background_item"
-                android:paddingVertical="@dimen/_8sdp"
-                android:paddingHorizontal="@dimen/_12sdp"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/background_menu_tab"
+                android:paddingVertical="@dimen/_5sdp"
+                android:paddingHorizontal="@dimen/_10sdp"
                 android:textColor="@color/turtle_primary_text"
+                android:textSize="11sp"
                 android:clickable="true"
                 android:focusable="true"
                 android:text="@string/option_category_control"/>
@@ -75,11 +97,12 @@
                 android:id="@+id/tab_btn_hotbar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/_4sdp"
-                android:background="@drawable/background_item"
-                android:paddingVertical="@dimen/_8sdp"
-                android:paddingHorizontal="@dimen/_12sdp"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/background_menu_tab"
+                android:paddingVertical="@dimen/_5sdp"
+                android:paddingHorizontal="@dimen/_10sdp"
                 android:textColor="@color/turtle_primary_text"
+                android:textSize="11sp"
                 android:clickable="true"
                 android:focusable="true"
                 android:text="@string/option_category_hotbar"/>
@@ -88,10 +111,14 @@
 
     </HorizontalScrollView>
 
+    <!-- Fills the panel and scrolls: with wrap_content a long tab used to be measured at its
+         full height and the lower rows were simply clipped away by the panel. -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_8sdp">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"

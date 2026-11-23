@@ -1433,7 +1433,7 @@
     <string name="music_delete_track">Remove</string>
 
     <string name="whats_new_title">🐢 What\'s New in TurtleLauncher</string>
-    <string name="whats_new_version">v7</string>
+    <string name="whats_new_version">v8</string>
     <string name="whats_new_feature_1">🎭 Emotes: dependencies install themselves</string>
     <string name="whats_new_feature_1_desc">Installing the Emotecraft mod now automatically fetches its required Player Animation Library dependency (read straight from the mod\'s own metadata), so the game no longer crashes on launch with a missing-dependency error.</string>
     <string name="whats_new_feature_2">📜 Game logs are finally saved</string>
@@ -1446,20 +1446,20 @@
     <string name="game_notice_fixed_header">Fixed and changed</string>
     <string name="game_notice_new_header">New features and where to find them</string>
 
-    <string name="game_notice_item_1_title">The black boards are gone</string>
-    <string name="game_notice_item_1_desc">The left panel on the home screen and the background of every Settings page are no longer solid black. The video runs edge to edge behind the interface on every screen.</string>
-    <string name="game_notice_item_2_title">The glass effect actually works now</string>
-    <string name="game_notice_item_2_desc">The frosted layer used to sit underneath the black board, so nothing could be seen. Both the wallpaper and the background video are now blurred on Android 12 and newer, with a white glass sheet on top. Toggle it in Settings, Launcher, Glass effect.</string>
-    <string name="game_notice_item_3_title">The whole interface moved to glass</string>
-    <string name="game_notice_item_3_desc">Cards, panels, the search field, icon chips and dialogs are all frosted panes with a highlight edge instead of flat grey blocks. A very different look from the original, with every feature kept.</string>
-    <string name="game_notice_item_4_title">A new launch button and accents</string>
-    <string name="game_notice_item_4_desc">Play uses a colour gradient, the Settings icon chips glow slightly in the accent colour, and wallpapers are shown clearly instead of being dimmed.</string>
-    <string name="game_notice_item_5_title">Brighter, smoother background video</string>
-    <string name="game_notice_item_5_desc">The dark placeholder behind the wallpaper is gone when no image is chosen, the video plays at full brightness, and switching backdrops still cross-fades smoothly.</string>
+    <string name="game_notice_item_1_title">Your own picture or video in the launch panel</string>
+    <string name="game_notice_item_1_desc">The empty area above the version card is now a media slot. Tap the small + next to the "Selected version" line: choose a picture or a looping video from your device, or remove the one that is there. Pictures are shown cropped and rounded, videos loop silently in place.</string>
+    <string name="game_notice_item_2_title">The glass effect no longer blurs the backdrop</string>
+    <string name="game_notice_item_2_desc">Blurring the wallpaper and the video made the whole screen look out of focus, so that is gone. The picture stays sharp and only a faint glass sheen is layered over it; the cards themselves are still translucent panes. Toggle it in Settings, Launcher, Glass effect.</string>
+    <string name="game_notice_item_3_title">A tidier Settings hub</string>
+    <string name="game_notice_item_3_desc">Every card is now one compact row: icon on the left, name and a single description line next to it, arrow on the right. Three sections fit in far less scrolling, and the search field still filters them.</string>
+    <string name="game_notice_item_4_title">A cleaner in-game menu</string>
+    <string name="game_notice_item_4_desc">The floating button is a small glass chip instead of a dark square, the panel opens with a grab handle and its name, and the tabs sit together on one rounded rail. Long tabs now scroll inside the panel instead of being cut off.</string>
+    <string name="game_notice_item_5_title">A clear empty state</string>
+    <string name="game_notice_item_5_desc">When no picture or video is chosen the slot only shows a thin outline with a hint, never a black block over the background.</string>
     <string name="game_notice_item_6_title">Every feature is still here</string>
     <string name="game_notice_item_6_desc">No screen or tool was removed: versions, accounts, mods, friends, recording, benchmarks, the glass effect and every setting are all intact.</string>
-    <string name="game_notice_item_7_title">Version name: v7</string>
-    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one: v1, v2, ... The build you are running is v7. Check it in Settings, About.</string>
+    <string name="game_notice_item_7_title">Version name: v8</string>
+    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one: v1, v2, ... The build you are running is v8. Check it in Settings, About.</string>
 
     <string name="whats_new_warning">🧩 Renderer plugin apps (e.g. MobileGlues) show up in the renderer list right after you install them — no restart needed — and their supported Minecraft version range is honored like any built-in renderer.</string>
 
@@ -1799,5 +1799,14 @@
     <string name="social_redirect_hint">Must match, character for character, a redirect URI registered on the Discord application (Developer Portal → OAuth2 → Redirects). Leave blank to use the default.</string>
     <string name="social_scopes_hint">Space-separated OAuth2 scopes. Use only identify, guilds and relationships.read - bot, applications.* and webhook.incoming need a bot token and are dropped automatically. relationships.read also has to be granted to the application by Discord before the friends list can load. Leave blank to use the defaults.</string>
     <string name="setting_glass_effect_title">Glass effect</string>
-    <string name="setting_glass_effect_desc">Softly blurs the wallpaper and lays a frosted sheet over the video so cards stand out. Turn it off for a sharp backdrop.</string>
+    <string name="setting_glass_effect_desc">Adds a faint glass sheen over the wallpaper and video so cards read as panes. The backdrop is never blurred: turn this off to remove the sheen as well.</string>
+    <string name="panel_media_pick_title">Panel picture or video</string>
+    <string name="panel_media_pick_image">Choose a picture</string>
+    <string name="panel_media_pick_video">Choose a video</string>
+    <string name="panel_media_remove">Remove the picture or video</string>
+    <string name="panel_media_hint">Add your own picture or video</string>
+    <string name="panel_media_image_selected">Panel picture: %1$s</string>
+    <string name="panel_media_video_selected">Panel video: %1$s</string>
+    <string name="panel_media_removed">Panel picture or video removed</string>
+    <string name="panel_media_failed">That file cannot be used here: %1$s</string>
 </resources>

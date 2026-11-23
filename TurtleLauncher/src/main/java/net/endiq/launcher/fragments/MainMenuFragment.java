@@ -18,6 +18,7 @@ import android.view.animation.PathInterpolator;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -36,7 +37,9 @@ import com.endiq.turtlelauncher.feature.version.Version;
 import com.endiq.turtlelauncher.feature.version.utils.VersionIconUtils;
 import com.endiq.turtlelauncher.feature.version.VersionInfo;
 import com.endiq.turtlelauncher.feature.version.VersionsManager;
+import com.endiq.turtlelauncher.task.Task;
 import com.endiq.turtlelauncher.task.TaskExecutors;
+import com.endiq.turtlelauncher.feature.background.BackgroundManager;
 import com.endiq.turtlelauncher.ui.fragment.AboutFragment;
 import com.endiq.turtlelauncher.ui.fragment.ControlButtonFragment;
 import com.endiq.turtlelauncher.ui.fragment.FilesFragment;
@@ -70,6 +73,8 @@ public class MainMenuFragment extends FragmentWithAnim {
     public static final String TAG = "MainMenuFragment";
     private FragmentLauncherBinding binding;
     private ActivityResultLauncher<Object> modpackImportLauncher;
+    private ActivityResultLauncher<Array<String>> panelImagePicker;
+    private ActivityResultLauncher<String> panelVideoPicker;
     /** Whether the dynamic island at the top of the screen is currently opened. */
     private boolean islandExpanded;
     private final net.endiq.launcher.progresskeeper.TaskCountListener tasksBadgeListener = this::updateTasksBadge;
@@ -84,6 +89,14 @@ public class MainMenuFragment extends FragmentWithAnim {
         modpackImportLauncher = registerForActivityResult(new OpenDocumentWithExtension(null), uris -> {
             if (uris == null || uris.isEmpty()) return;
             importModpackFromUri(uris.get(0));
+        });
+        // The media slot above the version card: a still picture or a looping clip, both
+        // taken from the device's own picker.
+        panelImagePicker = registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
+            if (uri != null) importPanelMedia(uri, false);
+        });
+        panelVideoPicker = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
+            if (uri != null) importPanelMedia(uri, true);
         });
     }
 
@@ -140,6 +153,9 @@ public class MainMenuFragment extends FragmentWithAnim {
         });
 
         binding.playButton.setOnClickListener(v -> EventBus.getDefault().post(new LaunchGameEvent()));
+
+        binding.panelMediaPickButton.setOnClickListener(v -> showPanelMediaChooser());
+        refreshPanelMedia();
 
         binding.versionName.setSelected(true);
         binding.versionInfo.setSelected(true);
@@ -221,6 +237,83 @@ public class MainMenuFragment extends FragmentWithAnim {
         super.onResume();
         if (binding == null) return;
         populateFeaturePlugins();
+        // The panel clip was paused when the user left the home screen; pick it up again
+        // instead of restarting it from the first frame.
+        binding.panelMediaVideo.resumePlayback();
+    }
+
+    /**
+     * Offers the three things that can happen to the launch panel media slot: pick a picture,
+     * pick a clip, or clear whatever is shown. Both pickers open the system file picker, so
+     * the file can come from the gallery, a download or any installed file app.
+     */
+    private void showPanelMediaChooser() {
+        java.util.List<String> labels = new java.util.ArrayList<>();
+        labels.add(getString(R.string.panel_media_pick_image));
+        labels.add(getString(R.string.panel_media_pick_video));
+        if (BackgroundManager.getPanelMedia() != null) {
+            labels.add(getString(R.string.panel_media_remove));
+        }
+        new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialogTheme)
+                .setTitle(R.string.panel_media_pick_title)
+                .setItems(labels.toArray(new String[0]), (dialog, which) -> {
+                    if (which == 0) {
+                        panelImagePicker.launch(new String[]{"image/*"});
+                    } else if (which == 1) {
+                        panelVideoPicker.launch("video/*");
+                    } else {
+                        BackgroundManager.setPanelMedia(null, null);
+                        refreshPanelMedia();
+                        Toast.makeText(requireContext(), R.string.panel_media_removed, Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    /** Copies the picked file into the background folder, then shows it in the panel. */
+    private void importPanelMedia(Uri uri, boolean video) {
+        // Snapshot the context: the fragment may be detached by the time the copy ends.
+        android.content.Context appContext = requireContext().getApplicationContext();
+        Task.runTask(() -> BackgroundManager.importPanelMedia(appContext, uri, video))
+                .ended(TaskExecutors.getAndroidUI(), file -> {
+                    if (file == null || !isAdded()) return;
+                    refreshPanelMedia();
+                    Toast.makeText(requireContext(), getString(
+                            video ? R.string.panel_media_video_selected : R.string.panel_media_image_selected,
+                            file.getName()), Toast.LENGTH_SHORT).show();
+                })
+                .onThrowable(TaskExecutors.getAndroidUI(), error -> {
+                    if (!isAdded()) return;
+                    Toast.makeText(requireContext(),
+                            getString(R.string.panel_media_failed, String.valueOf(error.getMessage())),
+                            Toast.LENGTH_LONG).show();
+                })
+                .execute();
+    }
+
+    /** Shows the stored picture or clip in the panel, or the empty-state outline. */
+    private void refreshPanelMedia() {
+        if (binding == null) return;
+        binding.panelMediaVideo.stopPlayback();
+        binding.panelMediaVideo.setVisibility(View.GONE);
+        binding.panelMediaImage.setVisibility(View.GONE);
+
+        java.io.File media = BackgroundManager.getPanelMedia();
+        String type = BackgroundManager.getPanelMediaType();
+        if (media == null || type == null) {
+            binding.panelMediaEmpty.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        binding.panelMediaEmpty.setVisibility(View.GONE);
+        if (BackgroundManager.PANEL_MEDIA_VIDEO.equals(type)) {
+            binding.panelMediaVideo.setVisibility(View.VISIBLE);
+            binding.panelMediaVideo.play(media, true);
+        } else {
+            binding.panelMediaImage.setVisibility(View.VISIBLE);
+            com.bumptech.glide.Glide.with(this).load(media).centerCrop().into(binding.panelMediaImage);
+        }
     }
 
     private void populateFeaturePlugins() {
@@ -348,6 +441,7 @@ public class MainMenuFragment extends FragmentWithAnim {
         super.onStop();
         EventBus.getDefault().unregister(this);
         ProgressKeeper.removeTaskCountListener(tasksBadgeListener);
+        if (binding != null) binding.panelMediaVideo.pausePlayback();
     }
 
     private void updateTasksBadge(int taskCount) {

@@ -3,15 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/background_game_menu">
+    android:background="@android:color/transparent">
 
     <com.endiq.turtlelauncher.ui.view.AnimatedIconView
         android:id="@+id/settings_button"
-        android:layout_width="@dimen/_28sdp"
-        android:layout_height="@dimen/_28sdp"
-        android:layout_margin="@dimen/_4sdp"
-        android:src="@drawable/ic_menu_settings"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_margin="2dp"
+        android:background="@drawable/background_game_menu_button"
         android:clickable="false"
+        android:contentDescription="@string/setting_category_game_menu"
+        android:padding="11dp"
+        android:src="@drawable/ic_menu_settings"
+        android:tint="@color/accent_primary"
         tools:ignore="ContentDescription" />
 
 </RelativeLayout>

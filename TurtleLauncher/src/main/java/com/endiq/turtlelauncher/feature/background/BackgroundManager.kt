@@ -1,6 +1,7 @@
 package com.endiq.turtlelauncher.feature.background
 
 import android.content.Context
+import android.net.Uri
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -8,6 +9,7 @@ import com.endiq.turtlelauncher.InfoDistributor
 import com.endiq.turtlelauncher.R
 import com.endiq.turtlelauncher.feature.log.Logging
 import com.endiq.turtlelauncher.utils.path.PathManager
+import com.endiq.turtlelauncher.utils.file.FileTools
 import com.endiq.turtlelauncher.utils.file.FileTools.Companion.mkdirs
 import com.endiq.turtlelauncher.utils.image.ImageUtils.Companion.isImage
 import net.endiq.launcher.Tools
@@ -152,6 +154,66 @@ object BackgroundManager {
     @JvmStatic
     fun isVideo(file: File?): Boolean =
         file != null && file.isFile && VIDEO_EXTENSIONS.contains(file.extension.lowercase())
+
+    // ==================== Launch panel picture / video ====================
+
+    /** Property keys of the optional picture or clip shown in the home launch panel. */
+    private const val PANEL_MEDIA_TYPE = "PANEL_MEDIA_TYPE"
+    private const val PANEL_MEDIA_FILE = "PANEL_MEDIA_FILE"
+
+    const val PANEL_MEDIA_IMAGE: String = "image"
+    const val PANEL_MEDIA_VIDEO: String = "video"
+
+    /** [PANEL_MEDIA_IMAGE], [PANEL_MEDIA_VIDEO] or `null` when the slot is empty. */
+    @JvmStatic
+    fun getPanelMediaType(): String? = when (properties.getProperty(PANEL_MEDIA_TYPE)) {
+        PANEL_MEDIA_IMAGE, PANEL_MEDIA_VIDEO -> properties.getProperty(PANEL_MEDIA_TYPE)
+        else -> null
+    }
+
+    /** The picture or clip of the launch panel, or `null` when nothing usable is stored. */
+    @JvmStatic
+    fun getPanelMedia(): File? {
+        val type = getPanelMediaType() ?: return null
+        val name = properties.getProperty(PANEL_MEDIA_FILE) ?: return null
+        if (name.isBlank() || name == NULL) return null
+        val media = File(PathManager.DIR_BACKGROUND, name)
+        if (media.parentFile?.canonicalFile != PathManager.DIR_BACKGROUND.canonicalFile) return null
+        if (!media.isFile) return null
+        return if (type == PANEL_MEDIA_VIDEO) media.takeIf { isVideo(it) } else media
+    }
+
+    /** Pass `null` for either argument to clear the launch panel slot. */
+    @JvmStatic
+    fun setPanelMedia(type: String?, fileName: String?) {
+        val props = properties
+        val validType = type == PANEL_MEDIA_IMAGE || type == PANEL_MEDIA_VIDEO
+        if (!validType || fileName.isNullOrBlank()) {
+            props.setProperty(PANEL_MEDIA_TYPE, NULL)
+            props.setProperty(PANEL_MEDIA_FILE, NULL)
+        } else {
+            props.setProperty(PANEL_MEDIA_TYPE, type)
+            props.setProperty(PANEL_MEDIA_FILE, fileName)
+        }
+        saveProperties(props)
+    }
+
+    /**
+     * Copies a picked [uri] into the background folder and stores it as the launch panel
+     * picture or clip. Throws when the file is not something the panel can show.
+     */
+    @JvmStatic
+    fun importPanelMedia(context: Context, uri: Uri, video: Boolean): File {
+        PathManager.DIR_BACKGROUND.apply { if (!exists()) mkdirs(this) }
+        val copied = FileTools.copyFileInBackground(context, uri, PathManager.DIR_BACKGROUND.absolutePath)
+        val usable = if (video) isVideo(copied) else isImage(copied)
+        if (!usable) {
+            copied.delete()
+            throw IllegalArgumentException(copied.name)
+        }
+        setPanelMedia(if (video) PANEL_MEDIA_VIDEO else PANEL_MEDIA_IMAGE, copied.name)
+        return copied
+    }
 
     private fun saveProperties(properties: Properties) {
         PathManager.DIR_BACKGROUND.apply {
