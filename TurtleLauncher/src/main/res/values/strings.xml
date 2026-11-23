@@ -497,7 +497,7 @@
     <string name="custom_background_video_failed">Could not add the video: %1$s</string>
     <string name="setting_category_phone_benchmark">Device benchmark</string>
     <string name="setting_device_benchmark_title">Measure device performance</string>
-    <string name="setting_device_benchmark_desc">Measures this phone's CPU throughput and memory, then tunes only the CPU-core and RAM settings on this page. Graphics settings are not touched.</string>
+    <string name="setting_device_benchmark_desc">Measures this phone\'s CPU throughput and memory, then tunes only the CPU-core and RAM settings on this page. Graphics settings are not touched.</string>
     <!-- File -->
     <string name="file_folder_dialog_insert_name">Insert folder name</string>
     <string name="file_create_folder">Create folder</string>
