@@ -73,7 +73,7 @@ public class MainMenuFragment extends FragmentWithAnim {
     public static final String TAG = "MainMenuFragment";
     private FragmentLauncherBinding binding;
     private ActivityResultLauncher<Object> modpackImportLauncher;
-    private ActivityResultLauncher<Array<String>> panelImagePicker;
+    private ActivityResultLauncher<String[]> panelImagePicker;
     private ActivityResultLauncher<String> panelVideoPicker;
     /** Whether the dynamic island at the top of the screen is currently opened. */
     private boolean islandExpanded;
