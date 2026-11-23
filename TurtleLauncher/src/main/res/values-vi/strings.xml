@@ -138,7 +138,7 @@
     <string name="setting_renderer_debug_logging_title">Ghi nhật ký gỡ lỗi trình kết xuất</string>
     <string name="setting_renderer_debug_logging_desc">Ghi lại lựa chọn trình kết xuất và biến môi trường vào nhật ký trong ứng dụng, để chẩn đoán trình kết xuất không khởi động được.</string>
     <string name="setting_graphics_benchmark_title">Đo hiệu năng đồ họa</string>
-    <string name="setting_graphics_benchmark_desc">Đo tốc độ GPU tô đầy màn hình, rồi dùng điểm số để chọn độ phân giải kết xuất an toàn hơn. Mất khoảng hai giây.</string>
+    <string name="setting_graphics_benchmark_desc">Đo tốc độ GPU tô đầy màn hình, rồi chỉ chỉnh các mục đồ họa trên trang này: trình kết xuất, driver và độ phân giải kết xuất. Mất khoảng hai giây.</string>
     <string name="setting_graphics_benchmark_not_run">Chưa chạy</string>
     <string name="setting_graphics_benchmark_running">Đang đo…</string>
     <string name="setting_graphics_benchmark_result">Điểm %1$d (%2$s)\n%3$d megapixel/giây, %4$d ms\n%5$s</string>
@@ -147,6 +147,25 @@
     <string name="setting_graphics_benchmark_applied">Đã áp dụng đề xuất. Hãy chạy game để xem kết quả.</string>
     <string name="setting_graphics_benchmark_current">GPU: %1$s | Trình kết xuất: %2$s</string>
     <string name="setting_graphics_benchmark_resolution">Độ phân giải kết xuất đề xuất: %1$d%%</string>
+
+    <!-- Benchmark trong Cài đặt điện thoại (chỉ CPU/RAM) -->
+    <string name="setting_device_benchmark_current">%1$d nhân · CPU %2$d · RAM %3$s</string>
+    <string name="setting_device_benchmark_result">CPU: %1$d một nhân · %2$d đa nhân (%3$s)\n%4$d nhân · RAM tổng %5$s · trống %6$s</string>
+    <string name="setting_device_benchmark_recommendation">Đề xuất cho game: %1$d nhân</string>
+    <string name="setting_device_benchmark_apply">Áp dụng cho cài đặt điện thoại</string>
+    <string name="setting_device_benchmark_applied">Đã cập nhật CPU và bộ nhớ. Chỉ trang này thay đổi.</string>
+
+    <!-- Benchmark trong Tối ưu hóa (chỉ frame pacing) -->
+    <string name="setting_optimization_benchmark_title">Đo độ ổn định khung hình</string>
+    <string name="setting_optimization_benchmark_desc">Đo độ đều của khung hình, rồi chỉ bật tắt các mục trên trang này (frame pacing, timing thích ứng, bỏ khung, độ trễ). Mất khoảng một giây.</string>
+    <string name="setting_optimization_benchmark_current">Độ ổn định %1$d/100 · %2$s</string>
+    <string name="setting_optimization_benchmark_result">Độ ổn định %1$d/100 (%2$s)\nKhung trung bình %3$.2f ms · tệ nhất %4$.2f ms · dao động %5$.1f%%\n≈ %6$d FPS</string>
+    <string name="setting_optimization_benchmark_apply">Áp dụng cho tối ưu hóa</string>
+    <string name="setting_optimization_benchmark_applied">Đã cập nhật các mục tối ưu hóa. Chỉ trang này thay đổi.</string>
+    <string name="setting_benchmark_tier_stable">ổn định</string>
+    <string name="setting_benchmark_tier_moderate">trung bình</string>
+    <string name="setting_benchmark_tier_unstable">không ổn định</string>
+    <string name="setting_benchmark_tier_unavailable">không khả dụng</string>
     <string name="setting_jni_batching_title">Gộp lô JNI</string>
     <string name="setting_jni_batching_desc">Gộp các lệnh gọi GL lại với nhau thay vì chuyển từng lệnh qua ranh giới JNI ngay lập tức (chỉ với các trình kết xuất họ GL4ES).</string>
     <string name="setting_jni_cached_references_title">Tham chiếu JNI được lưu đệm</string>
@@ -468,7 +487,7 @@
     <string name="custom_background_video_failed">Không thêm được video: %1$s</string>
     <string name="setting_category_phone_benchmark">Benchmark thiết bị</string>
     <string name="setting_device_benchmark_title">Đo hiệu năng thiết bị</string>
-    <string name="setting_device_benchmark_desc">Chạy thử GPU trong khoảng hai giây kèm thông tin CPU/RAM, để biết máy đang ở mức nào trước khi chỉnh cấu hình.</string>
+    <string name="setting_device_benchmark_desc">Đo tốc độ CPU và bộ nhớ của máy, rồi chỉ chỉnh số nhân CPU và dung lượng RAM trên trang này. Không đụng tới cấu hình đồ họa.</string>
     <string name="file_folder_dialog_insert_name">Nhập tên thư mục</string>
     <string name="file_create_folder">Tạo thư mục</string>
     <string name="file_select_folder">Chọn thư mục</string>
@@ -1351,13 +1370,34 @@
     <string name="discord_rpc_preview_button_hidden">bị ẩn - cần cả nhãn và liên kết hợp lệ</string>
     <string name="music_delete_track">Gỡ bỏ</string>
     <string name="whats_new_title">🐢 Có gì mới trong TurtleLauncher</string>
-    <string name="whats_new_version">v3.1</string>
+    <string name="whats_new_version">v5</string>
     <string name="whats_new_feature_1">🎭 Emote: phụ thuộc tự cài đặt</string>
     <string name="whats_new_feature_1_desc">Khi cài mod Emotecraft, trình khởi chạy tự tải phụ thuộc Player Animation Library bắt buộc (đọc trực tiếp từ siêu dữ liệu của mod), nên game không còn bị sự cố lúc chạy vì thiếu phụ thuộc.</string>
     <string name="whats_new_feature_2">📜 Nhật ký game đã được lưu lại</string>
     <string name="whats_new_feature_2_desc">Đầu ra của game — bộ tải mod, thông báo console, dấu vết sự cố — được ghi vào nhật ký của trình khởi chạy, và Trợ lý có thể đọc khi bạn hỏi vì sao game bị sự cố.</string>
     <string name="whats_new_feature_3">📤 Chia sẻ nhật ký thẳng vào Trợ lý</string>
     <string name="whats_new_feature_3_desc">Turtle Launcher giờ có trong menu chia sẻ của Android. Chia sẻ nhật ký game (tệp hoặc văn bản) từ bất kỳ ứng dụng nào và Trợ lý sẽ phân tích ngay — không cần sao chép dán.</string>
+    <!-- Thông báo tính năng khi vào game -->
+    <string name="game_notice_title">🐢 Bản cập nhật này có gì thay đổi</string>
+    <string name="game_notice_close">Đã hiểu</string>
+    <string name="game_notice_fixed_header">Đã sửa và đã thay đổi</string>
+    <string name="game_notice_new_header">Tính năng mới và nằm ở đâu</string>
+
+    <string name="game_notice_item_1_title">Benchmark giờ thuộc về đúng mục của nó</string>
+    <string name="game_notice_item_1_desc">Mỗi màn hình chỉ đo và chỉnh phần của mình: Đồ họa &amp; trình kết xuất (trình kết xuất, driver, độ phân giải), Cài đặt điện thoại (số nhân CPU, RAM) và Tối ưu hóa (frame pacing, độ trễ). Chạy mục này không còn làm đổi mục khác.</string>
+    <string name="game_notice_item_2_title">Độ trong suốt kéo được xuống 0%</string>
+    <string name="game_notice_item_2_desc">Thanh trượt Độ trong suốt trang giờ xuống tới 0% thay vì dừng ở 50%. Chữ, thanh trượt và nút bật tắt vẫn sắc nét ở mọi mức — Cài đặt → Trình khởi chạy.</string>
+    <string name="game_notice_item_3_title">Đã bỏ nút Logo trình khởi chạy</string>
+    <string name="game_notice_item_3_desc">Nút logo đã được bỏ khỏi Dynamic Island ở trang chủ, hàng nút nhanh gọn hơn một nút.</string>
+    <string name="game_notice_item_4_title">Trang chủ gọn hơn</string>
+    <string name="game_notice_item_4_desc">Đã bỏ thẻ thống kê hôm nay, Bạn bè/LAN, Cộng đồng và Nhật ký game khỏi trang chủ. LAN vẫn vào được từ màn Bạn bè.</string>
+    <string name="game_notice_item_5_title">Video nền có âm thanh</string>
+    <string name="game_notice_item_5_desc">Mới: chọn video làm nền kèm âm thanh gốc và công tắc lặp — Cài đặt → Hình nền tùy chỉnh (tab Menu chính).</string>
+    <string name="game_notice_item_6_title">Animation mượt hơn</string>
+    <string name="game_notice_item_6_desc">Chuyển cảnh và hiệu ứng nhẹ nhàng, nhanh hơn; chỉnh tốc độ ở Cài đặt → Trình khởi chạy → Animation.</string>
+    <string name="game_notice_item_7_title">Tên phiên bản đánh số tăng dần</string>
+    <string name="game_notice_item_7_desc">Mỗi lần thêm tính năng sẽ tăng tên: v1, v2, … và bản này là v5. Xem ở Cài đặt → Giới thiệu.</string>
+
     <string name="whats_new_warning">🧩 Ứng dụng plugin trình kết xuất (ví dụ MobileGlues) hiện trong danh sách ngay sau khi bạn cài — không cần khởi động lại — và khoảng phiên bản Minecraft được hỗ trợ của nó được tôn trọng như mọi trình kết xuất tích hợp.</string>
     <string name="preset_pvp_title">Cấu hình PvP</string>
     <string name="preset_survival_title">Cấu hình Sinh tồn</string>

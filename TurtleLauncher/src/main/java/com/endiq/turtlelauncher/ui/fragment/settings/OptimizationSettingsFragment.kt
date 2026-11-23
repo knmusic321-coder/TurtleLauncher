@@ -6,19 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.endiq.anim.AnimPlayer
-import com.endiq.anim.animations.Animations
 import com.endiq.turtlelauncher.R
 import com.endiq.turtlelauncher.databinding.SettingsFragmentOptimizationBinding
-import com.endiq.turtlelauncher.feature.benchmark.GraphicsBenchmark
-import com.endiq.turtlelauncher.feature.log.Logging
-import com.endiq.turtlelauncher.launch.AutoSettingsOptimizer
-import com.endiq.turtlelauncher.launch.GraphicsTuning
-import com.endiq.turtlelauncher.renderer.CurrentRenderer
+import com.endiq.turtlelauncher.feature.benchmark.BenchmarkRow
 import com.endiq.turtlelauncher.setting.AllSettings
-import com.endiq.turtlelauncher.task.Task
-import com.endiq.turtlelauncher.task.TaskExecutors
-import com.endiq.turtlelauncher.ui.dialog.TipDialog
-import com.endiq.turtlelauncher.ui.fragment.settings.wrapper.BaseSettingsWrapper
 import com.endiq.turtlelauncher.ui.fragment.settings.wrapper.SwitchSettingsWrapper
 import com.endiq.turtlelauncher.utils.ZHTools
 
@@ -67,126 +58,13 @@ class OptimizationSettingsFragment : AbstractSettingsFragment(R.layout.settings_
         SwitchSettingsWrapper(context, AllSettings.rendererDebugLogging,
             binding.rendererDebugLoggingLayout, binding.rendererDebugLogging)
 
-        initGraphicsBenchmark()
-    }
-
-    private fun canShowUi(): Boolean {
-        val act = activity ?: return false
-        return isAdded && view != null && !act.isFinishing && !act.isDestroyed
-    }
-
-    /**
-     * Runs [GraphicsBenchmark] on a background thread, stores the score for
-     * AutoSettingsOptimizer, and offers to apply the resulting recommendation
-     * straight away. The row also shows the last score, so the effect of a
-     * renderer/driver change can be seen without launching the game.
-     */
-    private fun initGraphicsBenchmark() {
-        val context = requireContext()
-        updateBenchmarkValue()
-        BaseSettingsWrapper(context, binding.graphicsBenchmarkLayout) {
-            binding.graphicsBenchmarkValue.setText(R.string.setting_graphics_benchmark_running)
-            val layout = binding.graphicsBenchmarkLayout
-            layout.isEnabled = false
-            Task.runTask {
-                GraphicsBenchmark.run()
-            }.onThrowable(TaskExecutors.getAndroidUI()) { error ->
-                Logging.w("OptimizationSettings", "Benchmark failed: ${error.message}")
-                TaskExecutors.runInUIThread {
-                    if (!canShowUi()) return@runInUIThread
-                    val uiContext = requireContext()
-                    layout.isEnabled = true
-                    updateBenchmarkValue()
-                    TipDialog.Builder(uiContext)
-                        .setTitle(R.string.setting_graphics_benchmark_title)
-                        .setMessage(uiContext.getString(
-                            R.string.setting_graphics_benchmark_failed,
-                            error.message ?: error.javaClass.simpleName
-                        ))
-                        .setShowCancel(false)
-                        .showDialog()
-                }
-            }.finallyTask(TaskExecutors.getAndroidUI()) {
-                if (canShowUi()) layout.isEnabled = true
-            }.ended(TaskExecutors.getAndroidUI()) { result ->
-                if (result == null) return@ended
-                if (!result.failed) {
-                    AllSettings.lastGraphicsBenchmark
-                        .put("${result.score}|${System.currentTimeMillis()}")
-                        .save()
-                }
-                if (!canShowUi()) return@ended
-                val uiContext = requireContext()
-                updateBenchmarkValue()
-                if (result.failed) {
-                    TipDialog.Builder(uiContext)
-                        .setTitle(R.string.setting_graphics_benchmark_title)
-                        .setMessage(uiContext.getString(
-                            R.string.setting_graphics_benchmark_failed,
-                            result.failureReason ?: uiContext.getString(R.string.generic_unknown)
-                        ))
-                        .setShowCancel(false)
-                        .showDialog()
-                    return@ended
-                }
-                showBenchmarkResult(result)
-            }.execute()
-        }
-    }
-
-    private fun updateBenchmarkValue() {
-        val stored = AllSettings.lastGraphicsBenchmark.getValue().substringBefore('|').toIntOrNull()
-        binding.graphicsBenchmarkValue.apply {
-            text = if (stored == null || stored <= 0) {
-                context.getString(R.string.setting_graphics_benchmark_not_run)
-            } else {
-                context.getString(
-                    R.string.setting_graphics_benchmark_current,
-                    AutoSettingsOptimizer.detectGpu(),
-                    CurrentRenderer.name(requireContext()) + " - " +
-                        GraphicsTuning.benchTier(stored).name.lowercase()
-                )
-            }
-        }
-    }
-
-    private fun showBenchmarkResult(result: GraphicsBenchmark.Result) {
-        val context = requireContext()
-        val profile = AutoSettingsOptimizer.buildProfile(context, "")
-        val resolution = GraphicsTuning.resolutionPercent(profile)
-        val message = context.getString(
-            R.string.setting_graphics_benchmark_result,
-            result.score,
-            result.tier,
-            result.megapixelsPerSecond,
-            result.durationMs.toInt(),
-            result.glRenderer ?: ""
-        ) +
-            "\n" + context.getString(
-                R.string.setting_graphics_benchmark_current,
-                profile.gpuName,
-                CurrentRenderer.name(context)
-            ) +
-            "\n" + context.getString(R.string.setting_graphics_benchmark_resolution, resolution)
-        TipDialog.Builder(context)
-            .setTitle(R.string.setting_graphics_benchmark_title)
-            .setMessage(message)
-            .setConfirm(R.string.setting_graphics_benchmark_apply)
-            .setCancel(R.string.generic_close)
-            .setConfirmClickListener {
-                if (!canShowUi()) return@setConfirmClickListener
-                val uiContext = requireContext()
-                // Re-run the optimizer with the fresh score. It still respects any
-                // renderer/driver the user chose by hand.
-                AutoSettingsOptimizer.apply(uiContext)
-                android.widget.Toast.makeText(
-                    uiContext,
-                    R.string.setting_graphics_benchmark_applied,
-                    android.widget.Toast.LENGTH_SHORT
-                ).show()
-                updateBenchmarkValue()
-            }
-            .showDialog()
+        // Optimization-scoped benchmark: measures frame-pacing jitter and turns only the
+        // toggles on this page - it no longer shares the graphics score or rewrites
+        // renderer/resolution settings.
+        BenchmarkRow.bind(
+            this, BenchmarkRow.Scope.OPTIMIZATION,
+            binding.graphicsBenchmarkLayout, binding.graphicsBenchmarkValue
+        )
     }
 
     override fun slideIn(animPlayer: AnimPlayer) {

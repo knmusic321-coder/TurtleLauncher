@@ -106,6 +106,12 @@ class AllSettings {
          */
         @JvmStatic val lastGraphicsBenchmark    = StringSettingUnit("lastGraphicsBenchmark", "")
 
+        /** CPU/memory probe from the Phone settings benchmark, stored as "score|timestampMs". */
+        @JvmStatic val lastDeviceBenchmark      = StringSettingUnit("lastDeviceBenchmark", "")
+
+        /** Frame-pacing probe from the Optimization benchmark, stored as "score|timestampMs". */
+        @JvmStatic val lastOptimizationBenchmark = StringSettingUnit("lastOptimizationBenchmark", "")
+
         // ── Control ───────────────────────────────────────────────────────────
         @JvmStatic val disableGestures          = BooleanSettingUnit("disableGestures", true)
         @JvmStatic val disableDoubleTap         = BooleanSettingUnit("disableDoubleTap", false)
@@ -385,6 +391,9 @@ class AllSettings {
         @JvmStatic val noticeDefault            = BooleanSettingUnit("noticeDefault", false)
 
         @JvmStatic val whatsNewShownVersion     = StringSettingUnit("whatsNewShownVersion", "")
+
+        /** Version whose in-game change notice has already been shown. */
+        @JvmStatic val inGameNoticeShownVersion = StringSettingUnit("inGameNoticeShownVersion", "")
 
         @JvmStatic val buttonSnapping           = BooleanSettingUnit("buttonSnapping", true)
         @JvmStatic val buttonSnappingDistance   = IntSettingUnit("buttonSnappingDistance", 8)

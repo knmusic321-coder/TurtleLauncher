@@ -75,6 +75,11 @@ public class JavaGUILauncherActivity extends BaseActivity implements View.OnTouc
         binding = ActivityJavaGuiLauncherBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Entering the game: tell the player what this version fixed/changed and where the
+        // new features live. Shown once per version, after the game window is up.
+        binding.getRoot().postDelayed(() ->
+                com.endiq.turtlelauncher.feature.notice.GameChangeNotice.showIfNeeded(this), 700L);
+
         try {
             File latestLogFile = new File(PathManager.DIR_GAME_HOME, "latestlog.txt");
             if (!latestLogFile.exists() && !latestLogFile.createNewFile())

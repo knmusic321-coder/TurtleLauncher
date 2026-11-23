@@ -153,32 +153,113 @@ object AutoSettingsOptimizer {
             Logging.i(TAG, "Capping FPS-boost profile regardless of RAM tier (thermal severe=$severelyThrottled, batterySaver=$powerSaving)")
         }
 
-        val previous = AllSettings.lastAutoPerformanceProfile.getValue().split(';')
-            .mapNotNull { entry ->
-                if ('=' !in entry) null else entry.substringBefore('=') to entry.substringAfter('=')
-            }.toMap().toMutableMap()
-        fun <T> tune(setting: com.endiq.turtlelauncher.setting.unit.AbstractSettingUnit<T>, value: T) {
-            val current = setting.getValue().toString()
-            if (PerformancePolicy.mayAutoTune(current, previous[setting.key], setting.defaultValue.toString())) {
-                if (current != value.toString()) setting.put(value).save()
-                previous[setting.key] = value.toString()
-            }
-        }
+        val auto = AutoProfile()
         // Resolution now comes from the shared graphics policy: benchmark score when it
         // has been run, RAM tier otherwise, minus penalties for large/high-refresh
         // displays. Still clamped to the same 60..100% range as before.
-        tune(AllSettings.resolutionRatio, GraphicsTuning.resolutionPercent(profile))
+        auto.tune(AllSettings.resolutionRatio, GraphicsTuning.resolutionPercent(profile))
         // Never equate a large RAM capacity with permission to uncap the GPU or pre-touch
         // a large heap. These features remain available as explicit user choices.
-        tune(AllSettings.unlimitedFps, false)
-        tune(AllSettings.lowLatencyRendering, false)
-        tune(AllSettings.framePacing, false)
-        tune(AllSettings.adaptiveFrameTiming, true)
-        val snapshot = previous.entries.sortedBy { it.key }.joinToString(";") { "${it.key}=${it.value}" }
-        if (AllSettings.lastAutoPerformanceProfile.getValue() != snapshot) {
-            AllSettings.lastAutoPerformanceProfile.put(snapshot).save()
-        }
+        auto.tune(AllSettings.unlimitedFps, false)
+        auto.tune(AllSettings.lowLatencyRendering, false)
+        auto.tune(AllSettings.framePacing, false)
+        auto.tune(AllSettings.adaptiveFrameTiming, true)
+        auto.save()
         Logging.i(TAG, "Sustainable auto profile: RAM=${appliedRam}MB, thermal capped=$throttled; manual overrides preserved")
+    }
+
+    // ── Per-section recommendations ──────────────────────────────────────────
+
+    /**
+     * Graphics & renderer benchmark result: picks the renderer/driver and the render
+     * resolution only. Phone/RAM/optimization flags are deliberately left alone - those
+     * screens own their own benchmark rows.
+     */
+    fun applyGraphicsRecommendation(context: Context, mcVersionId: String = "") {
+        val profile = buildProfile(context, mcVersionId)
+        applyGraphics(context, profile)
+        val auto = AutoProfile()
+        auto.tune(AllSettings.resolutionRatio, GraphicsTuning.resolutionPercent(profile))
+        auto.save()
+    }
+
+    /**
+     * Phone settings benchmark result: hands the measured core count and RAM figure to the
+     * settings on that page. Renderer, resolution and frame-pacing toggles are untouched.
+     */
+    fun applyPhoneRecommendation(
+        context: Context,
+        result: com.endiq.turtlelauncher.feature.benchmark.DeviceBenchmark.Result
+    ) {
+        if (result.failed) return
+        val bestRam = presetAdjustedRam(context, LauncherPreferences.findBestRAMAllocation(context))
+        val currentRam = AllSettings.ramAllocation.value.getValue()
+        val lastAutoRam = AllSettings.lastAutoRamAllocation.getValue()
+        if (lastAutoRam == -1 || currentRam == lastAutoRam) {
+            AllSettings.ramAllocation.value.put(bestRam).save()
+            AllSettings.lastAutoRamAllocation.put(bestRam).save()
+        } else {
+            Logging.i(TAG, "Skipping RAM auto-tune: user manually set ${currentRam}MB (last auto pick was ${lastAutoRam}MB)")
+        }
+        val auto = AutoProfile()
+        auto.tune(AllSettings.autoRamCalculator, true)
+        auto.tune(AllSettings.autoDetectCores, false)
+        auto.tune(AllSettings.manualCoreOverride, true)
+        auto.tune(AllSettings.manualCoreCount, result.suggestedCores)
+        auto.save()
+        Logging.i(TAG, "Phone recommendation applied: ${result.suggestedCores} cores, ${bestRam}MB RAM")
+    }
+
+    /**
+     * Optimization benchmark result: turns the toggles on the Optimization page according to
+     * the measured frame-pacing jitter. Graphics, renderer and memory-allocation settings are
+     * not part of this scope.
+     */
+    fun applyOptimizationRecommendation(
+        context: Context,
+        result: com.endiq.turtlelauncher.feature.benchmark.OptimizationBenchmark.Result
+    ) {
+        if (result.failed) return
+        val stable = result.tier == com.endiq.turtlelauncher.feature.benchmark.OptimizationBenchmark.Tier.STABLE
+        val unstable = result.tier == com.endiq.turtlelauncher.feature.benchmark.OptimizationBenchmark.Tier.UNSTABLE
+        val auto = AutoProfile()
+        auto.tune(AllSettings.lowLatencyRendering, stable)
+        auto.tune(AllSettings.framePacing, !stable)
+        auto.tune(AllSettings.frameSkipping, unstable)
+        auto.tune(AllSettings.adaptiveFrameTiming, true)
+        auto.tune(AllSettings.autoMemoryCleanup, unstable)
+        auto.tune(AllSettings.rendererShaderCacheEnabled, true)
+        auto.tune(AllSettings.unlimitedFps, false)
+        auto.save()
+        Logging.i(TAG, "Optimization recommendation applied for tier ${result.tier}")
+    }
+
+    /**
+     * Writes the values this launcher tuned automatically, and only those: a setting whose
+     * current value differs from the last automatic pick stays untouched (manual choice).
+     */
+    private class AutoProfile {
+        private val entries: MutableMap<String, String> = AllSettings.lastAutoPerformanceProfile.getValue()
+            .split(';')
+            .mapNotNull { entry ->
+                if ('=' !in entry) null else entry.substringBefore('=') to entry.substringAfter('=')
+            }
+            .toMap().toMutableMap()
+
+        fun <T> tune(setting: com.endiq.turtlelauncher.setting.unit.AbstractSettingUnit<T>, value: T) {
+            val current = setting.getValue().toString()
+            if (PerformancePolicy.mayAutoTune(current, entries[setting.key], setting.defaultValue.toString())) {
+                if (current != value.toString()) setting.put(value).save()
+                entries[setting.key] = value.toString()
+            }
+        }
+
+        fun save() {
+            val snapshot = entries.entries.sortedBy { it.key }.joinToString(";") { "${it.key}=${it.value}" }
+            if (AllSettings.lastAutoPerformanceProfile.getValue() != snapshot) {
+                AllSettings.lastAutoPerformanceProfile.put(snapshot).save()
+            }
+        }
     }
 
     private fun presetAdjustedRam(context: Context, baseline: Int): Int {

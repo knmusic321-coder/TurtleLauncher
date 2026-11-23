@@ -141,8 +141,12 @@ class PhoneSettingsFragment : AbstractSettingsFragment(R.layout.settings_fragmen
         SwitchSettingsWrapper(context, AllSettings.reducedJniCalls, binding.reducedJniCallsLayout, binding.reducedJniCalls)
 
         // ── Device benchmark ────────────────────────────────────────────────
+        // Measures CPU/RAM and adjusts only the CPU-core and memory settings on this page.
         com.endiq.turtlelauncher.feature.benchmark.BenchmarkRow.bind(
-            this, binding.deviceBenchmarkLayout, binding.deviceBenchmarkValue
+            this,
+            com.endiq.turtlelauncher.feature.benchmark.BenchmarkRow.Scope.DEVICE,
+            binding.deviceBenchmarkLayout,
+            binding.deviceBenchmarkValue
         )
 
         computeVisibility()

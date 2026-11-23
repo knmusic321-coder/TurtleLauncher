@@ -135,7 +135,7 @@
     <string name="setting_renderer_debug_logging_desc">Log renderer selection and environment variables to the in-app log, for diagnosing a renderer that won\'t start.</string>
     <!-- Graphics benchmark (Optimization settings) -->
     <string name="setting_graphics_benchmark_title">Graphics benchmark</string>
-    <string name="setting_graphics_benchmark_desc">Measures how fast this GPU fills the screen, then uses the score to pick a safer render resolution. Takes about two seconds.</string>
+    <string name="setting_graphics_benchmark_desc">Measures how fast this GPU fills the screen, then adjusts only the graphics settings on this page: renderer, driver and render resolution. Takes about two seconds.</string>
     <string name="setting_graphics_benchmark_not_run">Not run yet</string>
     <string name="setting_graphics_benchmark_running">Benchmarking…</string>
     <string name="setting_graphics_benchmark_result">Score %1$d (%2$s)\n%3$d megapixels/s, %4$d ms\n%5$s</string>
@@ -144,6 +144,25 @@
     <string name="setting_graphics_benchmark_applied">Recommendation applied. Launch the game to see it.</string>
     <string name="setting_graphics_benchmark_current">GPU: %1$s | Renderer: %2$s</string>
     <string name="setting_graphics_benchmark_resolution">Recommended render resolution: %1$d%%</string>
+
+    <!-- Phone settings benchmark (CPU/RAM only) -->
+    <string name="setting_device_benchmark_current">%1$d cores · CPU %2$d · %3$s RAM</string>
+    <string name="setting_device_benchmark_result">CPU: %1$d single-core · %2$d multi-core (%3$s)\n%4$d cores · %5$s total RAM · %6$s free</string>
+    <string name="setting_device_benchmark_recommendation">Recommended for the game: %1$d cores</string>
+    <string name="setting_device_benchmark_apply">Apply to phone settings</string>
+    <string name="setting_device_benchmark_applied">CPU and memory settings updated. Only this page was changed.</string>
+
+    <!-- Optimization benchmark (frame pacing only) -->
+    <string name="setting_optimization_benchmark_title">Frame-pacing benchmark</string>
+    <string name="setting_optimization_benchmark_desc">Measures how evenly frames are delivered, then turns only the toggles on this page (frame pacing, adaptive timing, frame skipping, latency). Takes about a second.</string>
+    <string name="setting_optimization_benchmark_current">Stability %1$d/100 · %2$s</string>
+    <string name="setting_optimization_benchmark_result">Stability %1$d/100 (%2$s)\nAverage frame %3$.2f ms · worst %4$.2f ms · jitter %5$.1f%%\n≈ %6$d FPS</string>
+    <string name="setting_optimization_benchmark_apply">Apply to optimization</string>
+    <string name="setting_optimization_benchmark_applied">Optimization toggles updated. Only this page was changed.</string>
+    <string name="setting_benchmark_tier_stable">stable</string>
+    <string name="setting_benchmark_tier_moderate">moderate</string>
+    <string name="setting_benchmark_tier_unstable">unstable</string>
+    <string name="setting_benchmark_tier_unavailable">unavailable</string>
     <string name="setting_jni_batching_title">JNI Batching</string>
     <string name="setting_jni_batching_desc">Batches GL calls together instead of dispatching each one across the JNI boundary immediately (GL4ES-family renderers only).</string>
     <string name="setting_jni_cached_references_title">Cached JNI References</string>
@@ -478,7 +497,7 @@
     <string name="custom_background_video_failed">Could not add the video: %1$s</string>
     <string name="setting_category_phone_benchmark">Device benchmark</string>
     <string name="setting_device_benchmark_title">Measure device performance</string>
-    <string name="setting_device_benchmark_desc">Runs a two-second GPU test and reads the CPU/RAM figures, so you can see the tier this phone is in before tuning settings.</string>
+    <string name="setting_device_benchmark_desc">Measures this phone's CPU throughput and memory, then tunes only the CPU-core and RAM settings on this page. Graphics settings are not touched.</string>
     <!-- File -->
     <string name="file_folder_dialog_insert_name">Insert folder name</string>
     <string name="file_create_folder">Create folder</string>
@@ -1414,13 +1433,34 @@
     <string name="music_delete_track">Remove</string>
 
     <string name="whats_new_title">🐢 What\'s New in TurtleLauncher</string>
-    <string name="whats_new_version">v3.1</string>
+    <string name="whats_new_version">v5</string>
     <string name="whats_new_feature_1">🎭 Emotes: dependencies install themselves</string>
     <string name="whats_new_feature_1_desc">Installing the Emotecraft mod now automatically fetches its required Player Animation Library dependency (read straight from the mod\'s own metadata), so the game no longer crashes on launch with a missing-dependency error.</string>
     <string name="whats_new_feature_2">📜 Game logs are finally saved</string>
     <string name="whats_new_feature_2_desc">The game\'s own output — mod loaders, console messages, crash traces — is captured into the launcher log, and the Assistant can read it when you ask why the game crashed.</string>
     <string name="whats_new_feature_3">📤 Share logs straight into the Assistant</string>
     <string name="whats_new_feature_3_desc">Turtle Launcher now appears in Android\'s share menu. Share any game log (file or text) from any app and the Assistant analyzes it on the spot — no copy-paste.</string>
+    <!-- In-game change notice -->
+    <string name="game_notice_title">🐢 What changed in this update</string>
+    <string name="game_notice_close">Got it</string>
+    <string name="game_notice_fixed_header">Fixed and changed</string>
+    <string name="game_notice_new_header">New features and where to find them</string>
+
+    <string name="game_notice_item_1_title">Benchmarks now belong to their own section</string>
+    <string name="game_notice_item_1_desc">Each screen measures and tunes only itself: Graphics &amp; renderer (renderer, driver, resolution), Phone settings (CPU cores, RAM) and Optimization (frame pacing, latency). Running one no longer changes another section.</string>
+    <string name="game_notice_item_2_title">Transparency can go all the way down</string>
+    <string name="game_notice_item_2_desc">Page transparency now reaches 0% instead of stopping at 50%. Text, sliders and switches stay fully sharp at every level — Settings → Launcher.</string>
+    <string name="game_notice_item_3_title">Launcher logo button removed</string>
+    <string name="game_notice_item_3_desc">The logo quick action is gone from the home screen\'s Dynamic Island, so the quick-action row has one button fewer.</string>
+    <string name="game_notice_item_4_title">Home screen cleaned up</string>
+    <string name="game_notice_item_4_desc">Today\'s stats, Friends/LAN, Community and Last game log cards were removed from the home screen. LAN is still reachable from the Friends screen.</string>
+    <string name="game_notice_item_5_title">Video wallpaper with sound</string>
+    <string name="game_notice_item_5_desc">New: pick a video as the background, with the video\'s own audio and a loop switch — Settings → Custom background (Main menu tab).</string>
+    <string name="game_notice_item_6_title">Smoother animations</string>
+    <string name="game_notice_item_6_desc">Transitions and motion effects are calmer and faster; adjust the speed in Settings → Launcher → Animation.</string>
+    <string name="game_notice_item_7_title">Version names now count up</string>
+    <string name="game_notice_item_7_desc">Every feature update bumps the name: v1, v2, … and this build is v5. You can check it in Settings → About.</string>
+
     <string name="whats_new_warning">🧩 Renderer plugin apps (e.g. MobileGlues) show up in the renderer list right after you install them — no restart needed — and their supported Minecraft version range is honored like any built-in renderer.</string>
 
     <string name="preset_pvp_title">PvP Preset</string>

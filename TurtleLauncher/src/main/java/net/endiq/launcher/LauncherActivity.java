@@ -402,9 +402,6 @@ public class LauncherActivity extends BaseActivity {
         // actually being set, so this is a no-op otherwise.
         com.endiq.turtlelauncher.feature.music.MusicManager.INSTANCE.onLauncherStarted();
 
-        // Show What's New dialog on first launch of this version
-        //showWhatsNewIfNeeded();
-
         mRequestNotificationPermissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),
                 isAllowed -> {
@@ -966,12 +963,4 @@ public class LauncherActivity extends BaseActivity {
         com.endiq.turtlelauncher.utils.anim.PageTransparency.apply(binding.containerFragment, pageOpacity);
     }
 
-    private void showWhatsNewIfNeeded() {
-        final String CURRENT_VERSION = "v7.0";
-        String shownVersion = AllSettings.getWhatsNewShownVersion().getValue();
-        if (!CURRENT_VERSION.equals(shownVersion)) {
-            AllSettings.getWhatsNewShownVersion().put(CURRENT_VERSION).save();
-            new com.endiq.turtlelauncher.ui.dialog.WhatsNewDialog(this).show();
-        }
-    }
 }

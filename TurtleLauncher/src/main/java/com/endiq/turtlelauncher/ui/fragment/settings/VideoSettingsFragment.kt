@@ -176,8 +176,12 @@ class VideoSettingsFragment : AbstractSettingsFragment(R.layout.settings_fragmen
         binding.driverDownload.setOnClickListener { ZHTools.openLink(context, UrlManager.URL_FCL_DRIVER_PLUGIN) }
 
         // Benchmark lives next to the renderer and driver choice it is meant to evaluate.
+        // Its scope is graphics only: it never touches phone or optimization settings.
         com.endiq.turtlelauncher.feature.benchmark.BenchmarkRow.bind(
-            this, binding.graphicsBenchmarkLayout, binding.graphicsBenchmarkValue
+            this,
+            com.endiq.turtlelauncher.feature.benchmark.BenchmarkRow.Scope.GRAPHICS,
+            binding.graphicsBenchmarkLayout,
+            binding.graphicsBenchmarkValue
         )
 
         // ── Notch ─────────────────────────────────────────────────────────────
@@ -271,7 +275,6 @@ class VideoSettingsFragment : AbstractSettingsFragment(R.layout.settings_fragmen
         SwitchSettingsWrapper(context, AllSettings.autoSettingsOptimizer,
             binding.autoSettingsOptimizerLayout, binding.autoSettingsOptimizer)
 
-        com.endiq.turtlelauncher.feature.benchmark.BenchmarkRow.refresh(this, binding.graphicsBenchmarkValue)
         changeResolutionRatioPreview(AllSettings.resolutionRatio.getValue())
         computeVisibility()
     }
