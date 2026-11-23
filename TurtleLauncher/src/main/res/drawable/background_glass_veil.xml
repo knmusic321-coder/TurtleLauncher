@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Fine frosted sheet laid over the wallpaper/video when the glass effect is on.
-     Kept intentionally faint: it should read as light passing through glass, not as a
-     grey wash over the picture. -->
+<!-- Frosted sheet laid over the wallpaper/video when the glass effect is on.
+
+     Real frosted glass scatters light, so the sheet is a soft white gradient that is
+     strongest at the top (where the island and headers sit) and fades out towards the
+     bottom, instead of a flat grey wash. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <gradient
         android:angle="270"
-        android:endColor="#00FFFFFF"
-        android:startColor="#1AFFFFFF"
+        android:centerColor="#14FFFFFF"
+        android:endColor="#05FFFFFF"
+        android:startColor="#2EFFFFFF"
         android:type="linear" />
 </shape>

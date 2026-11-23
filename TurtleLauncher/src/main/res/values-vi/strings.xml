@@ -1370,7 +1370,7 @@
     <string name="discord_rpc_preview_button_hidden">bị ẩn - cần cả nhãn và liên kết hợp lệ</string>
     <string name="music_delete_track">Gỡ bỏ</string>
     <string name="whats_new_title">🐢 Có gì mới trong TurtleLauncher</string>
-    <string name="whats_new_version">v6</string>
+    <string name="whats_new_version">v7</string>
     <string name="whats_new_feature_1">🎭 Emote: phụ thuộc tự cài đặt</string>
     <string name="whats_new_feature_1_desc">Khi cài mod Emotecraft, trình khởi chạy tự tải phụ thuộc Player Animation Library bắt buộc (đọc trực tiếp từ siêu dữ liệu của mod), nên game không còn bị sự cố lúc chạy vì thiếu phụ thuộc.</string>
     <string name="whats_new_feature_2">📜 Nhật ký game đã được lưu lại</string>
@@ -1383,20 +1383,20 @@
     <string name="game_notice_fixed_header">Đã sửa và đã thay đổi</string>
     <string name="game_notice_new_header">Tính năng mới và nằm ở đâu</string>
 
-    <string name="game_notice_item_1_title">Nền video không còn bị tối</string>
-    <string name="game_notice_item_1_desc">Video nền và ảnh nền giờ hiện đúng độ sáng. Các bảng đen ở trang chủ và các trang cài đặt đã được làm trong suốt nên video không còn bị che nữa.</string>
-    <string name="game_notice_item_2_title">Độ trong suốt 0% đã đúng nghĩa 0%</string>
-    <string name="game_notice_item_2_desc">Kéo xuống 0% là mọi bảng, thẻ và nền trang biến mất hoàn toàn, chỉ còn nội dung và video nền. Ở 100% mọi thứ vẫn đậm như cũ.</string>
-    <string name="game_notice_item_3_title">Benchmark Tối ưu hóa bật tắt đủ mọi mục</string>
-    <string name="game_notice_item_3_desc">Chạy benchmark ở trang Tối ưu hóa giờ chỉnh hết các công tắc của trang: FPS không giới hạn, độ trễ thấp, frame pacing, bỏ khung hình, thời gian khung hình thích ứng, dọn bộ nhớ tự động, bộ nhớ đệm shader và nhật ký gỡ lỗi.</string>
-    <string name="game_notice_item_4_title">Benchmark Cài đặt điện thoại chỉnh đủ CPU, RAM và JNI</string>
-    <string name="game_notice_item_4_desc">Chạy benchmark ở Cài đặt điện thoại giờ đặt số nhân CPU, mức RAM, preset RAM, giám sát áp lực bộ nhớ, heap bằng nhau và toàn bộ công tắc JNI theo đúng điểm đo được.</string>
-    <string name="game_notice_item_5_title">Hiệu ứng kính mờ (mới)</string>
-    <string name="game_notice_item_5_desc">Nền được làm mờ nhẹ và phủ một lớp kính mờ để thẻ, bảng nổi bật hơn. Nằm ở Cài đặt → Trình khởi chạy → Hiệu ứng kính mờ, bật tắt bất cứ lúc nào.</string>
-    <string name="game_notice_item_6_title">Giao diện gọn và mượt hơn (mới)</string>
-    <string name="game_notice_item_6_desc">Thẻ trong trang Cài đặt thấp và thoáng hơn, Dynamic Island mở/đóng bằng chuyển động mềm hơn, phản hồi nhấn giữ nguyên kiểu lò xo.</string>
-    <string name="game_notice_item_7_title">Tên phiên bản tăng dần: bản này là v6</string>
-    <string name="game_notice_item_7_desc">Mỗi lần có tính năng mới, tên phiên bản tăng thêm một bậc: v1, v2, ... và bản bạn đang dùng là v6. Xem ở Cài đặt → Giới thiệu.</string>
+    <string name="game_notice_item_1_title">Đã xoá hẳn các bảng đen</string>
+    <string name="game_notice_item_1_desc">Panel trái ở trang chủ và nền mọi trang Cài đặt không còn là khối đen đặc. Video nền chạy xuyên suốt phía sau giao diện và không bị che ở bất kỳ màn hình nào.</string>
+    <string name="game_notice_item_2_title">Kính mờ giờ đã hoạt động thật</string>
+    <string name="game_notice_item_2_desc">Trước đây lớp kính nằm dưới bảng đen nên không nhìn thấy gì. Giờ cả ảnh nền lẫn video nền đều được làm mờ (Android 12 trở lên) và phủ lớp kính trắng. Bật tắt ngay ở Cài đặt, Trình khởi chạy, Hiệu ứng kính mờ.</string>
+    <string name="game_notice_item_3_title">Toàn bộ giao diện chuyển sang kính trong suốt</string>
+    <string name="game_notice_item_3_desc">Thẻ, panel, ô tìm kiếm, chip biểu tượng và hộp thoại đều dùng mặt kính mờ có viền sáng thay cho các khối xám đặc. Giao diện khác hẳn bản gốc nhưng giữ nguyên mọi tính năng.</string>
+    <string name="game_notice_item_4_title">Nút Chạy game và điểm nhấn mới</string>
+    <string name="game_notice_item_4_desc">Nút Chạy game dùng dải màu chuyển sắc, chip biểu tượng trong Cài đặt phát sáng nhẹ theo màu chủ đạo, ảnh nền hiển thị rõ hơn thay vì bị làm tối.</string>
+    <string name="game_notice_item_5_title">Video nền sáng và liền mạch hơn</string>
+    <string name="game_notice_item_5_desc">Ảnh nền không còn lớp phủ tối thay thế khi chưa chọn hình, video hiện đúng độ sáng và vẫn chuyển cảnh mượt khi đổi nền.</string>
+    <string name="game_notice_item_6_title">Đầy đủ tính năng như cũ</string>
+    <string name="game_notice_item_6_desc">Không có màn hình hay công cụ nào bị lược bỏ: phiên bản, tài khoản, mod, bạn bè, ghi màn hình, benchmark, kính mờ và toàn bộ cài đặt vẫn còn nguyên.</string>
+    <string name="game_notice_item_7_title">Tên phiên bản: v7</string>
+    <string name="game_notice_item_7_desc">Mỗi bản có thay đổi lớn đều tăng một bậc: v1, v2, ... Bản bạn đang dùng là v7, xem ở Cài đặt, Giới thiệu.</string>
 
     <string name="whats_new_warning">🧩 Ứng dụng plugin trình kết xuất (ví dụ MobileGlues) hiện trong danh sách ngay sau khi bạn cài — không cần khởi động lại — và khoảng phiên bản Minecraft được hỗ trợ của nó được tôn trọng như mọi trình kết xuất tích hợp.</string>
     <string name="preset_pvp_title">Cấu hình PvP</string>
@@ -1726,5 +1726,5 @@
     <string name="social_redirect_hint">Phải khớp từng ký tự với một URI chuyển hướng đã đăng ký trên ứng dụng Discord (Developer Portal → OAuth2 → Redirects). Để trống để dùng mặc định.</string>
     <string name="social_scopes_hint">Các phạm vi OAuth2 cách nhau bằng dấu cách. Chỉ dùng identify, guilds và relationships.read - bot, applications.* và webhook.incoming cần bot token và sẽ tự bị loại. relationships.read cũng phải được Discord cấp cho ứng dụng thì danh sách bạn bè mới tải được. Để trống để dùng mặc định.</string>
     <string name="setting_glass_effect_title">Hiệu ứng kính mờ</string>
-    <string name="setting_glass_effect_desc">Làm mờ nhẹ ảnh nền và phủ một lớp kính mờ lên video để thẻ, bảng nổi bật hơn. Tắt để nền sắc nét.</string>
+    <string name="setting_glass_effect_desc">Làm mờ cả ảnh nền và video nền rồi phủ lớp kính trắng để thẻ, bảng nổi bật hơn. Tắt để nền sắc nét.</string>
 </resources>

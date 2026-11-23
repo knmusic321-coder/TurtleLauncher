@@ -11,7 +11,20 @@
     <color name="island_stroke_soft">#1FFFFFFF</color>
     <color name="island_divider">#1FFFFFFF</color>
     <color name="island_ripple">#33C7E8B0</color>
-    <color name="island_panel">#F2141613</color>
+    <color name="island_panel">#C4141613</color>
+
+    <!-- ── Glass surfaces ──────────────────────────────────────────── -->
+    <!-- Every card, panel and page surface is a translucent sheet instead of a solid
+         block, so the wallpaper/video always reads through the interface. Alpha is high
+         enough to keep text legible over a bright clip. -->
+    <color name="glass_surface">#CC10160F</color>
+    <color name="glass_surface_raised">#D91A231B</color>
+    <color name="glass_surface_soft">#A60B100C</color>
+    <color name="glass_stroke">#1FFFFFFF</color>
+    <color name="glass_chip">#33C7E8B0</color>
+    <color name="glass_pressed">#4DC7E8B0</color>
+    <color name="glass_page_top">#40090D0A</color>
+    <color name="glass_page_bottom">#99090D0A</color>
 
     <!-- ── Canonical palette ───────────────────────────────────────── -->
     <color name="palette_primary">#C7E8B0</color>

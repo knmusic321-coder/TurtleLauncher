@@ -839,7 +839,8 @@ public class LauncherActivity extends BaseActivity {
     /** Applies (or removes) the frosted-glass backdrop without recreating the activity. */
     private void applyGlassEffect() {
         if (binding == null) return;
-        com.endiq.turtlelauncher.utils.anim.GlassEffect.apply(binding.backgroundView, binding.glassVeil);
+        com.endiq.turtlelauncher.utils.anim.GlassEffect.apply(
+                binding.backgroundView, binding.backgroundVideo, binding.glassVeil);
     }
 
     @Subscribe()

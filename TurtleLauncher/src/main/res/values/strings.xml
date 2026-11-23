@@ -1433,7 +1433,7 @@
     <string name="music_delete_track">Remove</string>
 
     <string name="whats_new_title">🐢 What\'s New in TurtleLauncher</string>
-    <string name="whats_new_version">v6</string>
+    <string name="whats_new_version">v7</string>
     <string name="whats_new_feature_1">🎭 Emotes: dependencies install themselves</string>
     <string name="whats_new_feature_1_desc">Installing the Emotecraft mod now automatically fetches its required Player Animation Library dependency (read straight from the mod\'s own metadata), so the game no longer crashes on launch with a missing-dependency error.</string>
     <string name="whats_new_feature_2">📜 Game logs are finally saved</string>
@@ -1446,20 +1446,20 @@
     <string name="game_notice_fixed_header">Fixed and changed</string>
     <string name="game_notice_new_header">New features and where to find them</string>
 
-    <string name="game_notice_item_1_title">The video background is no longer dimmed</string>
-    <string name="game_notice_item_1_desc">The video and still wallpaper now play at full brightness. The black panels on the home screen and in settings are translucent, so they no longer hide the video.</string>
-    <string name="game_notice_item_2_title">0% transparency really means 0%</string>
-    <string name="game_notice_item_2_desc">At 0% every panel, card and page background disappears completely, leaving only the content and the background video. At 100% everything stays as dark as before.</string>
-    <string name="game_notice_item_3_title">The Optimization benchmark flips every switch on its page</string>
-    <string name="game_notice_item_3_desc">Running the benchmark on the Optimization page now sets all of that page\'s switches: unlimited FPS, low latency, frame pacing, frame skipping, adaptive frame timing, automatic memory cleanup, shader cache and debug logging.</string>
-    <string name="game_notice_item_4_title">The Phone settings benchmark tunes CPU, RAM and JNI</string>
-    <string name="game_notice_item_4_desc">The Phone settings benchmark now sets the CPU core count, RAM allocation, RAM preset, memory pressure monitor, equal heap sizes and every JNI switch from the measured score.</string>
-    <string name="game_notice_item_5_title">Glass effect (new)</string>
-    <string name="game_notice_item_5_desc">The wallpaper is softly blurred and a frosted sheet is laid over it so cards and panels stand out. Find it in Settings → Launcher → Glass effect; turn it on or off at any time.</string>
-    <string name="game_notice_item_6_title">A tidier, smoother interface (new)</string>
-    <string name="game_notice_item_6_desc">Settings cards are shorter and airier, the Dynamic Island opens and closes with softer motion, and press feedback keeps its spring feel.</string>
-    <string name="game_notice_item_7_title">Version names count up: this build is v6</string>
-    <string name="game_notice_item_7_desc">Every new feature bumps the name by one: v1, v2, ... and the build you are running is v6. Check it in Settings → About.</string>
+    <string name="game_notice_item_1_title">The black boards are gone</string>
+    <string name="game_notice_item_1_desc">The left panel on the home screen and the background of every Settings page are no longer solid black. The video runs edge to edge behind the interface on every screen.</string>
+    <string name="game_notice_item_2_title">The glass effect actually works now</string>
+    <string name="game_notice_item_2_desc">The frosted layer used to sit underneath the black board, so nothing could be seen. Both the wallpaper and the background video are now blurred on Android 12 and newer, with a white glass sheet on top. Toggle it in Settings, Launcher, Glass effect.</string>
+    <string name="game_notice_item_3_title">The whole interface moved to glass</string>
+    <string name="game_notice_item_3_desc">Cards, panels, the search field, icon chips and dialogs are all frosted panes with a highlight edge instead of flat grey blocks. A very different look from the original, with every feature kept.</string>
+    <string name="game_notice_item_4_title">A new launch button and accents</string>
+    <string name="game_notice_item_4_desc">Play uses a colour gradient, the Settings icon chips glow slightly in the accent colour, and wallpapers are shown clearly instead of being dimmed.</string>
+    <string name="game_notice_item_5_title">Brighter, smoother background video</string>
+    <string name="game_notice_item_5_desc">The dark placeholder behind the wallpaper is gone when no image is chosen, the video plays at full brightness, and switching backdrops still cross-fades smoothly.</string>
+    <string name="game_notice_item_6_title">Every feature is still here</string>
+    <string name="game_notice_item_6_desc">No screen or tool was removed: versions, accounts, mods, friends, recording, benchmarks, the glass effect and every setting are all intact.</string>
+    <string name="game_notice_item_7_title">Version name: v7</string>
+    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one: v1, v2, ... The build you are running is v7. Check it in Settings, About.</string>
 
     <string name="whats_new_warning">🧩 Renderer plugin apps (e.g. MobileGlues) show up in the renderer list right after you install them — no restart needed — and their supported Minecraft version range is honored like any built-in renderer.</string>
 

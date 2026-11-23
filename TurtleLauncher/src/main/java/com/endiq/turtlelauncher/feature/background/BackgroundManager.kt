@@ -2,7 +2,6 @@ package com.endiq.turtlelauncher.feature.background
 
 import android.content.Context
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.endiq.turtlelauncher.InfoDistributor
@@ -57,9 +56,9 @@ object BackgroundManager {
         callback: CallbackDrawableImageViewTarget.Callback? = null
     ) {
         Glide.with(backgroundView).clear(backgroundView)
-        backgroundView.setImageDrawable(
-            ContextCompat.getDrawable(context, R.color.background_app)
-        )
+        // No dark placeholder: an opaque fill here was a second black layer over the video
+        // whenever no still wallpaper had been chosen. Nothing is drawn unless an image is.
+        backgroundView.setImageDrawable(null)
 
         val backgroundImage = getBackgroundModel(backgroundType) ?: run {
             callback?.callback(false)

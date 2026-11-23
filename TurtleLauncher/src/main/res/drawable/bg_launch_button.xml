@@ -2,13 +2,20 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/miuix_primary_variant" />
+            <gradient
+                android:angle="0"
+                android:endColor="@color/palette_secondary"
+                android:startColor="@color/palette_primary" />
             <corners android:radius="@dimen/radius_pill" />
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="@color/miuix_primary" />
+            <gradient
+                android:angle="0"
+                android:centerColor="@color/accent_primary"
+                android:endColor="@color/palette_secondary"
+                android:startColor="#E8F5DC" />
             <corners android:radius="@dimen/radius_pill" />
         </shape>
     </item>

@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:alpha="0.18"/>
+        android:alpha="0.9"/>
 
     <!-- Optional looping background video (with its own audio), drawn above the still
          wallpaper and below the launcher UI. Hidden unless a video was chosen in
