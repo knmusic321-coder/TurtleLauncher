@@ -81,7 +81,7 @@ object BenchmarkRow {
         }
     }
 
-    private fun optimizationTierLabel(fragment: Fragment, score: Int): String = fragment.getString(
+    private fun optimizationTierLabel(context: android.content.Context, score: Int): String = context.getString(
         when {
             score >= 92 -> R.string.setting_benchmark_tier_stable
             score >= 80 -> R.string.setting_benchmark_tier_moderate

@@ -85,7 +85,7 @@ class GameChangeNoticeDialog(context: Context, private val version: String) :
     }
 
     private fun dp(value: Int): Int =
-        (value * resources.displayMetrics.density + 0.5f).toInt()
+        (value * context.resources.displayMetrics.density + 0.5f).toInt()
 
     override fun onInit(): Window? = window
 }
