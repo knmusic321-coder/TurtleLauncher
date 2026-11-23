@@ -67,6 +67,23 @@ class OptimizationSettingsFragment : AbstractSettingsFragment(R.layout.settings_
         )
     }
 
+    /**
+     * The Optimization benchmark writes these switches directly, so the page has to read
+     * them back - otherwise the cards would still show the pre-benchmark state.
+     */
+    override fun onChange() {
+        super.onChange()
+        if (!::binding.isInitialized || !isAdded) return
+        binding.unlimitedFps.isChecked = AllSettings.unlimitedFps.getValue()
+        binding.lowLatencyRendering.isChecked = AllSettings.lowLatencyRendering.getValue()
+        binding.framePacing.isChecked = AllSettings.framePacing.getValue()
+        binding.frameSkipping.isChecked = AllSettings.frameSkipping.getValue()
+        binding.adaptiveFrameTiming.isChecked = AllSettings.adaptiveFrameTiming.getValue()
+        binding.autoMemoryCleanup.isChecked = AllSettings.autoMemoryCleanup.getValue()
+        binding.rendererShaderCache.isChecked = AllSettings.rendererShaderCacheEnabled.getValue()
+        binding.rendererDebugLogging.isChecked = AllSettings.rendererDebugLogging.getValue()
+    }
+
     override fun slideIn(animPlayer: AnimPlayer) {
         animPlayer.apply(AnimPlayer.Entry(binding.root, TurtleTransitions.enter()))
     }

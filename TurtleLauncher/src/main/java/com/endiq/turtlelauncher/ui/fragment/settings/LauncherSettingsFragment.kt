@@ -223,6 +223,19 @@ class LauncherSettingsFragment() : AbstractSettingsFragment(R.layout.settings_fr
             EventBus.getDefault().post(PageOpacityChangeEvent(it))
         }
 
+        // Frosted glass: applies live, no application restart needed.
+        SwitchSettingsWrapper(
+            context,
+            AllSettings.glassEffect,
+            binding.glassEffectLayout,
+            binding.glassEffect
+        ).setOnCheckedChangeListener { _, _, save ->
+            save.onSave()
+            EventBus.getDefault().post(
+                com.endiq.turtlelauncher.event.value.GlassEffectChangeEvent()
+            )
+        }
+
         SwitchSettingsWrapper(
             context,
             AllSettings.enableLogOutput,

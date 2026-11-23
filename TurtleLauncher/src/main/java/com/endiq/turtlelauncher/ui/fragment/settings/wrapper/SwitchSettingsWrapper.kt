@@ -31,6 +31,12 @@ class SwitchSettingsWrapper(
         }
     }
 
+    /** Pulls the stored value back into the switch, e.g. after a benchmark applied it. */
+    fun refresh() {
+        val stored = unit.getValue()
+        if (switchView.isChecked != stored) switchView.isChecked = stored
+    }
+
     fun setOnCheckedChangeListener(listener: OnCheckedChangeListener): SwitchSettingsWrapper {
         this.listener = listener
         return this

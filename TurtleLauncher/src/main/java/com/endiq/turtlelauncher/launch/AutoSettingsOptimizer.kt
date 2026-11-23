@@ -178,7 +178,7 @@ object AutoSettingsOptimizer {
     fun applyGraphicsRecommendation(context: Context, mcVersionId: String = "") {
         val profile = buildProfile(context, mcVersionId)
         applyGraphics(context, profile)
-        val auto = AutoProfile()
+        val auto = AutoProfile(force = true)
         auto.tune(AllSettings.resolutionRatio, GraphicsTuning.resolutionPercent(profile))
         auto.save()
     }
@@ -192,22 +192,44 @@ object AutoSettingsOptimizer {
         result: com.endiq.turtlelauncher.feature.benchmark.DeviceBenchmark.Result
     ) {
         if (result.failed) return
-        val bestRam = presetAdjustedRam(context, LauncherPreferences.findBestRAMAllocation(context))
-        val currentRam = AllSettings.ramAllocation.value.getValue()
-        val lastAutoRam = AllSettings.lastAutoRamAllocation.getValue()
-        if (lastAutoRam == -1 || currentRam == lastAutoRam) {
-            AllSettings.ramAllocation.value.put(bestRam).save()
-            AllSettings.lastAutoRamAllocation.put(bestRam).save()
-        } else {
-            Logging.i(TAG, "Skipping RAM auto-tune: user manually set ${currentRam}MB (last auto pick was ${lastAutoRam}MB)")
-        }
-        val auto = AutoProfile()
-        auto.tune(AllSettings.autoRamCalculator, true)
+
+        // The benchmark was run on purpose and the user pressed "apply", so this is the one
+        // moment where the measured values are allowed to win over older manual choices: the
+        // whole Phone settings page (cores, memory, JNI) follows the score it just measured.
+        val high = result.multiThreadScore >= 1200
+        val mid = result.multiThreadScore >= 400
+        val lowMemory = result.totalRamBytes > 0 &&
+            result.freeRamBytes.toDouble() / result.totalRamBytes.toDouble() < 0.25
+
+        val auto = AutoProfile(force = true)
+        // CPU
         auto.tune(AllSettings.autoDetectCores, false)
         auto.tune(AllSettings.manualCoreOverride, true)
         auto.tune(AllSettings.manualCoreCount, result.suggestedCores)
+        auto.tune(AllSettings.perInstanceCpuOverride, false)
+        auto.tune(AllSettings.advancedCpuTuning, true)
+        auto.tune(AllSettings.bigCoreAffinity, result.suggestedCores < result.cores)
+        auto.tune(AllSettings.schedulerTuning, high || mid)
+        // Memory
+        auto.tune(AllSettings.autoRamCalculator, true)
+        auto.tune(AllSettings.equalHeapSizes, true)
+        auto.tune(AllSettings.ramPreset, if (high) "high" else if (mid) "balanced" else "low")
+        auto.tune(AllSettings.memoryPressureMonitor, lowMemory)
+        auto.tune(AllSettings.gcStatistics, false)
+        // JNI
+        auto.tune(AllSettings.jniBatching, true)
+        auto.tune(AllSettings.jniCachedReferences, true)
+        auto.tune(AllSettings.nativeObjectPooling, high)
+        auto.tune(AllSettings.reducedJniCalls, high)
         auto.save()
-        Logging.i(TAG, "Phone recommendation applied: ${result.suggestedCores} cores, ${bestRam}MB RAM")
+
+        // RAM itself is stored outside AutoProfile because its "manual override" marker lives
+        // in lastAutoRamAllocation rather than in the tuning snapshot.
+        val bestRam = presetAdjustedRam(context, LauncherPreferences.findBestRAMAllocation(context))
+        AllSettings.ramAllocation.value.put(bestRam).save()
+        AllSettings.lastAutoRamAllocation.put(bestRam).save()
+
+        Logging.i(TAG, "Phone recommendation applied: ${result.suggestedCores} cores, ${bestRam}MB RAM, tier=${result.tier}")
     }
 
     /**
@@ -222,23 +244,36 @@ object AutoSettingsOptimizer {
         if (result.failed) return
         val stable = result.tier == com.endiq.turtlelauncher.feature.benchmark.OptimizationBenchmark.Tier.STABLE
         val unstable = result.tier == com.endiq.turtlelauncher.feature.benchmark.OptimizationBenchmark.Tier.UNSTABLE
-        val auto = AutoProfile()
+        val unavailable = result.tier == com.endiq.turtlelauncher.feature.benchmark.OptimizationBenchmark.Tier.UNAVAILABLE
+
+        // Explicit apply: every switch on the Optimization page is written, so the page and
+        // the score can never disagree. Frame pacing is the only switch whose value is
+        // derived purely from the jitter measurement; unlimited FPS stays off because
+        // uncapping the GPU is never a safe automatic choice.
+        val auto = AutoProfile(force = true)
+        auto.tune(AllSettings.unlimitedFps, false)
         auto.tune(AllSettings.lowLatencyRendering, stable)
         auto.tune(AllSettings.framePacing, !stable)
         auto.tune(AllSettings.frameSkipping, unstable)
-        auto.tune(AllSettings.adaptiveFrameTiming, true)
+        auto.tune(AllSettings.adaptiveFrameTiming, !unstable)
         auto.tune(AllSettings.autoMemoryCleanup, unstable)
-        auto.tune(AllSettings.rendererShaderCacheEnabled, true)
-        auto.tune(AllSettings.unlimitedFps, false)
+        auto.tune(AllSettings.rendererShaderCacheEnabled, !unavailable)
+        auto.tune(AllSettings.rendererDebugLogging, false)
         auto.save()
-        Logging.i(TAG, "Optimization recommendation applied for tier ${result.tier}")
+        Logging.i(TAG, "Optimization recommendation applied for tier ${result.tier} (force)")
     }
 
     /**
      * Writes the values this launcher tuned automatically, and only those: a setting whose
      * current value differs from the last automatic pick stays untouched (manual choice).
      */
-    private class AutoProfile {
+    private class AutoProfile(
+        /**
+         * True only for an explicit "apply" from a benchmark result dialog: that press is
+         * the user asking for the measured values, so they win over older manual picks.
+         */
+        private val force: Boolean = false
+    ) {
         private val entries: MutableMap<String, String> = AllSettings.lastAutoPerformanceProfile.getValue()
             .split(';')
             .mapNotNull { entry ->
@@ -248,7 +283,10 @@ object AutoSettingsOptimizer {
 
         fun <T> tune(setting: com.endiq.turtlelauncher.setting.unit.AbstractSettingUnit<T>, value: T) {
             val current = setting.getValue().toString()
-            if (PerformancePolicy.mayAutoTune(current, entries[setting.key], setting.defaultValue.toString())) {
+            val allowed = force || PerformancePolicy.mayAutoTune(
+                current, entries[setting.key], setting.defaultValue.toString()
+            )
+            if (allowed) {
                 if (current != value.toString()) setting.put(value).save()
                 entries[setting.key] = value.toString()
             }

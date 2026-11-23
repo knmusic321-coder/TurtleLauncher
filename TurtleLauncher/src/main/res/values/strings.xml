@@ -1433,7 +1433,7 @@
     <string name="music_delete_track">Remove</string>
 
     <string name="whats_new_title">🐢 What\'s New in TurtleLauncher</string>
-    <string name="whats_new_version">v5</string>
+    <string name="whats_new_version">v6</string>
     <string name="whats_new_feature_1">🎭 Emotes: dependencies install themselves</string>
     <string name="whats_new_feature_1_desc">Installing the Emotecraft mod now automatically fetches its required Player Animation Library dependency (read straight from the mod\'s own metadata), so the game no longer crashes on launch with a missing-dependency error.</string>
     <string name="whats_new_feature_2">📜 Game logs are finally saved</string>
@@ -1446,20 +1446,20 @@
     <string name="game_notice_fixed_header">Fixed and changed</string>
     <string name="game_notice_new_header">New features and where to find them</string>
 
-    <string name="game_notice_item_1_title">Benchmarks now belong to their own section</string>
-    <string name="game_notice_item_1_desc">Each screen measures and tunes only itself: Graphics &amp; renderer (renderer, driver, resolution), Phone settings (CPU cores, RAM) and Optimization (frame pacing, latency). Running one no longer changes another section.</string>
-    <string name="game_notice_item_2_title">Transparency can go all the way down</string>
-    <string name="game_notice_item_2_desc">Page transparency now reaches 0% instead of stopping at 50%. Text, sliders and switches stay fully sharp at every level — Settings → Launcher.</string>
-    <string name="game_notice_item_3_title">Launcher logo button removed</string>
-    <string name="game_notice_item_3_desc">The logo quick action is gone from the home screen\'s Dynamic Island, so the quick-action row has one button fewer.</string>
-    <string name="game_notice_item_4_title">Home screen cleaned up</string>
-    <string name="game_notice_item_4_desc">Today\'s stats, Friends/LAN, Community and Last game log cards were removed from the home screen. LAN is still reachable from the Friends screen.</string>
-    <string name="game_notice_item_5_title">Video wallpaper with sound</string>
-    <string name="game_notice_item_5_desc">New: pick a video as the background, with the video\'s own audio and a loop switch — Settings → Custom background (Main menu tab).</string>
-    <string name="game_notice_item_6_title">Smoother animations</string>
-    <string name="game_notice_item_6_desc">Transitions and motion effects are calmer and faster; adjust the speed in Settings → Launcher → Animation.</string>
-    <string name="game_notice_item_7_title">Version names now count up</string>
-    <string name="game_notice_item_7_desc">Every feature update bumps the name: v1, v2, … and this build is v5. You can check it in Settings → About.</string>
+    <string name="game_notice_item_1_title">The video background is no longer dimmed</string>
+    <string name="game_notice_item_1_desc">The video and still wallpaper now play at full brightness. The black panels on the home screen and in settings are translucent, so they no longer hide the video.</string>
+    <string name="game_notice_item_2_title">0% transparency really means 0%</string>
+    <string name="game_notice_item_2_desc">At 0% every panel, card and page background disappears completely, leaving only the content and the background video. At 100% everything stays as dark as before.</string>
+    <string name="game_notice_item_3_title">The Optimization benchmark flips every switch on its page</string>
+    <string name="game_notice_item_3_desc">Running the benchmark on the Optimization page now sets all of that page\'s switches: unlimited FPS, low latency, frame pacing, frame skipping, adaptive frame timing, automatic memory cleanup, shader cache and debug logging.</string>
+    <string name="game_notice_item_4_title">The Phone settings benchmark tunes CPU, RAM and JNI</string>
+    <string name="game_notice_item_4_desc">The Phone settings benchmark now sets the CPU core count, RAM allocation, RAM preset, memory pressure monitor, equal heap sizes and every JNI switch from the measured score.</string>
+    <string name="game_notice_item_5_title">Glass effect (new)</string>
+    <string name="game_notice_item_5_desc">The wallpaper is softly blurred and a frosted sheet is laid over it so cards and panels stand out. Find it in Settings → Launcher → Glass effect; turn it on or off at any time.</string>
+    <string name="game_notice_item_6_title">A tidier, smoother interface (new)</string>
+    <string name="game_notice_item_6_desc">Settings cards are shorter and airier, the Dynamic Island opens and closes with softer motion, and press feedback keeps its spring feel.</string>
+    <string name="game_notice_item_7_title">Version names count up: this build is v6</string>
+    <string name="game_notice_item_7_desc">Every new feature bumps the name by one: v1, v2, ... and the build you are running is v6. Check it in Settings → About.</string>
 
     <string name="whats_new_warning">🧩 Renderer plugin apps (e.g. MobileGlues) show up in the renderer list right after you install them — no restart needed — and their supported Minecraft version range is honored like any built-in renderer.</string>
 
@@ -1798,4 +1798,6 @@
     <string name="social_setting_saved">Saved.</string>
     <string name="social_redirect_hint">Must match, character for character, a redirect URI registered on the Discord application (Developer Portal → OAuth2 → Redirects). Leave blank to use the default.</string>
     <string name="social_scopes_hint">Space-separated OAuth2 scopes. Use only identify, guilds and relationships.read - bot, applications.* and webhook.incoming need a bot token and are dropped automatically. relationships.read also has to be granted to the application by Discord before the friends list can load. Leave blank to use the defaults.</string>
+    <string name="setting_glass_effect_title">Glass effect</string>
+    <string name="setting_glass_effect_desc">Softly blurs the wallpaper and lays a frosted sheet over the video so cards stand out. Turn it off for a sharp backdrop.</string>
 </resources>

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_app"
+    android:background="@android:color/transparent"
     tools:ignore="ContentDescription">
 
     <ImageView
@@ -25,6 +25,16 @@
         android:alpha="0"
         android:visibility="gone"
         tools:ignore="ContentDescription"/>
+
+    <!-- Frosted sheet for the glass effect. Sits above the wallpaper/video and below every
+         launcher screen, so cards stay readable while the picture shows through. Toggled
+         live from Settings -> Launcher -> Glass effect. -->
+    <View
+        android:id="@+id/glass_veil"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background_glass_veil"
+        android:visibility="gone"/>
 
     <!-- Hidden top bar kept for code compatibility, zero height -->
     <androidx.constraintlayout.widget.ConstraintLayout

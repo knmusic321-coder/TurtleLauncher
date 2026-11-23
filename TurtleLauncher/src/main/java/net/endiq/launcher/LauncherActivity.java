@@ -833,6 +833,18 @@ public class LauncherActivity extends BaseActivity {
     private void refreshBackground() {
         BackgroundManager.setBackgroundImage(this, BackgroundType.MAIN_MENU, binding.backgroundView, this::refreshTopBarColor);
         refreshBackgroundVideo();
+        applyGlassEffect();
+    }
+
+    /** Applies (or removes) the frosted-glass backdrop without recreating the activity. */
+    private void applyGlassEffect() {
+        if (binding == null) return;
+        com.endiq.turtlelauncher.utils.anim.GlassEffect.apply(binding.backgroundView, binding.glassVeil);
+    }
+
+    @Subscribe()
+    public void event(com.endiq.turtlelauncher.event.value.GlassEffectChangeEvent event) {
+        applyGlassEffect();
     }
 
     /**
@@ -857,7 +869,10 @@ public class LauncherActivity extends BaseActivity {
 
         view.setVisibility(View.VISIBLE);
         view.play(video, BackgroundManager.isVideoLoopEnabled(BackgroundType.MAIN_MENU));
-        view.animate().alpha(0.3f).setDuration(420).start();
+        // Full strength: only the launcher's own surfaces may dim the clip, and those follow
+        // the page-opacity slider. A hard-coded 30% alpha here made the video look dark even
+        // when every page was set to 0% transparency.
+        view.animate().alpha(1f).setDuration(420).start();
     }
 
     private void refreshTopBarColor(boolean loadFromBackground) {

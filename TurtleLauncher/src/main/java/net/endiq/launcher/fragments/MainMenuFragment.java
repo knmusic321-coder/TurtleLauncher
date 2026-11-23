@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
+import android.view.animation.PathInterpolator;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -191,17 +192,26 @@ public class MainMenuFragment extends FragmentWithAnim {
             islandExpanded = !islandExpanded;
             ViewGroup root = (ViewGroup) binding.homeTopBar.getParent();
             if (root != null) {
+                // One continuous shape change with a standard Material easing curve: the
+                // capsule grows, the quick-action grid fades and slides into place, and the
+                // chevron turns - all on the same timeline, so the motion reads as a single
+                // gesture instead of three separate animations.
+                Fade fade = new Fade(Fade.IN | Fade.OUT);
+                fade.setStartDelay(islandExpanded ? 40L : 0L);
+                fade.addTarget(binding.islandExpanded);
                 TransitionSet morph = new TransitionSet()
                         .addTransition(new ChangeBounds())
-                        .addTransition(new Fade().addTarget(binding.islandExpanded));
-                morph.setDuration(280L);
-                morph.setInterpolator(new OvershootInterpolator(1.05f));
+                        .addTransition(fade);
+                morph.setOrdering(TransitionSet.ORDERING_TOGETHER);
+                morph.setDuration(300L);
+                morph.setInterpolator(new PathInterpolator(0.22f, 0f, 0f, 1f));
                 TransitionManager.beginDelayedTransition(root, morph);
             }
             binding.islandExpanded.setVisibility(islandExpanded ? View.VISIBLE : View.GONE);
             binding.islandToggleIcon.animate()
                     .rotation(islandExpanded ? 180f : 0f)
-                    .setDuration(280L)
+                    .setDuration(300L)
+                    .setInterpolator(new PathInterpolator(0.22f, 0f, 0f, 1f))
                     .start();
         });
     }

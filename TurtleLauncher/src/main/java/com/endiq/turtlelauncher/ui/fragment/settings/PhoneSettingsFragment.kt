@@ -154,8 +154,41 @@ class PhoneSettingsFragment : AbstractSettingsFragment(R.layout.settings_fragmen
 
     override fun onChange() {
         super.onChange()
+        refreshToggles()
         computeVisibility()
         renderEngineState()
+    }
+
+    /**
+     * The phone benchmark writes the CPU, memory and JNI settings directly; this reads them
+     * back so every card on the page reflects what was just applied.
+     */
+    private fun refreshToggles() {
+        if (!::binding.isInitialized || !isAdded) return
+        binding.autoDetectCores.isChecked = AllSettings.autoDetectCores.getValue()
+        binding.manualCoreOverride.isChecked = AllSettings.manualCoreOverride.getValue()
+        binding.perInstanceCpuOverride.isChecked = AllSettings.perInstanceCpuOverride.getValue()
+        binding.advancedCpuTuning.isChecked = AllSettings.advancedCpuTuning.getValue()
+        binding.bigCoreAffinity.isChecked = AllSettings.bigCoreAffinity.getValue()
+        binding.schedulerTuning.isChecked = AllSettings.schedulerTuning.getValue()
+        binding.autoRamCalculator.isChecked = AllSettings.autoRamCalculator.getValue()
+        binding.equalHeapSizes.isChecked = AllSettings.equalHeapSizes.getValue()
+        binding.memoryPressureMonitor.isChecked = AllSettings.memoryPressureMonitor.getValue()
+        binding.gcStatistics.isChecked = AllSettings.gcStatistics.getValue()
+        binding.jniBatching.isChecked = AllSettings.jniBatching.getValue()
+        binding.jniCachedReferences.isChecked = AllSettings.jniCachedReferences.getValue()
+        binding.nativeObjectPooling.isChecked = AllSettings.nativeObjectPooling.getValue()
+        binding.reducedJniCalls.isChecked = AllSettings.reducedJniCalls.getValue()
+
+        val coreCount = AllSettings.manualCoreCount.getValue()
+        if (binding.manualCoreCount.progress != coreCount) {
+            binding.manualCoreCount.progress = coreCount
+        }
+
+        val presetValues = resources.getStringArray(R.array.all_ram_preset_value)
+        val presetNames = resources.getStringArray(R.array.all_ram_preset)
+        val presetIndex = presetValues.indexOf(AllSettings.ramPreset.getValue())
+        if (presetIndex >= 0) binding.ramPresetValue.text = presetNames[presetIndex]
     }
 
     override fun slideIn(animPlayer: AnimPlayer) {

@@ -280,6 +280,8 @@ class AllSettings {
         /** Screen exit animation - see com.endiq.turtlelauncher.utils.anim.ExitTransition. */
         @JvmStatic val animationExit            = StringSettingUnit("animationExit", "slide_up")
         @JvmStatic val pageOpacity              = IntSettingUnit("pageOpacity", 100)
+        /** Frosted-glass backdrop: blur the wallpaper and lay a faint veil over the video. */
+        @JvmStatic val glassEffect              = BooleanSettingUnit("glassEffect", true)
         @JvmStatic val enableLogOutput          = BooleanSettingUnit("enableLogOutput", false)
         @JvmStatic val quitLauncher             = BooleanSettingUnit("quitLauncher", true)
         @JvmStatic val acceptPreReleaseUpdates  = BooleanSettingUnit("acceptPreReleaseUpdates", false)

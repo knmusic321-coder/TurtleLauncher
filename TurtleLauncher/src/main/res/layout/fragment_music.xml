@@ -8,7 +8,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_app"
+    android:background="@drawable/background_page_surface"
     tools:ignore="ContentDescription">
 
     <com.endiq.turtlelauncher.ui.view.AnimTextView

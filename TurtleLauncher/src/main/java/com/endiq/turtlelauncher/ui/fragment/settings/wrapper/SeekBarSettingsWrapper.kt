@@ -117,6 +117,15 @@ class SeekBarSettingsWrapper(
         }
     }
 
+    /** Pulls the stored value back into the slider, e.g. after a benchmark applied it. */
+    fun refresh() {
+        val stored = unit.getValue()
+        if (seekbarView.progress != stored) {
+            seekbarView.progress = stored
+            setSeekBarValueTextView()
+        }
+    }
+
     fun setSeekBarValueTextView() {
         val text = "${seekbarView.progress} $suffix".trim()
         valueView.text = text
