@@ -20,13 +20,6 @@ object ModCrashAnalyzer {
     private const val MAX_LOG_BYTES = 2_000_000L
     private const val MAX_CRASH_BYTES = 512_000L
 
-    /** Loader/format words that are part of a jar's filename but never identify a mod. */
-    private val STOP_WORDS = setOf(
-        "fabric", "forge", "neoforge", "quilt", "loader", "mods", "mod", "lib", "libs",
-        "api", "common", "client", "server", "universal", "release", "alpha", "beta",
-        "snapshot", "dev", "all", "jar", "minecraft", "mc", "core", "utils", "compat"
-    )
-
     data class Suspect(
         val jar: File,
         /** How many times this jar's name was mentioned in the log. */
@@ -74,7 +67,8 @@ object ModCrashAnalyzer {
             emptyList()
         } else {
             jars.mapNotNull { jar ->
-                val tokens = tokensOf(jar.name)
+                // Hash-keyed cache: the token list is only rebuilt when the jar itself changed.
+                val tokens = ModScanCache.tokens(jar)
                 if (tokens.isEmpty()) return@mapNotNull null
                 val matched = tokens.filter { haystack.contains(it) }
                 if (matched.isEmpty()) return@mapNotNull null
@@ -130,25 +124,6 @@ object ModCrashAnalyzer {
     private fun isModJar(name: String): Boolean {
         val lower = name.lowercase()
         return lower.endsWith(ModUtils.JAR_FILE_SUFFIX) || lower.endsWith(ModUtils.DISABLE_JAR_FILE_SUFFIX)
-    }
-
-    /**
-     * Filename words that can identify a mod in a log: "sodium-fabric-0.5.8.jar" becomes
-     * "sodium". Version numbers, loader names and one-word noise are dropped.
-     */
-    private fun tokensOf(fileName: String): List<String> {
-        val base = fileName
-            .removeSuffix(ModUtils.DISABLE_JAR_FILE_SUFFIX)
-            .removeSuffix(ModUtils.JAR_FILE_SUFFIX)
-        return base
-            .split(Regex("[^A-Za-z0-9]+"))
-            .asSequence()
-            .map { it.lowercase() }
-            .filter { token -> token.length >= 4 && token.first().isLetter() }
-            .filter { token -> token.any { char -> char.isDigit() }.not() }
-            .filter { token -> token !in STOP_WORDS }
-            .distinct()
-            .toList()
     }
 
     private fun countOccurrences(haystack: String, needle: String): Int {

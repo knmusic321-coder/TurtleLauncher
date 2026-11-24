@@ -12,6 +12,7 @@ import com.endiq.turtlelauncher.event.single.PageOpacityChangeEvent
 import com.endiq.turtlelauncher.feature.network.DualChannelNetwork
 import com.endiq.turtlelauncher.feature.update.UpdateUtils
 import com.endiq.turtlelauncher.setting.AllSettings
+import com.endiq.turtlelauncher.ui.dialog.ThemeStudioDialog
 import com.endiq.turtlelauncher.ui.fragment.CustomBackgroundFragment
 import com.endiq.turtlelauncher.ui.fragment.FragmentWithAnim
 import com.endiq.turtlelauncher.ui.fragment.settings.wrapper.BaseSettingsWrapper
@@ -153,14 +154,18 @@ class LauncherSettingsFragment() : AbstractSettingsFragment(R.layout.settings_fr
             binding.root.post { activity?.recreate() }
         }
 
-        ListSettingsWrapper(
+        // Theme studio: packs, accent colour, dark/light and icon treatment in one place. The
+        // old three-item light/dark list could not express a palette, so the row now opens the
+        // studio and shows the active pack's name instead of "Default".
+        BaseSettingsWrapper(
             context,
-            AllSettings.launcherTheme,
-            binding.launcherThemeLayout,
-            binding.launcherThemeTitle,
-            binding.launcherThemeValue,
-            R.array.launcher_theme_names, R.array.launcher_theme_values
-        ).setRequiresReboot()
+            binding.launcherThemeLayout
+        ) {
+            (activity as? androidx.fragment.app.FragmentActivity)?.let { host ->
+                ThemeStudioDialog.show(host)
+            }
+        }
+        binding.launcherThemeValue.text = ThemeStudioDialog.currentPackLabel(context)
 
         BaseSettingsWrapper(
             context,

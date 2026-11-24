@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.RelativeLayout
 import com.endiq.turtlelauncher.R
+import com.endiq.turtlelauncher.feature.theme.ThemeManager
 import com.endiq.turtlelauncher.ui.miuix.MiuixPressFeedback
 import com.endiq.turtlelauncher.ui.miuix.MiuixSquircle
 import com.endiq.turtlelauncher.ui.miuix.MiuixTheme
@@ -35,7 +36,8 @@ class AnimRelativeLayout @JvmOverloads constructor(
         sinkScale = 0.96f,
         damping = 0.85f,
         response = 0.28f,
-        cornerRadiusDp = MiuixTheme.CornerRadiiDp.CARD,
+        // Theme pack + icon pack decide how soft corners are (Amethyst rounds more, Pixel squares off).
+        cornerRadiusDp = ThemeManager.cornerDp(context, MiuixTheme.CornerRadiiDp.CARD),
         enableIndication = true,
         enableSink = true
     )
@@ -47,7 +49,7 @@ class AnimRelativeLayout @JvmOverloads constructor(
 
         stateListAnimator = null
         if (background != null) {
-            val radiusPx = MiuixTheme.dpToPx(context, MiuixTheme.CornerRadiiDp.CARD)
+            val radiusPx = MiuixTheme.dpToPx(context, ThemeManager.cornerDp(context, MiuixTheme.CornerRadiiDp.CARD))
             MiuixSquircle.applyOutline(this, radiusPx, clipToOutline = true)
         }
     }

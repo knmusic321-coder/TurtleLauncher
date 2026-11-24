@@ -2,6 +2,7 @@ package net.endiq.launcher.modloaders.modpacks.api;
 
 import androidx.annotation.Nullable;
 
+import com.endiq.turtlelauncher.feature.download.ResumableDownload;
 import com.endiq.turtlelauncher.feature.log.Logging;
 import com.endiq.turtlelauncher.setting.AllSettings;
 
@@ -159,7 +160,12 @@ public class ModDownloader {
             IOException exception = null;
             for (int i = 0; i < 5; i++) {
                 try {
-                    DownloadUtils.downloadFileMonitored(sourceUrl, mDestination, getThreadLocalBuffer(), this);
+                    // Resumable + split into lanes: an interrupted mod download continues from its
+                    // .part file instead of starting over, and a large file uses up to 4 ranged
+                    // connections. Servers without range support transparently fall back to one
+                    // resumable stream inside ResumableDownload.
+                    int lanes = Math.max(1, Math.min(4, AllSettings.getParallelModDownloads().getValue()));
+                    ResumableDownload.download(sourceUrl, mDestination, lanes, this);
                     if (mUseFileCount) mDownloadProgress.addAndGet(1);
                     return null;
                 } catch (InterruptedIOException e) {

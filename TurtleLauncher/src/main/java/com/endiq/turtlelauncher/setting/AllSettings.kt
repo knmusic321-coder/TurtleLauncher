@@ -271,6 +271,26 @@ class AllSettings {
         @JvmStatic val downloadSource           = StringSettingUnit("downloadSource", "default")
         @JvmStatic val maxDownloadThreads       = IntSettingUnit("maxDownloadThreads", 128)
         @JvmStatic val launcherTheme            = StringSettingUnit("launcherTheme", "dark")
+        /** Built-in theme pack (see feature/theme/ThemePack.kt): overworld, nether, end,
+         *  amethyst, redstone, vanilla_light. Painted through ThemeManager, so every Miuix
+         *  surface, accent and the window chrome follow it. */
+        @JvmStatic val launcherThemePack        = StringSettingUnit("launcherThemePack", "overworld")
+        /** Optional accent override as "#RRGGBB"; blank means "use the pack's own accent". */
+        @JvmStatic val launcherAccentColor      = StringSettingUnit("launcherAccentColor", "")
+        /** Icon presentation pack: classic (Turtle artwork), minimal, pixel. */
+        @JvmStatic val launcherIconPack         = StringSettingUnit("launcherIconPack", "classic")
+        /** Language for the crash explainer: "auto" follows the launcher language, or "vi"/"en". */
+        @JvmStatic val crashExplainerLanguage   = StringSettingUnit("crashExplainerLanguage", "auto")
+        /** Translate a crash log into a plain-language explanation with fix suggestions. */
+        @JvmStatic val crashExplainerEnabled    = BooleanSettingUnit("crashExplainerEnabled", true)
+        /** Hash-keyed cache of mod-folder scans so a rescan only happens when jars change. */
+        @JvmStatic val modScanCacheEnabled      = BooleanSettingUnit("modScanCacheEnabled", true)
+        /** Warm the Java runtime libraries and the launch code paths while the launcher opens. */
+        @JvmStatic val preloadJavaLibraries     = BooleanSettingUnit("preloadJavaLibraries", true)
+        /** Warm the launcher's own launch path (JIT) so the first launch does not pay for it. */
+        @JvmStatic val jitWarmupEnabled         = BooleanSettingUnit("jitWarmupEnabled", true)
+        /** How many mod files are downloaded at the same time (1-4 lanes, 4 is the default). */
+        @JvmStatic val parallelModDownloads     = IntSettingUnit("parallelModDownloads", 4)
         /** Launcher language: "system" or a Minecraft-style locale code ("pt_br", "ja_jp", ...)
          *  from R.array.all_game_language_value. See context/LocaleHelper.kt. */
         @JvmStatic val launcherLanguage         = StringSettingUnit("launcherLanguage", "system")

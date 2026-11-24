@@ -1826,4 +1826,26 @@
     <string name="panel_media_unmute">Turn the panel video\'s sound on</string>
     <string name="panel_media_mute_done">Panel video muted</string>
     <string name="panel_media_unmute_done">Panel video sound is back on</string>
+
+    <!-- ── Theme studio ─────────────────────────────────────────────── -->
+    <string name="theme_studio_title">Theme studio</string>
+    <string name="theme_studio_presets">Theme packs</string>
+    <string name="theme_studio_accent">Accent colour</string>
+    <string name="theme_studio_accent_hint">#RRGGBB - leave empty for the pack accent</string>
+    <string name="theme_studio_mode">Appearance</string>
+    <string name="theme_studio_icon_pack">Icon pack</string>
+    <string name="theme_studio_apply">Apply</string>
+    <string name="theme_studio_preview">Preview</string>
+    <string name="theme_studio_preview_title">Overworld - TurtleLauncher</string>
+    <string name="theme_studio_preview_body">Cards, buttons and text follow the selected pack.</string>
+    <string name="theme_studio_preview_button">Play</string>
+    <string name="theme_pack_overworld">Overworld</string>
+    <string name="theme_pack_nether">Nether Dark</string>
+    <string name="theme_pack_end">End Void</string>
+    <string name="theme_pack_amethyst">Amethyst</string>
+    <string name="theme_pack_redstone">Redstone</string>
+    <string name="theme_pack_vanilla">Vanilla Light</string>
+    <string name="icon_pack_classic">Classic</string>
+    <string name="icon_pack_minimal">Minimal</string>
+    <string name="icon_pack_pixel">Pixel</string>
 </resources>

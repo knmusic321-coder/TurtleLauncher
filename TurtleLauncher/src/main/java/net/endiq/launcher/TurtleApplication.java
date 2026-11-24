@@ -31,10 +31,10 @@ public class TurtleApplication extends Application {
 
 	@Override
 	public void onCreate() {
-		// Dark-only launcher. Set the night mode before any Activity, dialog or resource
-		// lookup happens so every window starts from the dark theme and the night colour
-		// resources - no light flash on a light-mode device, no partial theming.
-		AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+		// Theme mode is user-selectable now (theme studio: Dark / Light / Follow system).
+		// attachBaseContext() has already refreshed the settings, so this reads the saved
+		// choice; it still runs before any Activity, dialog or resource lookup.
+		com.endiq.turtlelauncher.feature.theme.ThemeManager.INSTANCE.applyNightMode();
 
 		ContextExecutor.setApplication(this);
 

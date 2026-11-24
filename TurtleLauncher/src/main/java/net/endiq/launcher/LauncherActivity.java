@@ -376,6 +376,9 @@ public class LauncherActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityLauncherBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        // Theme effects (End Void's drifting starfield) sit behind the content, if the active
+        // pack asks for them. A no-op for every other pack.
+        com.endiq.turtlelauncher.feature.theme.ThemeEffects.apply(this);
 
         processFragment();
         processViews();

@@ -1753,4 +1753,26 @@
     <string name="panel_media_unmute">Bật âm video trong bảng</string>
     <string name="panel_media_mute_done">Đã tắt âm video trong bảng</string>
     <string name="panel_media_unmute_done">Đã bật lại âm video trong bảng</string>
+
+    <!-- ── Theme studio ─────────────────────────────────────────────── -->
+    <string name="theme_studio_title">Xưởng giao diện</string>
+    <string name="theme_studio_presets">Bộ giao diện</string>
+    <string name="theme_studio_accent">Màu nhấn</string>
+    <string name="theme_studio_accent_hint">#RRGGBB - để trống dùng màu gốc của bộ</string>
+    <string name="theme_studio_mode">Chế độ hiển thị</string>
+    <string name="theme_studio_icon_pack">Bộ biểu tượng</string>
+    <string name="theme_studio_apply">Áp dụng</string>
+    <string name="theme_studio_preview">Xem trước</string>
+    <string name="theme_studio_preview_title">Overworld - TurtleLauncher</string>
+    <string name="theme_studio_preview_body">Thẻ, nút và chữ sẽ theo bộ giao diện đã chọn.</string>
+    <string name="theme_studio_preview_button">Chơi</string>
+    <string name="theme_pack_overworld">Overworld</string>
+    <string name="theme_pack_nether">Nether tối</string>
+    <string name="theme_pack_end">End hư không</string>
+    <string name="theme_pack_amethyst">Thạch anh tím</string>
+    <string name="theme_pack_redstone">Redstone</string>
+    <string name="theme_pack_vanilla">Vanilla sáng</string>
+    <string name="icon_pack_classic">Cổ điển</string>
+    <string name="icon_pack_minimal">Tối giản</string>
+    <string name="icon_pack_pixel">Pixel</string>
 </resources>

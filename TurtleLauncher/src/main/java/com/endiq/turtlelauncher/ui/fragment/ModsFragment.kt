@@ -18,6 +18,7 @@ import com.endiq.turtlelauncher.databinding.FragmentModsBinding
 import com.endiq.turtlelauncher.feature.download.enums.ModLoader
 import com.endiq.turtlelauncher.feature.download.utils.ModLoaderUtils
 import com.endiq.turtlelauncher.feature.log.CrashAnalyzer
+import com.endiq.turtlelauncher.feature.log.CrashExplainer
 import com.endiq.turtlelauncher.feature.log.LatestLogResolver
 import com.endiq.turtlelauncher.feature.mod.ModCrashAnalyzer
 import com.endiq.turtlelauncher.feature.mod.ModToggleHandler
@@ -287,10 +288,16 @@ class ModsFragment : FragmentWithAnim(R.layout.fragment_mods) {
         val version = resolveVersionForModsRoot()
         val modsFolder = File(mRootPath)
         val dialog = if (auto) null else ZHTools.showTaskRunningDialog(requireContext())
-        Task.runTask { ModCrashAnalyzer.analyze(version, modsFolder) }
-            .ended(TaskExecutors.getAndroidUI()) { report ->
+        // Both passes read the same log on the worker thread: the rule engine (ModCrashAnalyzer)
+        // and the bilingual explainer (CrashExplainer) that turns it into fixes the user can act on.
+        Task.runTask {
+            ModCrashAnalyzer.analyze(version, modsFolder) to
+                CrashExplainer.explain(version, modsFolder)
+        }
+            .ended(TaskExecutors.getAndroidUI()) { result ->
                 runCatching { dialog?.dismiss() }
-                if (!isAdded || report == null) return@ended
+                if (!isAdded || result == null) return@ended
+                val (report, explanation) = result
                 if (auto && report.suspects.isEmpty()) return@ended
                 if (!report.hasLog) {
                     if (!auto) Toast.makeText(appContext, R.string.profile_mods_analyze_no_log, Toast.LENGTH_LONG).show()
@@ -298,7 +305,7 @@ class ModsFragment : FragmentWithAnim(R.layout.fragment_mods) {
                 }
                 TipDialog.Builder(requireContext())
                     .setTitle(if (auto) R.string.profile_mods_analyze_auto_title else R.string.profile_mods_analyze_title)
-                    .setMessage(buildAnalysisMessage(report))
+                    .setMessage(buildAnalysisMessage(report, explanation))
                     .setCenterMessage(false)
                     .setSelectable(true)
                     .setShowCancel(false)
@@ -312,11 +319,17 @@ class ModsFragment : FragmentWithAnim(R.layout.fragment_mods) {
             .execute()
     }
 
-    private fun buildAnalysisMessage(report: ModCrashAnalyzer.Report): String {
+    private fun buildAnalysisMessage(
+        report: ModCrashAnalyzer.Report,
+        explanation: CrashExplainer.Explanation? = null
+    ): String {
         val logFile = report.logFile ?: return getString(R.string.profile_mods_analyze_no_log)
         val text = StringBuilder()
         text.append(getString(R.string.profile_mods_analyze_log_line, logFile.name))
-        if (report.hasDiagnosis) {
+        if (explanation != null && explanation.findings.isNotEmpty()) {
+            // Plain-language causes and fixes, in the launcher's language (Vietnamese or English).
+            text.append("\n\n").append(CrashExplainer.render(explanation))
+        } else if (report.hasDiagnosis) {
             report.diagnoses.take(3).forEach { diagnosis ->
                 text.append("\n\n• ").append(diagnosis.title)
                 if (diagnosis.cause.isNotBlank()) {

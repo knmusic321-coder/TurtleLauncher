@@ -1,34 +1,26 @@
 package com.endiq.turtlelauncher.startup
 
-import android.app.Application
 import android.content.Context
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.startup.Initializer
-import com.google.android.material.color.DynamicColors
-import com.endiq.turtlelauncher.feature.log.Logging
 import com.endiq.turtlelauncher.feature.log.NativeCrashCapture
+import com.endiq.turtlelauncher.feature.theme.ThemeManager
 import com.endiq.turtlelauncher.feature.turtle.AnrWatchdog
+import com.endiq.turtlelauncher.launch.LaunchPrewarm
 
 class TurtleStartupInitializer : Initializer<Unit> {
-    companion object {
-        private const val TAG = "TurtleStartupInitializer"
-    }
-
     override fun create(context: Context) {
-        // Dark-only launcher. TurtleApplication already forces this first thing in
-        // onCreate(); repeating it here keeps the guarantee if that call is ever moved,
-        // because this initializer still runs before the first Activity is created.
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        // Re-assert the user's theme mode (TurtleApplication does this first thing in
+        // onCreate; this initializer still runs before the first Activity).
+        ThemeManager.applyNightMode()
 
-        // Material You dynamic color: on supported devices (Android 12+), derives the theme
-        // from the system wallpaper; a no-op safe fallback to the static theme elsewhere.
-        try {
-            DynamicColors.applyToActivitiesIfAvailable(context.applicationContext as Application)
-        } catch (t: Throwable) {
-            Logging.e(TAG, "Failed to apply dynamic colors", t)
-        }
-
+        // Material You dynamic color used to be applied here. It repaints Material widgets from
+        // the wallpaper, which now fights the theme studio's packs and custom accent, so the
+        // launcher keeps its own palette instead.
         AnrWatchdog.start()
+
+        // Preload/warmup: Java runtime libraries for the last played version and the launcher's
+        // own launch code paths, on a worker thread so app start never waits for it.
+        LaunchPrewarm.prewarmAsync(context)
 
         NativeCrashCapture.checkAndReport(context)
     }

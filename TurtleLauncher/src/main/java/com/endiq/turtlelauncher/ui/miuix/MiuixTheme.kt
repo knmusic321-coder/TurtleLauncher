@@ -169,20 +169,23 @@ object MiuixTheme {
     }
 
     /**
-     * The launcher is a dark-only app (see `TurtleApplication` /
-     * `TurtleStartupInitializer`: `MODE_NIGHT_YES` is forced before any Activity is
-     * created). This answers `true` unconditionally so programmatically drawn Miuix
-     * surfaces never fall back to the light scheme on a light-mode device or under an
-     * OEM "force light" setting.
+     * Whether the active theme pack renders light. This is no longer a constant: the theme
+     * studio (Settings -> Launcher -> Theme studio) can switch packs and a dark/light mode,
+     * so every Miuix surface asks [com.endiq.turtlelauncher.feature.theme.ThemeManager].
      */
     @JvmStatic
-    @Suppress("UNUSED_PARAMETER")
-    fun isDarkMode(context: Context?): Boolean = true
+    fun isDarkMode(context: Context?): Boolean =
+        com.endiq.turtlelauncher.feature.theme.ThemeManager.isDark(context)
 
-    /** Always the dark scheme - the app has no light palette at runtime. */
+    /**
+     * The active colour scheme: [DarkColorScheme] expanded from the selected theme pack and
+     * accent colour. Callers that cached a scheme per-view must re-read it when the theme
+     * changes (the picker recreates the activity).
+     */
     @JvmStatic
-    @Suppress("UNUSED_PARAMETER")
-    fun colors(context: Context?): MiuixColorScheme = DarkColorScheme
+    fun colors(context: Context?): MiuixColorScheme =
+        runCatching { com.endiq.turtlelauncher.feature.theme.ThemeManager.scheme(context) }
+            .getOrDefault(DarkColorScheme)
 
     @JvmStatic
     fun dpToPx(context: Context, dp: Float): Float {
