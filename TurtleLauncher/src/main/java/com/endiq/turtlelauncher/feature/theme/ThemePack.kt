@@ -90,6 +90,28 @@ enum class ThemePack(
         darkBackground = 0xFF3A3A36.toInt(),
         lightBackground = 0xFFFBF8F1.toInt(),
         cornerScale = 1.0f
+    ),
+    AURORA(
+        key = "aurora",
+        labelRes = R.string.theme_pack_aurora,
+        // Polar green-teal over a deep night sky, with a violet secondary for containers.
+        accent = 0xFF5FE0C6.toInt(),
+        accentAlt = 0xFF7C6BF0.toInt(),
+        darkBackground = 0xFF0A1A22.toInt(),
+        lightBackground = 0xFFEAF7F6.toInt(),
+        cornerScale = 1.15f,
+        glow = true
+    ),
+    SAKURA(
+        key = "sakura",
+        labelRes = R.string.theme_pack_sakura,
+        // Warm blossom pink, very soft corners, frosted panels.
+        accent = 0xFFF2A0B5.toInt(),
+        accentAlt = 0xFFD96B8A.toInt(),
+        darkBackground = 0xFF231419.toInt(),
+        lightBackground = 0xFFFDF1F4.toInt(),
+        cornerScale = 1.5f,
+        glass = true
     );
 
     companion object {

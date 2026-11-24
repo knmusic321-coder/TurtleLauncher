@@ -1383,7 +1383,7 @@
     <string name="discord_rpc_preview_button_hidden">bị ẩn - cần cả nhãn và liên kết hợp lệ</string>
     <string name="music_delete_track">Gỡ bỏ</string>
     <string name="whats_new_title">🐢 Có gì mới trong TurtleLauncher</string>
-    <string name="whats_new_version">v9</string>
+    <string name="whats_new_version">v11</string>
     <string name="whats_new_feature_1">🎭 Emote: phụ thuộc tự cài đặt</string>
     <string name="whats_new_feature_1_desc">Khi cài mod Emotecraft, trình khởi chạy tự tải phụ thuộc Player Animation Library bắt buộc (đọc trực tiếp từ siêu dữ liệu của mod), nên game không còn bị sự cố lúc chạy vì thiếu phụ thuộc.</string>
     <string name="whats_new_feature_2">📜 Nhật ký game đã được lưu lại</string>
@@ -1396,20 +1396,20 @@
     <string name="game_notice_fixed_header">Đã sửa và đã thay đổi</string>
     <string name="game_notice_new_header">Tính năng mới và nằm ở đâu</string>
 
-    <string name="game_notice_item_1_title">Tắt âm video, hai công tắc riêng</string>
-    <string name="game_notice_item_1_desc">Video nền sảnh và video nhỏ trong bảng chạy game giờ có công tắc tắt âm riêng, tắt cái này không ảnh hưởng cái kia. Tìm ở Cài đặt, Trình khởi chạy, Video nền, ngay dưới mục Lặp video — hoặc tắt âm video nhỏ ngay trong menu dấu + của bảng.</string>
-    <string name="game_notice_item_2_title">Nút cài đặt trong game nhỏ hơn, kiểu liquid island</string>
-    <string name="game_notice_item_2_desc">Nút bánh răng nổi giờ là một giọt kính 38dp: bốn góc bo không đều, quầng sáng mờ và vệt phản chiếu nhẹ thay cho ô vuông, nên che ít màn hình game hơn mà vẫn dễ thấy.</string>
-    <string name="game_notice_item_3_title">Không có Wi-Fi vẫn vào được game</string>
-    <string name="game_notice_item_3_desc">Chạy game khi không có mạng không còn làm văng ứng dụng. Nhánh chạy ngoại tuyến thôi chuẩn bị tệp và quét mod trên luồng giao diện — nơi mọi lệnh mạng đều làm sập tiến trình — và dữ liệu di động, Ethernet, chia sẻ mạng qua USB hay VPN giờ đều được tính là có kết nối thay vì bị coi là mất mạng.</string>
-    <string name="game_notice_item_4_title">Tự phân tích mod trong Quản lý mod</string>
-    <string name="game_notice_item_4_desc">Sau khi văng game, mở Quản lý mod: trình khởi chạy tự đọc nhật ký game gần nhất và báo cáo lỗi mới nhất, hiện nguyên nhân nhận ra được và liệt kê những tệp jar có tên trong nhật ký. Nhấn nút Phân tích ở đầu màn hình để chạy lại bất cứ lúc nào.</string>
-    <string name="game_notice_item_5_title">Phân tích là gợi ý, không phải kết luận</string>
-    <string name="game_notice_item_5_desc">Chỉ những tệp jar có tên xuất hiện trong nhật ký lỗi mới được liệt kê, kèm số lần xuất hiện. Hãy tắt một tệp, chạy lại game rồi lặp lại — không có tệp nào bị sửa hay xoá tự động.</string>
-    <string name="game_notice_item_6_title">Đầy đủ tính năng như cũ</string>
-    <string name="game_notice_item_6_desc">Không có màn hình hay công cụ nào bị lược bỏ: phiên bản, tài khoản, mod, bạn bè, ghi màn hình, benchmark, kính mờ, video nền và toàn bộ cài đặt vẫn còn nguyên.</string>
-    <string name="game_notice_item_7_title">Tên phiên bản: v9</string>
-    <string name="game_notice_item_7_desc">Mỗi bản có thay đổi lớn đều tăng một bậc: v1, v2, ... Bạn đang dùng v9, xem ở Cài đặt, Giới thiệu.</string>
+    <string name="game_notice_item_1_title">Độ mờ trang giữ đúng như bạn đã chỉnh</string>
+    <string name="game_notice_item_1_desc">Trước đây thanh trượt chỉ đổi trang đang mở: sang sảnh hay mở lại Cài đặt là thẻ quay về đục hoàn toàn. Giờ giá trị được lưu ngay khi kéo, mỗi màn hình đọc lại nó khi hiện ra và cả những hàng danh sách tạo sau đó cũng được làm mờ theo.</string>
+    <string name="game_notice_item_2_title">Hai bộ giao diện mới: Cực quang và Anh đào</string>
+    <string name="game_notice_item_2_desc">Cực quang là xanh cực quang trên nền đêm xanh thẫm, Anh đào là hồng phấn bo góc mềm. Cả hai nằm trong Cài đặt, Trình khởi chạy, Xưởng giao diện, cạnh các bộ cũ.</string>
+    <string name="game_notice_item_3_title">Ngẫu nhiên và Đặt lại mặc định</string>
+    <string name="game_notice_item_3_desc">Hai nút mới dưới phần Bộ biểu tượng: Ngẫu nhiên chọn bừa bộ giao diện, màu nhấn và bộ biểu tượng để bạn xem thử; Đặt lại mặc định trả về Overworld, màu gốc của bộ, chế độ tối và biểu tượng Cổ điển.</string>
+    <string name="game_notice_item_4_title">Bộ biểu tượng có ô xem trước</string>
+    <string name="game_notice_item_4_desc">Mỗi lựa chọn bộ biểu tượng giờ có một ô nhỏ vẽ đúng độ bo góc của bộ đó, nên thấy ngay Cổ điển, Tối giản hay Pixel khác nhau ở đâu trước khi áp dụng.</string>
+    <string name="game_notice_item_5_title">Biểu tượng nảy thay vì xoay nhẹ</string>
+    <string name="game_notice_item_5_desc">Mỗi lần chạm, biểu tượng nhún lên, tiếp đất rồi nảy thêm một nhịp kèm co giãn nhẹ, chồng lên chuyển động riêng của nó. Những biểu tượng trước đây chỉ xoay vài độ giờ cũng nảy, và hiệu ứng vẫn chỉ dùng thuộc tính GPU nên danh sách không chậm đi.</string>
+    <string name="game_notice_item_6_title">Công tắc mới và hạt khi chạm</string>
+    <string name="game_notice_item_6_desc">Công tắc bật tắt được vẽ lại: viền mảnh khi tắt, quầng sáng màu nhấn khi bật, núm trượt phình thành viên thuốc lúc kéo. Chạm vào bất kỳ đâu trong trình khởi chạy cũng bắn ra một chùm hạt nhỏ theo màu nhấn.</string>
+    <string name="game_notice_item_7_title">Tên phiên bản: v11</string>
+    <string name="game_notice_item_7_desc">Mỗi bản có thay đổi lớn đều tăng một bậc: v1, v2, ... Bạn đang dùng v11, xem ở Cài đặt, Giới thiệu.</string>
 
     <string name="whats_new_warning">🧩 Ứng dụng plugin trình kết xuất (ví dụ MobileGlues) hiện trong danh sách ngay sau khi bạn cài — không cần khởi động lại — và khoảng phiên bản Minecraft được hỗ trợ của nó được tôn trọng như mọi trình kết xuất tích hợp.</string>
     <string name="preset_pvp_title">Cấu hình PvP</string>
@@ -1775,4 +1775,8 @@
     <string name="icon_pack_classic">Cổ điển</string>
     <string name="icon_pack_minimal">Tối giản</string>
     <string name="icon_pack_pixel">Pixel</string>
+    <string name="theme_pack_aurora">Cực quang</string>
+    <string name="theme_pack_sakura">Anh đào</string>
+    <string name="theme_studio_random">Ngẫu nhiên</string>
+    <string name="theme_studio_reset">Đặt lại mặc định</string>
 </resources>

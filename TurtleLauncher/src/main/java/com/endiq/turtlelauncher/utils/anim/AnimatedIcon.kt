@@ -422,6 +422,14 @@ object AnimatedIcon {
                 anim(view, View.TRANSLATION_Y.name, 0f, t(-1.5f * d), 0f))
         }
 
+        // The bounce layer: every non-logo icon hops off the surface and squashes on landing,
+        // on top of whatever its own style does. Properties the style already animates are
+        // skipped, so a spin still spins and a slide still slides - the hop is added, never
+        // fought over, and no icon is left with only a small rotation.
+        val taken = parts.mapNotNull { (it as? ObjectAnimator)?.propertyName }.toSet()
+        val motion = if (style.name.startsWith("LOGO_")) parts
+            else parts + bounce(view, d, amp, taken)
+
         val isLogo = style.name.startsWith("LOGO_")
         val durationMs = when {
             isLogo -> 1150L + (key % 450)
@@ -430,7 +438,7 @@ object AnimatedIcon {
             else -> 640L + (key % 200)
         }
         return AnimatorSet().apply {
-            playTogether(*parts.toTypedArray())
+            playTogether(*motion.toTypedArray())
             this.duration = durationMs
             setInterpolator(when (style) {
                 Style.SPIN, Style.FLIP_X, Style.FLIP_Y, Style.ORBIT -> LinearInterpolator()
@@ -439,6 +447,34 @@ object AnimatedIcon {
                 else -> AccelerateDecelerateInterpolator()
             })
         }
+    }
+
+    /**
+     * Shared "nảy" (bounce) keyframes: a hop, a short second landing and a squash-stretch.
+     * Only the properties the style left free are used, so this can sit on top of a spin, a
+     * tilt or a slide without two animators writing the same property.
+     */
+    private fun bounce(view: View, d: Float, amp: Float, taken: Set<String>): List<Animator> {
+        val parts = ArrayList<Animator>(3)
+        if (View.TRANSLATION_Y.name !in taken) {
+            parts += anim(
+                view, View.TRANSLATION_Y.name,
+                0f, -2.4f * d * amp, 0f, -0.9f * d * amp, 0f
+            )
+        }
+        if (View.SCALE_Y.name !in taken) {
+            parts += anim(
+                view, View.SCALE_Y.name,
+                1f, 1f - 0.12f * amp, 1f + 0.08f * amp, 1f
+            )
+        }
+        if (View.SCALE_X.name !in taken) {
+            parts += anim(
+                view, View.SCALE_X.name,
+                1f, 1f + 0.08f * amp, 1f - 0.05f * amp, 1f
+            )
+        }
+        return parts
     }
 
     // -- request -------------------------------------------------------------

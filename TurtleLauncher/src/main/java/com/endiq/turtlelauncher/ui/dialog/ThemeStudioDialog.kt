@@ -111,13 +111,10 @@ class ThemeStudioDialog(private val activity: FragmentActivity) :
 
         root.addView(sectionHeader(R.string.theme_studio_icon_pack))
         iconRow = LinearLayout(activity).apply { orientation = LinearLayout.HORIZONTAL }
-        IconPack.values().forEach { pack ->
-            iconRow.addView(buildChip(activity.getString(pack.labelRes)) {
-                selectedIconPack = pack
-                refresh()
-            })
-        }
+        IconPack.values().forEach { pack -> iconRow.addView(buildIconChip(pack)) }
         root.addView(iconRow, matchWrap())
+
+        root.addView(buildToolsRow(), matchWrap(top = dp(14)))
 
         root.addView(buildActions(), matchWrap(top = dp(20)))
 
@@ -220,6 +217,61 @@ class ThemeStudioDialog(private val activity: FragmentActivity) :
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply { marginEnd = dp(8) }
         }
+
+    /** Random and reset: one tap to explore, one tap back to the shipped look. */
+    private fun buildToolsRow(): View {
+        val row = LinearLayout(activity).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        row.addView(buildToolButton(R.string.theme_studio_random) { randomize() })
+        row.addView(buildToolButton(R.string.theme_studio_reset) { resetToDefaults() })
+        return row
+    }
+
+    private fun buildToolButton(labelRes: Int, onClick: () -> Unit): TextView =
+        TextView(activity).apply {
+            setText(labelRes)
+            textSize = 12f
+            gravity = Gravity.CENTER
+            setTextColor(baseColors.onSurface)
+            background = rounded(baseColors.surfaceContainer, 14f, baseColors.outline)
+            setPadding(dp(14), dp(8), dp(14), dp(8))
+            setOnClickListener { onClick() }
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { marginEnd = dp(8) }
+        }
+
+    /** An icon-pack chip carrying a small tile drawn at that pack's own corner radius. */
+    private fun buildIconChip(pack: IconPack): TextView =
+        buildChip(activity.getString(pack.labelRes)) {
+            selectedIconPack = pack
+            refresh()
+        }.apply {
+            val tile = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = dp(9f * pack.cornerScale)
+                setColor(baseColors.primary)
+            }
+            tile.setBounds(0, 0, dp(16), dp(16))
+            setCompoundDrawablesRelative(tile, null, null, null)
+            compoundDrawablePadding = dp(6)
+        }
+
+    private fun randomize() {
+        selectedPack = ThemePack.values().random()
+        selectedIconPack = IconPack.values().random()
+        accentInput.setText(hex(ThemeManager.ACCENT_SWATCHES.random()))
+    }
+
+    private fun resetToDefaults() {
+        selectedPack = ThemePack.OVERWORLD
+        selectedMode = ThemeMode.DARK
+        selectedIconPack = IconPack.CLASSIC
+        accentInput.setText("")
+    }
 
     private fun buildActions(): View {
         val row = LinearLayout(activity).apply { orientation = LinearLayout.HORIZONTAL }

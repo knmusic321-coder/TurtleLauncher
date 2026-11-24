@@ -10,8 +10,10 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
@@ -379,6 +381,9 @@ public class LauncherActivity extends BaseActivity {
         // Theme effects (End Void's drifting starfield) sit behind the content, if the active
         // pack asks for them. A no-op for every other pack.
         com.endiq.turtlelauncher.feature.theme.ThemeEffects.apply(this);
+        // Tap particles: a full-screen, non-clickable overlay above the UI; touches still land
+        // on the widgets underneath, this only draws the burst at the touch point.
+        com.endiq.turtlelauncher.ui.view.TapParticles.install(this);
 
         processFragment();
         processViews();
@@ -662,6 +667,37 @@ public class LauncherActivity extends BaseActivity {
         // April Fools easter egg.
         if (ZHTools.checkDate(4, 1)) binding.hair.setVisibility(View.VISIBLE);
         else binding.hair.setVisibility(View.GONE);
+    }
+
+    /** Touch bookkeeping for the tap particles (see TapParticles). */
+    private float tapDownX;
+    private float tapDownY;
+    private long tapDownTime;
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                tapDownX = event.getRawX();
+                tapDownY = event.getRawY();
+                tapDownTime = SystemClock.uptimeMillis();
+                break;
+            case MotionEvent.ACTION_UP: {
+                // Only a real tap bursts: a scroll, a drag or a long press does not.
+                float slop = 26f * getResources().getDisplayMetrics().density;
+                float dx = event.getRawX() - tapDownX;
+                float dy = event.getRawY() - tapDownY;
+                if (SystemClock.uptimeMillis() - tapDownTime < 400L
+                        && dx * dx + dy * dy <= slop * slop) {
+                    com.endiq.turtlelauncher.ui.view.TapParticles.burst(
+                            this, event.getRawX(), event.getRawY());
+                }
+                break;
+            }
+            default:
+                break;
+        }
+        return super.dispatchTouchEvent(event);
     }
 
     @Override

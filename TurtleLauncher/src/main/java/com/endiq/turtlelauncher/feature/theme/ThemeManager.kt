@@ -46,11 +46,25 @@ object ThemeManager {
     @Volatile private var cacheDark: Boolean = true
     @Volatile private var cacheScheme: MiuixColorScheme? = null
 
-    /** The pack selected in Settings -> Launcher -> Theme studio. */
+    /**
+     * The pack selected in Settings -> Launcher -> Theme studio.
+     *
+     * `pack()` is asked for by every Miuix surface while it inflates, so the resolved enum is
+     * cached against the raw stored key: a screen full of cards parses the setting once, not
+     * once per view.
+     */
+    @Volatile private var cachedPackKey: String? = null
+    @Volatile private var cachedPack: ThemePack = ThemePack.OVERWORLD
+
     @JvmStatic
-    fun pack(): ThemePack = runCatching {
-        ThemePack.fromKey(AllSettings.launcherThemePack.getValue())
-    }.getOrDefault(ThemePack.OVERWORLD)
+    fun pack(): ThemePack {
+        val raw = runCatching { AllSettings.launcherThemePack.getValue() }.getOrDefault("")
+        if (raw == cachedPackKey) return cachedPack
+        val resolved = ThemePack.fromKey(raw)
+        cachedPackKey = raw
+        cachedPack = resolved
+        return resolved
+    }
 
     @JvmStatic
     fun iconPack(): IconPack = runCatching {

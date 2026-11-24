@@ -27,6 +27,12 @@ class SeekBarSettingsWrapper(
 ) : AbstractSettingsWrapper(mainView) {
     private var listener: OnSeekBarProgressChangeListener? = null
 
+    /**
+     * Persists the value shortly after the last change, so a drag that never reports
+     * `onStopTrackingTouch` (a custom slider, a screen that closes mid-drag) still saves it.
+     */
+    private val saveRunnable = Runnable { unit.put(seekbarView.progress).save() }
+
     constructor(
         context: Context,
         unit: IntSettingUnit,
@@ -60,7 +66,13 @@ class SeekBarSettingsWrapper(
                 val progress = seekbarView.progress
 
                 listener?.onChange(progress)
-                if (saveValue) unit.put(progress).save()
+                if (saveValue) {
+                    seekbarView.removeCallbacks(saveRunnable)
+                    unit.put(progress).save()
+                } else {
+                    seekbarView.removeCallbacks(saveRunnable)
+                    seekbarView.postDelayed(saveRunnable, 350L)
+                }
                 setSeekBarValueTextView()
                 checkShowRebootDialog(context)
             }
@@ -74,6 +86,18 @@ class SeekBarSettingsWrapper(
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 updateSeekbarValue(true)
+            }
+        })
+
+        // Leaving the screen is the last chance to keep a value that was never committed.
+        seekbarView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(v: View) = Unit
+
+            override fun onViewDetachedFromWindow(v: View) {
+                seekbarView.removeCallbacks(saveRunnable)
+                if (seekbarView.progress != unit.getValue()) {
+                    unit.put(seekbarView.progress).save()
+                }
             }
         })
 

@@ -51,6 +51,12 @@ class MiuixSwitch @JvmOverloads constructor(
     private val thumbPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
     }
+    private val haloPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.FILL
+    }
+    private val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+    }
     private val trackRect = RectF()
     private val argbEvaluator = ArgbEvaluator()
 
@@ -264,22 +270,60 @@ class MiuixSwitch @JvmOverloads constructor(
         trackRect.set(trackLeft, trackTop, trackLeft + trackWidthPx, trackTop + trackHeightPx)
 
         val clampedProgress = thumbProgress.coerceIn(0f, 1f)
-        val uncheckedTrack = if (isEnabled) colors.secondary else colors.disabledSecondary
+        val trackRadius = trackHeightPx / 2f
+
+        // Off = quiet container; on = accent capsule.
+        val uncheckedTrack = if (isEnabled) colors.surfaceContainerHigh else colors.disabledSecondary
         val checkedTrack = if (isEnabled) colors.primary else colors.disabledPrimary
         trackPaint.color = argbEvaluator.evaluate(clampedProgress, uncheckedTrack, checkedTrack) as Int
-
-        val trackRadius = trackHeightPx / 2f
         canvas.drawRoundRect(trackRect, trackRadius, trackRadius, trackPaint)
+
+        // Hairline edge: an unchecked capsule on a dark card otherwise melts into the card,
+        // and a lit capsule gets a soft inner sheen instead of a hard rim.
+        strokePaint.strokeWidth = density
+        strokePaint.color = argbEvaluator.evaluate(
+            clampedProgress,
+            withAlpha(colors.outline, 200),
+            withAlpha(colors.onPrimary, 90)
+        ) as Int
+        canvas.drawRoundRect(trackRect, trackRadius, trackRadius, strokePaint)
 
         val uncheckedThumb = if (isEnabled) colors.onSecondary else colors.disabledOnSecondary
         val checkedThumb = if (isEnabled) colors.onPrimary else colors.disabledOnPrimary
-        thumbPaint.color = argbEvaluator.evaluate(clampedProgress, uncheckedThumb, checkedThumb) as Int
+        val thumbColor = argbEvaluator.evaluate(clampedProgress, uncheckedThumb, checkedThumb) as Int
 
         val effectiveProgress = if (isRtl) 1f - thumbProgress else thumbProgress
         val thumbCenterX = trackLeft + thumbInsetPx + thumbRadiusRestPx + effectiveProgress * thumbTravelPx
         val thumbCenterY = trackTop + trackHeightPx / 2f
-        val currentThumbRadius = thumbRadiusRestPx * thumbScale
+        val thumbRadius = thumbRadiusRestPx * thumbScale
+        // Dragging stretches the thumb into a capsule, the way the Miuix / iOS switch does.
+        val stretch = if (isDraggingThumb && isEnabled) 4.5f * density else 0f
+        val halfWidth = thumbRadius + stretch
 
-        canvas.drawCircle(thumbCenterX, thumbCenterY, currentThumbRadius, thumbPaint)
+        // Contact shadow first, then the thumb on top of it.
+        haloPaint.color = withAlpha(Color.BLACK, 40)
+        canvas.drawRoundRect(
+            thumbCenterX - halfWidth,
+            thumbCenterY - thumbRadius + density,
+            thumbCenterX + halfWidth,
+            thumbCenterY + thumbRadius + density,
+            thumbRadius,
+            thumbRadius,
+            haloPaint
+        )
+
+        thumbPaint.color = thumbColor
+        canvas.drawRoundRect(
+            thumbCenterX - halfWidth,
+            thumbCenterY - thumbRadius,
+            thumbCenterX + halfWidth,
+            thumbCenterY + thumbRadius,
+            thumbRadius,
+            thumbRadius,
+            thumbPaint
+        )
     }
+
+    private fun withAlpha(color: Int, alpha: Int): Int =
+        Color.argb(alpha.coerceIn(0, 255), Color.red(color), Color.green(color), Color.blue(color))
 }

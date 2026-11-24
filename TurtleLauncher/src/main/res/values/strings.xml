@@ -1446,7 +1446,7 @@
     <string name="music_delete_track">Remove</string>
 
     <string name="whats_new_title">🐢 What\'s New in TurtleLauncher</string>
-    <string name="whats_new_version">v9</string>
+    <string name="whats_new_version">v11</string>
     <string name="whats_new_feature_1">🎭 Emotes: dependencies install themselves</string>
     <string name="whats_new_feature_1_desc">Installing the Emotecraft mod now automatically fetches its required Player Animation Library dependency (read straight from the mod\'s own metadata), so the game no longer crashes on launch with a missing-dependency error.</string>
     <string name="whats_new_feature_2">📜 Game logs are finally saved</string>
@@ -1459,20 +1459,20 @@
     <string name="game_notice_fixed_header">Fixed and changed</string>
     <string name="game_notice_new_header">New features and where to find them</string>
 
-    <string name="game_notice_item_1_title">Video sound, on two separate switches</string>
-    <string name="game_notice_item_1_desc">The main-menu wallpaper clip and the small clip in the launch panel now have their own mute switches, so silencing one never silences the other. Find them in Settings, Launcher, Background video, next to Loop video — or mute the panel clip straight from the panel\'s own + menu.</string>
-    <string name="game_notice_item_2_title">A smaller liquid-island settings button in game</string>
-    <string name="game_notice_item_2_desc">The floating gear is now a 38dp droplet of glass: asymmetric soft corners, a faint halo and a light sheen instead of a square chip, so it covers much less of the game while staying easy to find.</string>
-    <string name="game_notice_item_3_title">The game starts without Wi-Fi</string>
-    <string name="game_notice_item_3_desc">Launching with no connection no longer closes the app. The offline path stopped running its file and mod preparation on the UI thread, where any network call killed the process, and mobile data, Ethernet, USB tethering and VPN are now recognised as a connection instead of being treated as offline.</string>
-    <string name="game_notice_item_4_title">Mod analysis inside Mod Management</string>
-    <string name="game_notice_item_4_desc">Open Mod Management after a crash and it reads the last game log plus the newest crash report by itself: the recognised cause is shown, and the jars actually named in that log are listed. Tap Analyze at the top of the screen to run the same check at any time.</string>
-    <string name="game_notice_item_5_title">Analysis points at candidates, not verdicts</string>
-    <string name="game_notice_item_5_desc">Only jars whose own name appears in the failing log are listed, with how often it appears. Disable one of them, launch again, and repeat — nothing in your mods folder is changed automatically.</string>
-    <string name="game_notice_item_6_title">Every feature is still here</string>
-    <string name="game_notice_item_6_desc">No screen or tool was removed: versions, accounts, mods, friends, recording, benchmarks, the glass effect, video backgrounds and every setting are all intact.</string>
-    <string name="game_notice_item_7_title">Version name: v9</string>
-    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one: v1, v2, ... The build you are running is v9. Check it in Settings, About.</string>
+    <string name="game_notice_item_1_title">Page opacity now stays where you set it</string>
+    <string name="game_notice_item_1_desc">The slider used to change only the screen that was open: back on the home screen, or in Settings again, every card returned to fully opaque. The value is now saved as you drag, each screen re-reads it when it appears, and rows that are created later are faded too.</string>
+    <string name="game_notice_item_2_title">Two new theme packs: Aurora and Sakura</string>
+    <string name="game_notice_item_2_desc">Aurora is polar green-teal over a deep night sky; Sakura is blossom pink with very soft corners. Both live in Settings, Launcher, Theme studio, next to the earlier packs.</string>
+    <string name="game_notice_item_3_title">Surprise me and Reset to default</string>
+    <string name="game_notice_item_3_desc">Two new buttons under Icon pack: Surprise me picks a random pack, accent and icon pack so you can look around; Reset to default returns to Overworld, the pack accent, dark mode and Classic icons.</string>
+    <string name="game_notice_item_4_title">Icon packs show their shape</string>
+    <string name="game_notice_item_4_desc">Each icon pack choice now carries a small tile drawn at that pack own corner radius, so Classic, Minimal and Pixel are visibly different before you apply them.</string>
+    <string name="game_notice_item_5_title">Icons bounce instead of rotating slightly</string>
+    <string name="game_notice_item_5_desc">On every tap an icon hops, lands and bounces once more with a light squash, on top of its own motion. Icons that used to only rotate a few degrees bounce too, and the effect still animates only GPU-composited properties, so lists stay smooth.</string>
+    <string name="game_notice_item_6_title">A new switch and particles on touch</string>
+    <string name="game_notice_item_6_desc">The toggle is redrawn: a hairline edge when off, an accent halo when on, and a thumb that stretches into a capsule while dragged. Tapping anywhere in the launcher now bursts a small spray of grains in the accent colour.</string>
+    <string name="game_notice_item_7_title">Version name: v11</string>
+    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one: v1, v2, ... The build you are running is v11. Check it in Settings, About.</string>
 
     <string name="whats_new_warning">🧩 Renderer plugin apps (e.g. MobileGlues) show up in the renderer list right after you install them — no restart needed — and their supported Minecraft version range is honored like any built-in renderer.</string>
 
@@ -1848,4 +1848,8 @@
     <string name="icon_pack_classic">Classic</string>
     <string name="icon_pack_minimal">Minimal</string>
     <string name="icon_pack_pixel">Pixel</string>
+    <string name="theme_pack_aurora">Aurora</string>
+    <string name="theme_pack_sakura">Sakura</string>
+    <string name="theme_studio_random">Surprise me</string>
+    <string name="theme_studio_reset">Reset to default</string>
 </resources>
