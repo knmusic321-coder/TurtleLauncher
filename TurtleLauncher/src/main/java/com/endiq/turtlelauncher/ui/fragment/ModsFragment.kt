@@ -17,6 +17,9 @@ import com.endiq.turtlelauncher.R
 import com.endiq.turtlelauncher.databinding.FragmentModsBinding
 import com.endiq.turtlelauncher.feature.download.enums.ModLoader
 import com.endiq.turtlelauncher.feature.download.utils.ModLoaderUtils
+import com.endiq.turtlelauncher.feature.log.CrashAnalyzer
+import com.endiq.turtlelauncher.feature.log.LatestLogResolver
+import com.endiq.turtlelauncher.feature.mod.ModCrashAnalyzer
 import com.endiq.turtlelauncher.feature.mod.ModToggleHandler
 import com.endiq.turtlelauncher.feature.mod.ModUtils
 import com.endiq.turtlelauncher.feature.mod.RecommendedContentInstaller
@@ -261,10 +264,96 @@ class ModsFragment : FragmentWithAnim(R.layout.fragment_mods) {
 
             goDownloadText.setOnClickListener{ goDownloadMod() }
 
+            analyzeButton.setOnClickListener {
+                closeMultiSelect()
+                analyzeMods(auto = false)
+            }
+
             fileRecyclerView.lockAndListAt(File(mRootPath), File(mRootPath))
         }
 
         startNewbieGuide()
+        autoAnalyzeAfterCrash()
+    }
+
+    /**
+     * Reads the last game log and its crash report, then names the jars that actually appear
+     * in it. Runs on a worker thread: the log can be several megabytes and the crash rules do
+     * regex work over all of it.
+     */
+    private fun analyzeMods(auto: Boolean) {
+        if (!isAdded) return
+        val appContext = requireContext().applicationContext
+        val version = resolveVersionForModsRoot()
+        val modsFolder = File(mRootPath)
+        val dialog = if (auto) null else ZHTools.showTaskRunningDialog(requireContext())
+        Task.runTask { ModCrashAnalyzer.analyze(version, modsFolder) }
+            .ended(TaskExecutors.getAndroidUI()) { report ->
+                runCatching { dialog?.dismiss() }
+                if (!isAdded || report == null) return@ended
+                if (auto && report.suspects.isEmpty()) return@ended
+                if (!report.hasLog) {
+                    if (!auto) Toast.makeText(appContext, R.string.profile_mods_analyze_no_log, Toast.LENGTH_LONG).show()
+                    return@ended
+                }
+                TipDialog.Builder(requireContext())
+                    .setTitle(if (auto) R.string.profile_mods_analyze_auto_title else R.string.profile_mods_analyze_title)
+                    .setMessage(buildAnalysisMessage(report))
+                    .setCenterMessage(false)
+                    .setSelectable(true)
+                    .setShowCancel(false)
+                    .setConfirm(R.string.generic_ok)
+                    .showDialog()
+            }
+            .onThrowable { error ->
+                runCatching { dialog?.dismiss() }
+                if (isAdded) Tools.showErrorRemote(error)
+            }
+            .execute()
+    }
+
+    private fun buildAnalysisMessage(report: ModCrashAnalyzer.Report): String {
+        val logFile = report.logFile ?: return getString(R.string.profile_mods_analyze_no_log)
+        val text = StringBuilder()
+        text.append(getString(R.string.profile_mods_analyze_log_line, logFile.name))
+        if (report.hasDiagnosis) {
+            report.diagnoses.take(3).forEach { diagnosis ->
+                text.append("\n\n• ").append(diagnosis.title)
+                if (diagnosis.cause.isNotBlank()) {
+                    text.append("\n  ").append(diagnosis.cause.take(400))
+                }
+            }
+        } else {
+            text.append("\n\n").append(getString(R.string.profile_mods_analyze_no_cause))
+        }
+
+        text.append("\n\n")
+        if (report.suspects.isEmpty()) {
+            text.append(getString(R.string.profile_mods_analyze_no_suspect))
+        } else {
+            text.append(getString(R.string.profile_mods_analyze_suspects_header))
+            report.suspects.forEach { suspect ->
+                text.append("\n• ").append(suspect.jar.name)
+                    .append(" (").append(getString(R.string.profile_mods_analyze_hits, suspect.hits))
+                if (suspect.disabled) text.append(", ").append(getString(R.string.profile_mods_analyze_disabled))
+                text.append(')')
+            }
+            text.append("\n\n").append(getString(R.string.profile_mods_analyze_hint))
+        }
+        return text.toString()
+    }
+
+    /**
+     * Automatic pass: after a session that ended in a recognised error, the mod list opens with
+     * the analysis already done. Only logs from the last six hours count, so an old crash does
+     * not pop a dialog on every visit.
+     */
+    private fun autoAnalyzeAfterCrash() {
+        if (CrashAnalyzer.getLastDiagnoses().isEmpty()) return
+        val log = runCatching { LatestLogResolver.resolveLastGameLogFile() }.getOrNull() ?: return
+        val age = System.currentTimeMillis() - log.lastModified()
+        if (age > 6 * 60 * 60 * 1000L) return
+        analyzeMods(auto = true)
     }
 
     private fun startNewbieGuide() {

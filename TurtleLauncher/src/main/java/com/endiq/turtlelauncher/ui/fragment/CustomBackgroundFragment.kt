@@ -191,6 +191,19 @@ class CustomBackgroundFragment : FragmentWithAnim(R.layout.fragment_custom_backg
                     BackgroundManager.setVideoLoop(BackgroundType.MAIN_MENU, isChecked)
                 }
             }
+            videoMuteSwitch.setOnCheckedChangeListener { _, isChecked ->
+                if (!updatingVideoUi) {
+                    BackgroundManager.setVideoMuted(BackgroundType.MAIN_MENU, isChecked)
+                    // The clip is already running: apply the new sound without restarting it.
+                    EventBus.getDefault().post(com.endiq.turtlelauncher.event.value.VideoSoundChangeEvent())
+                }
+            }
+            panelMediaMuteSwitch.setOnCheckedChangeListener { _, isChecked ->
+                if (!updatingVideoUi) {
+                    BackgroundManager.setPanelMediaMuted(isChecked)
+                    EventBus.getDefault().post(com.endiq.turtlelauncher.event.value.VideoSoundChangeEvent())
+                }
+            }
 
             actionBar.apply {
                 pasteButton.setOnClickListener { _: View? ->
@@ -320,12 +333,16 @@ class CustomBackgroundFragment : FragmentWithAnim(R.layout.fragment_custom_backg
         val visibility = if (isMainMenu) View.VISIBLE else View.GONE
         binding.videoBackgroundButton.visibility = visibility
         binding.videoLoopRow.visibility = visibility
+        binding.videoMuteRow.visibility = visibility
+        binding.panelMediaMuteRow.visibility = visibility
         binding.videoStatusText.visibility = visibility
         if (!isMainMenu) return
 
         val video = BackgroundManager.getBackgroundVideo(BackgroundType.MAIN_MENU)
         updatingVideoUi = true
         binding.videoLoopSwitch.isChecked = BackgroundManager.isVideoLoopEnabled(BackgroundType.MAIN_MENU)
+        binding.videoMuteSwitch.isChecked = BackgroundManager.isVideoMuted(BackgroundType.MAIN_MENU)
+        binding.panelMediaMuteSwitch.isChecked = BackgroundManager.isPanelMediaMuted()
         updatingVideoUi = false
         binding.videoStatusText.text = if (video != null) {
             getString(R.string.custom_background_video_selected, video.name)

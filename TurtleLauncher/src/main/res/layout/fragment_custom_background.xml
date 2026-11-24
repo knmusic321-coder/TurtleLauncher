@@ -165,6 +165,60 @@
 
             </LinearLayout>
 
+            <!-- Two independent sound switches: the wallpaper clip and the launch panel's
+                 clip each keep their own mute flag. -->
+            <LinearLayout
+                android:id="@+id/video_mute_row"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/video_loop_row">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/custom_background_mute_video"
+                    android:textColor="@color/turtle_primary_text" />
+
+                <com.endiq.turtlelauncher.ui.miuix.MiuixSwitch
+                    android:id="@+id/video_mute_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/panel_media_mute_row"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/video_mute_row">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/custom_background_mute_panel_video"
+                    android:textColor="@color/turtle_primary_text" />
+
+                <com.endiq.turtlelauncher.ui.miuix.MiuixSwitch
+                    android:id="@+id/panel_media_mute_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/video_status_text"
                 android:layout_width="0dp"
@@ -175,7 +229,7 @@
                 android:textColor="@color/turtle_text_secondary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/video_loop_row" />
+                app:layout_constraintTop_toBottomOf="@id/panel_media_mute_row" />
 
             <ImageView
                 android:id="@+id/preview"

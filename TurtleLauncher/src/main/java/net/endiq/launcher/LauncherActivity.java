@@ -869,11 +869,21 @@ public class LauncherActivity extends BaseActivity {
         }
 
         view.setVisibility(View.VISIBLE);
+        view.setMuted(BackgroundManager.isVideoMuted(BackgroundType.MAIN_MENU));
         view.play(video, BackgroundManager.isVideoLoopEnabled(BackgroundType.MAIN_MENU));
         // Full strength: only the launcher's own surfaces may dim the clip, and those follow
         // the page-opacity slider. A hard-coded 30% alpha here made the video look dark even
         // when every page was set to 0% transparency.
         view.animate().alpha(1f).setDuration(420).start();
+    }
+
+    /** Applies the wallpaper clip's mute flag to the running player without restarting it. */
+    @Subscribe()
+    public void event(com.endiq.turtlelauncher.event.value.VideoSoundChangeEvent event) {
+        com.endiq.turtlelauncher.ui.view.BackgroundVideoView view = binding.backgroundVideo;
+        if (view != null) {
+            view.setMuted(BackgroundManager.isVideoMuted(BackgroundType.MAIN_MENU));
+        }
     }
 
     private void refreshTopBarColor(boolean loadFromBackground) {

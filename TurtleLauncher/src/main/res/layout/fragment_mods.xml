@@ -91,15 +91,33 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <!-- Reads the last game log / crash report and names the jars that appear in
+                     it, so a failed launch can be narrowed down without leaving this screen. -->
+                <com.endiq.turtlelauncher.ui.view.AnimTextView
+                    android:id="@+id/analyze_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_12sdp"
+                    android:background="@drawable/button_background"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:paddingHorizontal="@dimen/_10sdp"
+                    android:text="@string/profile_mods_analyze"
+                    android:textColor="@color/turtle_text_primary"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/title_view"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/title_view"
+                    app:ripple_for_text="true" />
+
                 <com.endiq.turtlelauncher.ui.view.AnimCheckBox
                     android:id="@+id/select_all"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:layout_marginEnd="@dimen/_8sdp"
                     android:visibility="gone"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintEnd_toStartOf="@+id/analyze_button" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

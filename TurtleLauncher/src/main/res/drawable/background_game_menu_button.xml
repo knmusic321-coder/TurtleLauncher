@@ -1,11 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Floating in-game menu button: a small glass chip with an accent edge so it is easy to
-     find over a bright game scene without covering it with a dark square. -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <solid android:color="@color/glass_surface_raised" />
-    <stroke
-        android:width="1dp"
-        android:color="@color/island_stroke" />
-    <corners android:radius="16dp" />
-</shape>
+<!-- Liquid Island: the floating in-game settings button. An asymmetric, softly rounded
+     glass blob with a warm sheen and a thin accent rim, so it reads as a droplet of the
+     launcher's island language instead of a square chip over the game. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Soft halo that keeps the blob visible over a bright scene without a dark plate. -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners
+                android:topLeftRadius="15dp"
+                android:topRightRadius="13dp"
+                android:bottomLeftRadius="13dp"
+                android:bottomRightRadius="16dp" />
+            <gradient
+                android:type="radial"
+                android:gradientRadius="26dp"
+                android:startColor="#40C7E8B0"
+                android:endColor="#00C7E8B0" />
+        </shape>
+    </item>
+
+    <!-- The droplet body: a diagonal glass gradient, not a flat fill. -->
+    <item
+        android:left="1dp"
+        android:top="1dp"
+        android:right="1dp"
+        android:bottom="1dp">
+        <shape android:shape="rectangle">
+            <corners
+                android:topLeftRadius="15dp"
+                android:topRightRadius="12dp"
+                android:bottomLeftRadius="13dp"
+                android:bottomRightRadius="16dp" />
+            <gradient
+                android:angle="115"
+                android:startColor="#F22B3626"
+                android:centerColor="#E61A231B"
+                android:endColor="#F0101710" />
+        </shape>
+    </item>
+
+    <!-- Liquid highlight in the upper-left, the way light sits on a wet surface. -->
+    <item
+        android:left="4dp"
+        android:top="3dp"
+        android:right="13dp"
+        android:bottom="20dp">
+        <shape android:shape="oval">
+            <solid android:color="#38FFFFFF" />
+        </shape>
+    </item>
+
+    <!-- Accent rim. -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners
+                android:topLeftRadius="15dp"
+                android:topRightRadius="13dp"
+                android:bottomLeftRadius="13dp"
+                android:bottomRightRadius="16dp" />
+            <stroke
+                android:width="1dp"
+                android:color="@color/island_stroke" />
+        </shape>
+    </item>
+
+</layer-list>

@@ -25,6 +25,7 @@ object BackgroundManager {
     /** Property suffixes for the optional looping background video of each surface. */
     private const val VIDEO_SUFFIX = "_VIDEO"
     private const val VIDEO_LOOP_SUFFIX = "_VIDEO_LOOP"
+    private const val VIDEO_MUTED_SUFFIX = "_VIDEO_MUTED"
     private val VIDEO_EXTENSIONS = listOf("mp4", "webm", "mkv", "m4v", "3gp", "mov")
 
     private val defaultProperties: Properties
@@ -34,6 +35,7 @@ object BackgroundManager {
                 properties.setProperty(type.name, NULL)
                 properties.setProperty(type.name + VIDEO_SUFFIX, NULL)
                 properties.setProperty(type.name + VIDEO_LOOP_SUFFIX, "true")
+                properties.setProperty(type.name + VIDEO_MUTED_SUFFIX, "false")
             }
             return properties
         }
@@ -139,6 +141,21 @@ object BackgroundManager {
         saveProperties(props)
     }
 
+    /**
+     * Whether this surface's background clip is played without sound. Each surface owns its
+     * own flag, so muting the main-menu clip never mutes the launch-panel clip.
+     */
+    @JvmStatic
+    fun isVideoMuted(backgroundType: BackgroundType): Boolean =
+        properties.getProperty(backgroundType.name + VIDEO_MUTED_SUFFIX)?.toBooleanStrictOrNull() ?: false
+
+    @JvmStatic
+    fun setVideoMuted(backgroundType: BackgroundType, muted: Boolean) {
+        val props = properties
+        props.setProperty(backgroundType.name + VIDEO_MUTED_SUFFIX, muted.toString())
+        saveProperties(props)
+    }
+
     /** Pass `null` (or a blank name) to remove the video background of [backgroundType]. */
     @JvmStatic
     fun setBackgroundVideo(backgroundType: BackgroundType, fileName: String?) {
@@ -160,6 +177,7 @@ object BackgroundManager {
     /** Property keys of the optional picture or clip shown in the home launch panel. */
     private const val PANEL_MEDIA_TYPE = "PANEL_MEDIA_TYPE"
     private const val PANEL_MEDIA_FILE = "PANEL_MEDIA_FILE"
+    private const val PANEL_MEDIA_MUTED = "PANEL_MEDIA_MUTED"
 
     const val PANEL_MEDIA_IMAGE: String = "image"
     const val PANEL_MEDIA_VIDEO: String = "video"
@@ -181,6 +199,18 @@ object BackgroundManager {
         if (media.parentFile?.canonicalFile != PathManager.DIR_BACKGROUND.canonicalFile) return null
         if (!media.isFile) return null
         return if (type == PANEL_MEDIA_VIDEO) media.takeIf { isVideo(it) } else media
+    }
+
+    /** Sound of the launch panel's clip, independent of the main-menu clip's sound. */
+    @JvmStatic
+    fun isPanelMediaMuted(): Boolean =
+        properties.getProperty(PANEL_MEDIA_MUTED)?.toBooleanStrictOrNull() ?: false
+
+    @JvmStatic
+    fun setPanelMediaMuted(muted: Boolean) {
+        val props = properties
+        props.setProperty(PANEL_MEDIA_MUTED, muted.toString())
+        saveProperties(props)
     }
 
     /** Pass `null` for either argument to clear the launch panel slot. */

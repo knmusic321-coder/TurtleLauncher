@@ -251,8 +251,15 @@ public class MainMenuFragment extends FragmentWithAnim {
         java.util.List<String> labels = new java.util.ArrayList<>();
         labels.add(getString(R.string.panel_media_pick_image));
         labels.add(getString(R.string.panel_media_pick_video));
+        boolean hasVideo = false;
         if (BackgroundManager.getPanelMedia() != null) {
             labels.add(getString(R.string.panel_media_remove));
+            hasVideo = BackgroundManager.PANEL_MEDIA_VIDEO.equals(BackgroundManager.getPanelMediaType());
+            if (hasVideo) {
+                labels.add(getString(BackgroundManager.isPanelMediaMuted()
+                        ? R.string.panel_media_unmute
+                        : R.string.panel_media_mute));
+            }
         }
         new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialogTheme)
                 .setTitle(R.string.panel_media_pick_title)
@@ -261,10 +268,17 @@ public class MainMenuFragment extends FragmentWithAnim {
                         panelImagePicker.launch(new String[]{"image/*"});
                     } else if (which == 1) {
                         panelVideoPicker.launch("video/*");
-                    } else {
+                    } else if (which == 2) {
                         BackgroundManager.setPanelMedia(null, null);
                         refreshPanelMedia();
                         Toast.makeText(requireContext(), R.string.panel_media_removed, Toast.LENGTH_SHORT).show();
+                    } else {
+                        boolean muted = !BackgroundManager.isPanelMediaMuted();
+                        BackgroundManager.setPanelMediaMuted(muted);
+                        refreshPanelMedia();
+                        Toast.makeText(requireContext(),
+                                muted ? R.string.panel_media_mute_done : R.string.panel_media_unmute_done,
+                                Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, null)
@@ -309,6 +323,8 @@ public class MainMenuFragment extends FragmentWithAnim {
         binding.panelMediaEmpty.setVisibility(View.GONE);
         if (BackgroundManager.PANEL_MEDIA_VIDEO.equals(type)) {
             binding.panelMediaVideo.setVisibility(View.VISIBLE);
+            // The panel clip has its own mute flag: muting the wallpaper clip leaves this one alone.
+            binding.panelMediaVideo.setMuted(BackgroundManager.isPanelMediaMuted());
             binding.panelMediaVideo.play(media, true);
         } else {
             binding.panelMediaImage.setVisibility(View.VISIBLE);
@@ -400,6 +416,13 @@ public class MainMenuFragment extends FragmentWithAnim {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void event(AccountUpdateEvent event) {
         refreshAccountButton();
+    }
+
+    /** Applies the panel clip's own mute flag to the player that is already running. */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void event(com.endiq.turtlelauncher.event.value.VideoSoundChangeEvent event) {
+        if (binding == null) return;
+        binding.panelMediaVideo.setMuted(BackgroundManager.isPanelMediaMuted());
     }
 
     /**

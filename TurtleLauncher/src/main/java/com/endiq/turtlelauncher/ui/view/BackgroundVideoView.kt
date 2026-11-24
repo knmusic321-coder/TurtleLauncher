@@ -18,8 +18,9 @@ import java.io.File
  * translucency as the wallpaper and crop it to fill the screen instead of stretching
  * a portrait clip.
  *
- * The clip's own audio track is played as-is; the caller pauses it when the launcher
- * is not in the foreground.
+ * The clip's own audio track is played unless [setMuted] was called; the caller pauses
+ * playback when the launcher is not in the foreground. Muting is a per-view flag, so the
+ * main-menu clip and the launch-panel clip can be silenced independently.
  */
 class BackgroundVideoView @JvmOverloads constructor(
     context: Context,
@@ -31,6 +32,7 @@ class BackgroundVideoView @JvmOverloads constructor(
     private var prepared = false
     private var pendingFile: File? = null
     private var pendingLoop = true
+    private var muted = false
     private var videoWidth = 0
     private var videoHeight = 0
 
@@ -71,6 +73,8 @@ class BackgroundVideoView @JvmOverloads constructor(
             mediaPlayer.setDataSource(file.absolutePath)
             mediaPlayer.setSurface(surface ?: return@runCatching)
             mediaPlayer.isLooping = loop
+            val volume = if (muted) 0f else 1f
+            mediaPlayer.setVolume(volume, volume)
             mediaPlayer.setOnVideoSizeChangedListener { _, width, height ->
                 updateCoverTransform(width, height)
             }
@@ -83,6 +87,17 @@ class BackgroundVideoView @JvmOverloads constructor(
             releasePlayer()
         }
     }
+
+    /** Turns this view's soundtrack off (or back on) without restarting the clip. */
+    fun setMuted(muted: Boolean) {
+        this.muted = muted
+        runCatching {
+            val volume = if (muted) 0f else 1f
+            player?.setVolume(volume, volume)
+        }
+    }
+
+    fun isMuted(): Boolean = muted
 
     fun pausePlayback() {
         runCatching {

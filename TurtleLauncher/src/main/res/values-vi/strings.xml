@@ -404,6 +404,17 @@
     <string name="profile_mods_disable">Tắt</string>
     <string name="profile_mods_enable">Bật</string>
     <string name="profile_mods_disable_or_enable">Tắt/Bật</string>
+    <string name="profile_mods_analyze">Phân tích</string>
+    <string name="profile_mods_analyze_title">Phân tích mod</string>
+    <string name="profile_mods_analyze_auto_title">Phân tích mod sau lần văng game vừa rồi</string>
+    <string name="profile_mods_analyze_no_log">Chưa có nhật ký game nào để đọc. Hãy chạy game một lần rồi phân tích lại.</string>
+    <string name="profile_mods_analyze_no_cause">Không nhận ra dấu hiệu lỗi quen thuộc nào trong nhật ký gần nhất nên không kết luận mod nào. Xem Nhật ký trực tiếp trong menu game để có đầy đủ chi tiết.</string>
+    <string name="profile_mods_analyze_suspects_header">Các tệp jar có tên trong nhật ký đó (xuất hiện nhiều nhất trước):</string>
+    <string name="profile_mods_analyze_no_suspect">Không tệp jar nào trong thư mục này được nhắc tên trong nhật ký gần nhất.</string>
+    <string name="profile_mods_analyze_hits">xuất hiện %1$d lần</string>
+    <string name="profile_mods_analyze_disabled">đang tắt</string>
+    <string name="profile_mods_analyze_hint">Đây chỉ là gợi ý chứ không phải kết luận: tắt một tệp trong danh sách, chạy lại game, lặp lại đến khi vào được game.</string>
+    <string name="profile_mods_analyze_log_line">Nhật ký đã đọc: %1$s</string>
     <string name="account_login_done">Đăng nhập hoàn tất</string>
     <string name="account_add">Thêm tài khoản</string>
     <string name="account_no_saved_accounts">Không có tài khoản đã lưu</string>
@@ -480,6 +491,8 @@
     <string name="custom_background_nothing">Chưa có ảnh nền nào ở đây, vui lòng thêm trước!</string>
     <string name="custom_background_add_video">Thêm video nền</string>
     <string name="custom_background_loop_video">Lặp video</string>
+    <string name="custom_background_mute_video">Tắt âm video sảnh</string>
+    <string name="custom_background_mute_panel_video">Tắt âm video nhỏ trong bảng</string>
     <string name="custom_background_video_none">Chưa có video nền (nhấn giữ nút để xoá video)</string>
     <string name="custom_background_video_selected">Đã đặt video nền: %1$s\nNhấn giữ nút để xoá video</string>
     <string name="custom_background_video_removed">Đã xoá video nền</string>
@@ -1370,7 +1383,7 @@
     <string name="discord_rpc_preview_button_hidden">bị ẩn - cần cả nhãn và liên kết hợp lệ</string>
     <string name="music_delete_track">Gỡ bỏ</string>
     <string name="whats_new_title">🐢 Có gì mới trong TurtleLauncher</string>
-    <string name="whats_new_version">v8</string>
+    <string name="whats_new_version">v9</string>
     <string name="whats_new_feature_1">🎭 Emote: phụ thuộc tự cài đặt</string>
     <string name="whats_new_feature_1_desc">Khi cài mod Emotecraft, trình khởi chạy tự tải phụ thuộc Player Animation Library bắt buộc (đọc trực tiếp từ siêu dữ liệu của mod), nên game không còn bị sự cố lúc chạy vì thiếu phụ thuộc.</string>
     <string name="whats_new_feature_2">📜 Nhật ký game đã được lưu lại</string>
@@ -1383,20 +1396,20 @@
     <string name="game_notice_fixed_header">Đã sửa và đã thay đổi</string>
     <string name="game_notice_new_header">Tính năng mới và nằm ở đâu</string>
 
-    <string name="game_notice_item_1_title">Ảnh hoặc video của bạn trong bảng chạy game</string>
-    <string name="game_notice_item_1_desc">Khoảng trống phía trên ô Phiên bản đã chọn giờ là chỗ hiển thị ảnh/video. Nhấn nút dấu + nhỏ cạnh dòng Phiên bản đã chọn để lấy ảnh hay video trong máy, hoặc xoá cái đang có. Ảnh được cắt vừa khung bo tròn, video tự lặp lại ngay trong khung.</string>
-    <string name="game_notice_item_2_title">Kính mờ không còn làm mờ nền</string>
-    <string name="game_notice_item_2_desc">Làm mờ ảnh nền và video khiến cả màn hình trông mất nét nên đã bỏ hẳn. Nền luôn sắc nét, chỉ phủ thêm một lớp kính rất nhẹ; các thẻ vẫn là mặt kính trong suốt. Bật tắt ở Cài đặt, Trình khởi chạy, Hiệu ứng kính mờ.</string>
-    <string name="game_notice_item_3_title">Trang Cài đặt gọn gàng hơn</string>
-    <string name="game_notice_item_3_desc">Mỗi mục giờ là một hàng gọn: biểu tượng bên trái, tên và một dòng mô tả bên cạnh, mũi tên bên phải. Ba nhóm cài đặt vừa trong ít lần cuộn hơn mà ô tìm kiếm vẫn lọc được như cũ.</string>
-    <string name="game_notice_item_4_title">Menu trong game gọn và đẹp hơn</string>
-    <string name="game_notice_item_4_desc">Nút nổi giờ là một chip kính nhỏ thay cho ô vuông tối, bảng mở ra có tay nắm và tên bảng, các tab nằm chung trên một thanh bo tròn. Tab dài giờ cuộn được bên trong bảng thay vì bị cắt mất.</string>
-    <string name="game_notice_item_5_title">Ô trống có gợi ý rõ ràng</string>
-    <string name="game_notice_item_5_desc">Khi chưa chọn ảnh hay video, ô đó chỉ hiện viền mảnh kèm dòng gợi ý, không bao giờ là một khối đen che nền.</string>
+    <string name="game_notice_item_1_title">Tắt âm video, hai công tắc riêng</string>
+    <string name="game_notice_item_1_desc">Video nền sảnh và video nhỏ trong bảng chạy game giờ có công tắc tắt âm riêng, tắt cái này không ảnh hưởng cái kia. Tìm ở Cài đặt, Trình khởi chạy, Video nền, ngay dưới mục Lặp video — hoặc tắt âm video nhỏ ngay trong menu dấu + của bảng.</string>
+    <string name="game_notice_item_2_title">Nút cài đặt trong game nhỏ hơn, kiểu liquid island</string>
+    <string name="game_notice_item_2_desc">Nút bánh răng nổi giờ là một giọt kính 38dp: bốn góc bo không đều, quầng sáng mờ và vệt phản chiếu nhẹ thay cho ô vuông, nên che ít màn hình game hơn mà vẫn dễ thấy.</string>
+    <string name="game_notice_item_3_title">Không có Wi-Fi vẫn vào được game</string>
+    <string name="game_notice_item_3_desc">Chạy game khi không có mạng không còn làm văng ứng dụng. Nhánh chạy ngoại tuyến thôi chuẩn bị tệp và quét mod trên luồng giao diện — nơi mọi lệnh mạng đều làm sập tiến trình — và dữ liệu di động, Ethernet, chia sẻ mạng qua USB hay VPN giờ đều được tính là có kết nối thay vì bị coi là mất mạng.</string>
+    <string name="game_notice_item_4_title">Tự phân tích mod trong Quản lý mod</string>
+    <string name="game_notice_item_4_desc">Sau khi văng game, mở Quản lý mod: trình khởi chạy tự đọc nhật ký game gần nhất và báo cáo lỗi mới nhất, hiện nguyên nhân nhận ra được và liệt kê những tệp jar có tên trong nhật ký. Nhấn nút Phân tích ở đầu màn hình để chạy lại bất cứ lúc nào.</string>
+    <string name="game_notice_item_5_title">Phân tích là gợi ý, không phải kết luận</string>
+    <string name="game_notice_item_5_desc">Chỉ những tệp jar có tên xuất hiện trong nhật ký lỗi mới được liệt kê, kèm số lần xuất hiện. Hãy tắt một tệp, chạy lại game rồi lặp lại — không có tệp nào bị sửa hay xoá tự động.</string>
     <string name="game_notice_item_6_title">Đầy đủ tính năng như cũ</string>
-    <string name="game_notice_item_6_desc">Không có màn hình hay công cụ nào bị lược bỏ: phiên bản, tài khoản, mod, bạn bè, ghi màn hình, benchmark, kính mờ và toàn bộ cài đặt vẫn còn nguyên.</string>
-    <string name="game_notice_item_7_title">Tên phiên bản: v8</string>
-    <string name="game_notice_item_7_desc">Mỗi bản có thay đổi lớn đều tăng một bậc: v1, v2, ... Bạn đang dùng v8, xem ở Cài đặt, Giới thiệu.</string>
+    <string name="game_notice_item_6_desc">Không có màn hình hay công cụ nào bị lược bỏ: phiên bản, tài khoản, mod, bạn bè, ghi màn hình, benchmark, kính mờ, video nền và toàn bộ cài đặt vẫn còn nguyên.</string>
+    <string name="game_notice_item_7_title">Tên phiên bản: v9</string>
+    <string name="game_notice_item_7_desc">Mỗi bản có thay đổi lớn đều tăng một bậc: v1, v2, ... Bạn đang dùng v9, xem ở Cài đặt, Giới thiệu.</string>
 
     <string name="whats_new_warning">🧩 Ứng dụng plugin trình kết xuất (ví dụ MobileGlues) hiện trong danh sách ngay sau khi bạn cài — không cần khởi động lại — và khoảng phiên bản Minecraft được hỗ trợ của nó được tôn trọng như mọi trình kết xuất tích hợp.</string>
     <string name="preset_pvp_title">Cấu hình PvP</string>
@@ -1736,4 +1749,8 @@
     <string name="panel_media_video_selected">Đã chọn video: %1$s</string>
     <string name="panel_media_removed">Đã xoá ảnh / video trong bảng</string>
     <string name="panel_media_failed">Không dùng được tệp này: %1$s</string>
+    <string name="panel_media_mute">Tắt âm video trong bảng</string>
+    <string name="panel_media_unmute">Bật âm video trong bảng</string>
+    <string name="panel_media_mute_done">Đã tắt âm video trong bảng</string>
+    <string name="panel_media_unmute_done">Đã bật lại âm video trong bảng</string>
 </resources>

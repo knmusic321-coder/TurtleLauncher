@@ -129,7 +129,19 @@ class LaunchGame {
                 val listener = ContextAwareDoneListener(context, version)
                 // Without a network, skip the download tasks and launch directly.
                 if (!networkAvailable) {
-                    listener.onDownloadDone()
+                    // MinecraftDownloader hands the listener to its worker thread. Running it
+                    // straight from here instead executed the mod scan, dependency/update
+                    // checks and file preparation on the UI thread, where any socket use
+                    // throws NetworkOnMainThreadException and closes the launcher - the crash
+                    // seen on devices with no Wi-Fi. Use the same background thread as the
+                    // online path, and never let a failure escape as a process crash.
+                    TaskExecutors.getDefault().execute {
+                        runCatching { listener.onDownloadDone() }
+                            .onFailure { error ->
+                                Logging.e("LaunchGame", "Offline launch preparation failed", error)
+                                runCatching { listener.onDownloadFailed(error) }
+                            }
+                    }
                 } else {
                     MinecraftDownloader().start(mcVersion, versionName, listener)
                 }

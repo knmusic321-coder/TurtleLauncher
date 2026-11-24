@@ -410,6 +410,17 @@
     <string name="profile_mods_disable">Disable</string>
     <string name="profile_mods_enable">Enable</string>
     <string name="profile_mods_disable_or_enable">Disable/Enable</string>
+    <string name="profile_mods_analyze">Analyze</string>
+    <string name="profile_mods_analyze_title">Mod analysis</string>
+    <string name="profile_mods_analyze_auto_title">Mod analysis after the last crash</string>
+    <string name="profile_mods_analyze_no_log">There is no game log to read yet. Launch the game once, then analyze again.</string>
+    <string name="profile_mods_analyze_no_cause">No known crash pattern was recognised in the last log, so no mod is blamed here. Use the in-game Live Logs for the full trace.</string>
+    <string name="profile_mods_analyze_suspects_header">Jars named in that log (most mentioned first):</string>
+    <string name="profile_mods_analyze_no_suspect">None of the jars in this folder is named in the last log.</string>
+    <string name="profile_mods_analyze_hits">mentioned %1$d times</string>
+    <string name="profile_mods_analyze_disabled">disabled</string>
+    <string name="profile_mods_analyze_hint">This points at candidates, it does not prove guilt: disable one listed jar, launch again, and repeat until the game starts.</string>
+    <string name="profile_mods_analyze_log_line">Log read: %1$s</string>
     <!-- Account -->
     <string name="account_login_done">Login Complete</string>
     <string name="account_add">Add Account</string>
@@ -490,6 +501,8 @@
     <string name="custom_background_nothing">There are no background images here, please add some first!</string>
     <string name="custom_background_add_video">Add Background Video</string>
     <string name="custom_background_loop_video">Loop video</string>
+    <string name="custom_background_mute_video">Mute main-menu video</string>
+    <string name="custom_background_mute_panel_video">Mute panel video</string>
     <string name="custom_background_video_none">No background video yet (long-press the button to remove one)</string>
     <string name="custom_background_video_selected">Background video set: %1$s\nLong-press the button to remove it</string>
     <string name="custom_background_video_removed">Background video removed</string>
@@ -1433,7 +1446,7 @@
     <string name="music_delete_track">Remove</string>
 
     <string name="whats_new_title">🐢 What\'s New in TurtleLauncher</string>
-    <string name="whats_new_version">v8</string>
+    <string name="whats_new_version">v9</string>
     <string name="whats_new_feature_1">🎭 Emotes: dependencies install themselves</string>
     <string name="whats_new_feature_1_desc">Installing the Emotecraft mod now automatically fetches its required Player Animation Library dependency (read straight from the mod\'s own metadata), so the game no longer crashes on launch with a missing-dependency error.</string>
     <string name="whats_new_feature_2">📜 Game logs are finally saved</string>
@@ -1446,20 +1459,20 @@
     <string name="game_notice_fixed_header">Fixed and changed</string>
     <string name="game_notice_new_header">New features and where to find them</string>
 
-    <string name="game_notice_item_1_title">Your own picture or video in the launch panel</string>
-    <string name="game_notice_item_1_desc">The empty area above the version card is now a media slot. Tap the small + next to the "Selected version" line: choose a picture or a looping video from your device, or remove the one that is there. Pictures are shown cropped and rounded, videos loop silently in place.</string>
-    <string name="game_notice_item_2_title">The glass effect no longer blurs the backdrop</string>
-    <string name="game_notice_item_2_desc">Blurring the wallpaper and the video made the whole screen look out of focus, so that is gone. The picture stays sharp and only a faint glass sheen is layered over it; the cards themselves are still translucent panes. Toggle it in Settings, Launcher, Glass effect.</string>
-    <string name="game_notice_item_3_title">A tidier Settings hub</string>
-    <string name="game_notice_item_3_desc">Every card is now one compact row: icon on the left, name and a single description line next to it, arrow on the right. Three sections fit in far less scrolling, and the search field still filters them.</string>
-    <string name="game_notice_item_4_title">A cleaner in-game menu</string>
-    <string name="game_notice_item_4_desc">The floating button is a small glass chip instead of a dark square, the panel opens with a grab handle and its name, and the tabs sit together on one rounded rail. Long tabs now scroll inside the panel instead of being cut off.</string>
-    <string name="game_notice_item_5_title">A clear empty state</string>
-    <string name="game_notice_item_5_desc">When no picture or video is chosen the slot only shows a thin outline with a hint, never a black block over the background.</string>
+    <string name="game_notice_item_1_title">Video sound, on two separate switches</string>
+    <string name="game_notice_item_1_desc">The main-menu wallpaper clip and the small clip in the launch panel now have their own mute switches, so silencing one never silences the other. Find them in Settings, Launcher, Background video, next to Loop video — or mute the panel clip straight from the panel\'s own + menu.</string>
+    <string name="game_notice_item_2_title">A smaller liquid-island settings button in game</string>
+    <string name="game_notice_item_2_desc">The floating gear is now a 38dp droplet of glass: asymmetric soft corners, a faint halo and a light sheen instead of a square chip, so it covers much less of the game while staying easy to find.</string>
+    <string name="game_notice_item_3_title">The game starts without Wi-Fi</string>
+    <string name="game_notice_item_3_desc">Launching with no connection no longer closes the app. The offline path stopped running its file and mod preparation on the UI thread, where any network call killed the process, and mobile data, Ethernet, USB tethering and VPN are now recognised as a connection instead of being treated as offline.</string>
+    <string name="game_notice_item_4_title">Mod analysis inside Mod Management</string>
+    <string name="game_notice_item_4_desc">Open Mod Management after a crash and it reads the last game log plus the newest crash report by itself: the recognised cause is shown, and the jars actually named in that log are listed. Tap Analyze at the top of the screen to run the same check at any time.</string>
+    <string name="game_notice_item_5_title">Analysis points at candidates, not verdicts</string>
+    <string name="game_notice_item_5_desc">Only jars whose own name appears in the failing log are listed, with how often it appears. Disable one of them, launch again, and repeat — nothing in your mods folder is changed automatically.</string>
     <string name="game_notice_item_6_title">Every feature is still here</string>
-    <string name="game_notice_item_6_desc">No screen or tool was removed: versions, accounts, mods, friends, recording, benchmarks, the glass effect and every setting are all intact.</string>
-    <string name="game_notice_item_7_title">Version name: v8</string>
-    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one: v1, v2, ... The build you are running is v8. Check it in Settings, About.</string>
+    <string name="game_notice_item_6_desc">No screen or tool was removed: versions, accounts, mods, friends, recording, benchmarks, the glass effect, video backgrounds and every setting are all intact.</string>
+    <string name="game_notice_item_7_title">Version name: v9</string>
+    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one: v1, v2, ... The build you are running is v9. Check it in Settings, About.</string>
 
     <string name="whats_new_warning">🧩 Renderer plugin apps (e.g. MobileGlues) show up in the renderer list right after you install them — no restart needed — and their supported Minecraft version range is honored like any built-in renderer.</string>
 
@@ -1809,4 +1822,8 @@
     <string name="panel_media_video_selected">Panel video: %1$s</string>
     <string name="panel_media_removed">Panel picture or video removed</string>
     <string name="panel_media_failed">That file cannot be used here: %1$s</string>
+    <string name="panel_media_mute">Turn the panel video\'s sound off</string>
+    <string name="panel_media_unmute">Turn the panel video\'s sound on</string>
+    <string name="panel_media_mute_done">Panel video muted</string>
+    <string name="panel_media_unmute_done">Panel video sound is back on</string>
 </resources>
