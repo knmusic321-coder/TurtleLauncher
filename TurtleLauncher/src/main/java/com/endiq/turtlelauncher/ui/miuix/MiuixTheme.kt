@@ -175,17 +175,19 @@ object MiuixTheme {
      */
     @JvmStatic
     fun isDarkMode(context: Context?): Boolean =
-        com.endiq.turtlelauncher.feature.theme.ThemeManager.isDark(context)
+        if (context == null) true else com.endiq.turtlelauncher.feature.theme.ThemeManager.isDark(context)
 
     /**
      * The active colour scheme: [DarkColorScheme] expanded from the selected theme pack and
      * accent colour. Callers that cached a scheme per-view must re-read it when the theme
-     * changes (the picker recreates the activity).
+     * changes (the picker recreates the activity). A null context (no live theme) falls back
+     * to the legacy dark palette so callers without an Activity still get a readable scheme.
      */
     @JvmStatic
     fun colors(context: Context?): MiuixColorScheme =
-        runCatching { com.endiq.turtlelauncher.feature.theme.ThemeManager.scheme(context) }
-            .getOrDefault(DarkColorScheme)
+        if (context == null) DarkColorScheme else
+            runCatching { com.endiq.turtlelauncher.feature.theme.ThemeManager.scheme(context) }
+                .getOrDefault(DarkColorScheme)
 
     @JvmStatic
     fun dpToPx(context: Context, dp: Float): Float {

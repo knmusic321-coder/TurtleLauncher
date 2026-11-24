@@ -60,7 +60,7 @@ object ThemeManager {
     @JvmStatic
     fun mode(): ThemeMode = runCatching {
         ThemeMode.fromKey(AllSettings.launcherTheme.getValue())
-    }.getOrDefault(ThemeMode.SYSTEM)
+    }.getOrDefault(ThemeMode.DARK)
 
     /** Explicit accent chosen in the theme studio, or null to use the pack's own accent. */
     @ColorInt
