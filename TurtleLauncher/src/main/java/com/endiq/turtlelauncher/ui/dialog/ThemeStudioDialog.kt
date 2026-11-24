@@ -252,7 +252,7 @@ class ThemeStudioDialog(private val activity: FragmentActivity) :
         }.apply {
             val tile = GradientDrawable().apply {
                 shape = GradientDrawable.RECTANGLE
-                cornerRadius = dp(9f * pack.cornerScale)
+                cornerRadius = dp(9f * pack.cornerScale).toFloat()
                 setColor(baseColors.primary)
             }
             tile.setBounds(0, 0, dp(16), dp(16))
