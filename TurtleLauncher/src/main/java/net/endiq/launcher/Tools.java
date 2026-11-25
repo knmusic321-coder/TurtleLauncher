@@ -504,7 +504,37 @@ public final class Tools {
         return versionUsesLwjglSdl(info) ? LwjglMode.NEW_SDL : LwjglMode.LEGACY;
     }
 
+    /**
+     * True for a Mojang *desktop natives* artifact, e.g.
+     * {@code org.lwjgl:lwjgl:3.4.3:natives-linux} or
+     * {@code org.lwjgl:lwjgl-sdl:3.4.3:natives-linux}.
+     *
+     * <p>Those jars hold linux/x64 binaries and a {@code LWJGL-Platform: linux/x64}
+     * manifest entry. On Android they are useless at best and fatal at worst: Minecraft
+     * 26.3+ (SDL backend, LWJGL 3.4.x) reads that platform tag, pins native loading to
+     * linux/x64 and then dies while loading the core library with</p>
+     *
+     * <pre>
+     * [LWJGL] Platform/architecture mismatch detected for module: org.lwjgl
+     * [LWJGL] Platform available on classpath: linux/x64
+     * java.lang.UnsatisfiedLinkError: Failed to locate library: liblwjgl.so
+     * </pre>
+     *
+     * <p>even though the real arm64 {@code liblwjgl.so} is sitting on
+     * {@code java.library.path} the whole time. LWJGL only reports the mismatch while a
+     * natives jar is on the classpath, so keeping them off {@code -cp} is enough. The
+     * matching *Java* jars (lwjgl, lwjgl-sdl) must stay: 26.3 needs lwjgl-sdl classes the
+     * bundled Android bridge does not contain.</p>
+     */
+    private static boolean isDesktopNativesArtifact(String libName) {
+        if (libName == null) return false;
+        String[] parts = libName.split(":");
+        return parts.length >= 4 && parts[3].startsWith("natives-");
+    }
+
     private static boolean isLwjglAbiCriticalModule(String libName, boolean versionUsesSdl) {
+        // Never treat a desktop natives jar as the "Java classes" the SDL launch needs.
+        if (isDesktopNativesArtifact(libName)) return false;
         if (libName.startsWith("org.lwjgl:lwjgl-sdl:")) return true;
         return versionUsesSdl && libName.startsWith("org.lwjgl:lwjgl:");
     }
@@ -517,6 +547,14 @@ public final class Tools {
 
             String libName = libItem.name;
             if (libName == null) continue;
+
+            if (isDesktopNativesArtifact(libName)) {
+                // See isDesktopNativesArtifact(): a linux/x64 natives jar on the classpath
+                // makes LWJGL 3.4 pin itself to linux/x64 and lose the bundled arm64 native.
+                Logging.i(InfoDistributor.LAUNCHER_NAME,
+                        "Ignored desktop natives jar (Android uses its own ABI natives): " + libName);
+                continue;
+            }
 
             if ((libName.startsWith("org.lwjgl:") && !isLwjglAbiCriticalModule(libName, versionUsesSdl)) ||
                 libName.contains("jinput-platform") ||

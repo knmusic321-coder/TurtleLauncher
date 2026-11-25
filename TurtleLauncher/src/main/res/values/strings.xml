@@ -1466,33 +1466,33 @@
     <string name="music_delete_track">Remove</string>
 
     <string name="whats_new_title">🐢 What\'s New in TurtleLauncher</string>
-    <string name="whats_new_version">v12</string>
-    <string name="whats_new_feature_1">🎭 Emotes: dependencies install themselves</string>
-    <string name="whats_new_feature_1_desc">Installing the Emotecraft mod now automatically fetches its required Player Animation Library dependency (read straight from the mod\'s own metadata), so the game no longer crashes on launch with a missing-dependency error.</string>
-    <string name="whats_new_feature_2">📜 Game logs are finally saved</string>
-    <string name="whats_new_feature_2_desc">The game\'s own output — mod loaders, console messages, crash traces — is captured into the launcher log, and the Assistant can read it when you ask why the game crashed.</string>
-    <string name="whats_new_feature_3">📤 Share logs straight into the Assistant</string>
-    <string name="whats_new_feature_3_desc">Turtle Launcher now appears in Android\'s share menu. Share any game log (file or text) from any app and the Assistant analyzes it on the spot — no copy-paste.</string>
+    <string name="whats_new_version">v13</string>
+    <string name="whats_new_feature_1">🧱 Minecraft 26.3 runs on arm64 again</string>
+    <string name="whats_new_feature_1_desc">Minecraft 26.3 (SDL, LWJGL 3.4.x) died while loading liblwjgl.so on 64-bit ARM because Mojang\'s linux/x64 natives jar was on the game classpath. Turtle Launcher now keeps every desktop natives jar off -cp, so the arm64 native shipped in the APK is the one LWJGL loads.</string>
+    <string name="whats_new_feature_2">🧭 Only the natives jars are dropped</string>
+    <string name="whats_new_feature_2_desc">The Java jars of lwjgl and lwjgl-sdl stay on the classpath: 26.3 needs lwjgl-sdl 3.4.x classes the bundled Android bridge does not contain. 26.1, 26.2 and older versions keep launching exactly as before.</string>
+    <string name="whats_new_feature_3">📄 The log names every skipped jar</string>
+    <string name="whats_new_feature_3_desc">Each launch writes “Ignored desktop natives jar (Android uses its own ABI natives): …” for every natives jar removed from the classpath, next to the LWJGL mode line, so a crash report says what was filtered instead of leaving it to guesswork.</string>
     <!-- In-game change notice -->
     <string name="game_notice_title">🐢 What changed in this update</string>
     <string name="game_notice_close">Got it</string>
     <string name="game_notice_fixed_header">Fixed and changed</string>
     <string name="game_notice_new_header">New features and where to find them</string>
 
-    <string name="game_notice_item_1_title">Tidier custom-background layout</string>
-    <string name="game_notice_item_1_desc">The controls pane is now close to half the screen instead of a third, and it scrolls, so the switch rows no longer overlap or disappear under the bottom edge. The preview is smaller and labelled, and the three tabs scroll instead of clipping their text.</string>
-    <string name="game_notice_item_2_title">A liquid-island in-game menu</string>
-    <string name="game_notice_item_2_desc">The menu button is 30dp now. Tapping it springs a soft liquid island open, filled with one icon per function group; tapping a group makes that icon squish and bounce while its feature page unfolds underneath.</string>
-    <string name="game_notice_item_3_title">Mod error analysis in your language</string>
-    <string name="game_notice_item_3_desc">The analysis now answers exactly four things: MISSING MOD, ADD MOD, BROKEN MOD, HOW TO FIX, plus the jars the newest log actually mentions. No more wall of English rule-engine text to read through.</string>
-    <string name="game_notice_item_4_title">AI API key right inside the mod analysis</string>
-    <string name="game_notice_item_4_desc">Paste a Gemini API key at the bottom of the analysis and tap Analyze with AI: the model reads the log tail and answers in the same four sections. The key is remembered, and the offline answer is always shown even without one.</string>
-    <string name="game_notice_item_5_title">Self-healing LWJGL natives on arm64</string>
-    <string name="game_notice_item_5_desc">If the LWJGL bridge file under lwjgl3/ is missing or damaged, the launcher copies it back from the APK before every launch. That is a common cause of “Failed to locate library: liblwjgl.so” when running Minecraft 26.3 with Fabric on arm64.</string>
-    <string name="game_notice_item_6_title">The log now says which LWJGL it loaded</string>
-    <string name="game_notice_item_6_desc">Every launch logs the detected LWJGL mode and the bridge paths on the classpath, so the next report can say which native was missing instead of guessing at it.</string>
-    <string name="game_notice_item_7_title">Version name: v12</string>
-    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one: v1, v2, ... The build you are running is v12. Check it in Settings, About.</string>
+    <string name="game_notice_item_1_title">Minecraft 26.3 launches again on arm64</string>
+    <string name="game_notice_item_1_desc">The launcher no longer puts Mojang\'s desktop natives jars (lwjgl-*-natives-linux.jar, built for linux/x64) on the game classpath. LWJGL 3.4 read that jar\'s platform tag, pinned itself to linux/x64 and then failed with “Failed to locate library: liblwjgl.so” while the arm64 liblwjgl.so was in the APK all along.</string>
+    <string name="game_notice_item_2_title">Only natives jars are dropped, Java classes stay</string>
+    <string name="game_notice_item_2_desc">The Java jars of lwjgl and lwjgl-sdl remain on the classpath: Minecraft 26.3 needs lwjgl-sdl 3.4.x classes that the bundled Android bridge does not contain. Nothing else about a 26.3 launch changed.</string>
+    <string name="game_notice_item_3_title">26.1, 26.2 and older versions are untouched</string>
+    <string name="game_notice_item_3_desc">Older versions never had a Mojang LWJGL jar on the classpath (the bridge supplies those classes), so they launch exactly as they did before this build.</string>
+    <string name="game_notice_item_4_title">What error code -3 actually means</string>
+    <string name="game_notice_item_4_desc">-3 is just the guest JVM\'s exit code shown in the crash dialog, not a Minecraft error number. The real reason is the UnsatisfiedLinkError line in the same report, and this build fixes that line\'s cause.</string>
+    <string name="game_notice_item_5_title">The log names the jars it skipped</string>
+    <string name="game_notice_item_5_desc">Every launch logs “Ignored desktop natives jar (Android uses its own ABI natives): …” for each natives jar removed from -cp, next to the existing LWJGL mode line.</string>
+    <string name="game_notice_item_6_title">Fabric on 26.3 needs no extra step</string>
+    <string name="game_notice_item_6_desc">Fabric inherits 26.3\'s library list, so the same filter applies to the modded launch - no reinstall, no cache wipe, no renderer change.</string>
+    <string name="game_notice_item_7_title">Version name: v13</string>
+    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one: v1, v2, ... The build you are running is v13. Check it in Settings, About.</string>
 
     <string name="whats_new_warning">🧩 Renderer plugin apps (e.g. MobileGlues) show up in the renderer list right after you install them — no restart needed — and their supported Minecraft version range is honored like any built-in renderer.</string>
 
