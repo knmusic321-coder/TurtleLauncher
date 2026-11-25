@@ -63,7 +63,9 @@ typedef uint32_t SDL_InitFlags;
 typedef struct SDL_Window SDL_Window;
 typedef struct SDL_Rect { int x, y, w, h; } SDL_Rect;
 
+bool SDL_Init(SDL_InitFlags flags);
 bool SDL_InitSubSystem(SDL_InitFlags flags);
+void SDL_SetMainReady(void);
 bool SDL_SetHint(const char *name, const char *value);
 bool SDL_SetTextInputArea(SDL_Window *window, const SDL_Rect *rect, int cursor);
 void SDL_SetError(const char *fmt, ...);
@@ -79,7 +81,9 @@ SDL_Window *SDL_CreateWindowWithProperties(uint32_t props);
 void SDL_DestroyWindow(SDL_Window *window);
 void *SDL_EGL_GetProcAddress(const char *proc);
 
+DECL_DLSYM(SDL_Init)
 DECL_DLSYM(SDL_InitSubSystem)
+DECL_DLSYM(SDL_SetMainReady)
 DECL_DLSYM(SDL_SetHint);
 DECL_DLSYM(SDL_SetTextInputArea);
 DECL_DLSYM(SDL_SetError);
@@ -454,8 +458,38 @@ static void custom_SDL_DestroyWindow_Func(SDL_Window *window) {
 // set up JNI lazily. Turtle instead initializes the ART side eagerly in
 // SdlAndroidJniPrep.setup() before the JVM starts (that is also what guarantees
 // a single SDL3 instance shared with the game), so this hook only applies hints.
+// MC 26.3 calls SDL_Init() directly from Java (RenderSystem.initBackendSystem ->
+// SDLInit.SDL_Init) instead of going through SDL's SDL_main() entry point, and SDL refuses to
+// initialize that way until SDL_SetMainReady() has been called:
+//   IllegalStateException: Unable to initialize SDL: Application didn't initialize properly,
+//   did you include SDL_main.h in the file containing your main() function?
+//
+// The launcher used to do this from the guest JVM, in SdlMainReadyBootstrap, via
+// org.lwjgl.sdl.SDLMain.SDL_SetMainReady(). That initialized LWJGL's core library in the guest's
+// SYSTEM classloader, so a mod loader - Fabric's Knot loads its own copy of LWJGL in a child
+// classloader - could never load liblwjgl.so again, and the 26.3 Fabric launch died with:
+//   [LWJGL] Failed to load a library
+//   java.lang.NoClassDefFoundError: Could not initialize class org.lwjgl.system.Library
+//
+// Setting it here is classloader-neutral: this runs in the game process, on the single
+// libSDL3.so instance the launcher already loaded on the ART side (SdlAndroidJniPrep), and
+// before the real SDL_Init/SDL_InitSubSystem executes.
+static void ensureSdlMainReady(void) {
+    static bool mainReady = false;
+    if (mainReady) return;
+    SET_DLSYM_PTR(dlopen("libSDL3.so", RTLD_NOLOAD), SDL_SetMainReady);
+    if (SDL_SetMainReady_p == NULL) {
+        LOG_TO_W("SDL_Hook: SDL_SetMainReady not found - SDL_Init may refuse to initialize");
+        return;
+    }
+    SDL_SetMainReady_p();
+    mainReady = true;
+    LOG_TO_I("SDL_Hook: SDL_SetMainReady() called before SDL_Init");
+}
+
 static bool sdlInitSubSystemPrepare(SDL_InitFlags flags) {
     (void) flags;
+    ensureSdlMainReady();
     // This is the normal for the launcher, the default in SDL is false.
     SET_DLSYM_PTR(dlopen("libSDL3.so", RTLD_NOLOAD), SDL_SetHint);
     if (SDL_SetHint_p) SDL_SetHint_p("SDL_RETURN_KEY_HIDES_IME", "true");
@@ -469,6 +503,20 @@ static bool sdlInitSubSystemPrepare(SDL_InitFlags flags) {
     // before SDL_Init, and this hook runs at SDL_Init, so override it back on.
     if (SDL_SetHint_p) SDL_SetHint_p("SDL_ENABLE_SCREEN_KEYBOARD", "1");
     return true;
+}
+
+// MC calls SDL_Init (not SDL_InitSubSystem), so that entry point needs the same preparation;
+// SDL_Init forwards to SDL_InitSubSystem internally without going through these hooks.
+static bool custom_SDL_Init_Func(SDL_InitFlags flags) {
+    if (!sdlInitSubSystemPrepare(flags)) return false;
+
+    bool r = BYTEHOOK_CALL_PREV(custom_SDL_Init_Func, SDL_Init_t, flags);
+    if (!r) {
+        SET_DLSYM_PTR(dlopen("libSDL3.so", RTLD_NOLOAD), SDL_GetError);
+        LOG_TO_E("SDL_Hook: SDL_Init Error: %s", SDL_GetError_p ? SDL_GetError_p() : "(no SDL_GetError)");
+    }
+    BYTEHOOK_POP_STACK();
+    return r;
 }
 
 static bool custom_SDL_InitSubSystem_Func(SDL_InitFlags flags) {
@@ -560,6 +608,7 @@ static SDL_Window *custom_SDL_CreateWindowWithProperties_Func(uint32_t props) {
 // Reference FCL-Team/FoldCraftLauncher's sdl_hook.c
 // (https://github.com/FCL-Team/FoldCraftLauncher/blob/e398181caaccf186247057dfa1ba0cf4e5cbc83e/FCL/src/main/jni/native_hooks/sdl_hook.c)
 
+typedef bool (*sdlInit_t)(SDL_InitFlags);
 typedef bool (*sdlInitSubSystem_t)(SDL_InitFlags);
 typedef SDL_Window *(*sdlCreateWindow_t)(const char *, int, int, uint32_t);
 typedef SDL_Window *(*sdlCreateWindowWithProperties_t)(uint32_t);
@@ -570,6 +619,7 @@ typedef void *(*sdlLoadObject_t)(const char *);
 typedef void *(*sdlLoadFunction_t)(void *, const char *);
 typedef void (*sdlUnloadObject_t)(void *);
 
+static sdlInit_t realSdlInit = NULL;
 static sdlInitSubSystem_t realSdlInitSubSystem = NULL;
 static sdlCreateWindow_t realSdlCreateWindow = NULL;
 static sdlCreateWindowWithProperties_t realSdlCreateWindowWithProperties = NULL;
@@ -579,6 +629,16 @@ static sdlGetWindowFromID_t realSdlGetWindowFromID = NULL;
 static sdlLoadObject_t realSdlLoadObject = NULL;
 static sdlLoadFunction_t realSdlLoadFunction = NULL;
 static sdlUnloadObject_t realSdlUnloadObject = NULL;
+
+static bool proxy_SDL_Init(SDL_InitFlags flags) {
+    if (!sdlInitSubSystemPrepare(flags)) return false;
+    bool r = realSdlInit(flags);
+    if (!r) {
+        SET_DLSYM_PTR(dlopen("libSDL3.so", RTLD_NOLOAD), SDL_GetError);
+        LOG_TO_E("SDL_Hook: SDL_Init Error: %s", SDL_GetError_p ? SDL_GetError_p() : "(no SDL_GetError)");
+    }
+    return r;
+}
 
 static bool proxy_SDL_InitSubSystem(SDL_InitFlags flags) {
     if (!sdlInitSubSystemPrepare(flags)) return false;
@@ -663,6 +723,7 @@ static void proxy_SDL_UnloadObject(void *handle) {
 void create_sdl_hooks(bytehook_stub_t (*bytehook_hook_all_p)(const char *callee_path_name, const char *sym_name, void *new_func,
                                                              bytehook_hooked_t hooked, void *hooked_arg)) {
     // Don't set callee_path_name to anything besides NULL or else it won't be able to find the symbol
+    bytehook_stub_t stub_SDL_Init = bytehook_hook_all_p(NULL, "SDL_Init", (void *) &custom_SDL_Init_Func, NULL, NULL);
     bytehook_stub_t stub_SDL_InitSubSystem = bytehook_hook_all_p(NULL, "SDL_InitSubSystem", (void *) &custom_SDL_InitSubSystem_Func, NULL, NULL);
     bytehook_stub_t stub_SDL_GetWindowFromEvent = bytehook_hook_all_p(NULL, "SDL_GetWindowFromEvent", (void *) &custom_SDL_GetWindowFromEvent_Func, NULL, NULL);
     bytehook_stub_t stub_SDL_GetWindowFromID = bytehook_hook_all_p(NULL, "SDL_GetWindowFromID", (void *) &custom_SDL_GetWindowFromID_Func, NULL, NULL);
@@ -678,11 +739,15 @@ void create_sdl_hooks(bytehook_stub_t (*bytehook_hook_all_p)(const char *callee_
     bytehook_stub_t stub_SDL_UnloadObject = bytehook_hook_all_p(NULL, "SDL_UnloadObject", (void *) &custom_SDL_UnloadObject_Func, NULL, NULL);
     // Primary-window destroy tracking, paired with window reuse (see custom_SDL_DestroyWindow_Func).
     bytehook_stub_t stub_SDL_DestroyWindow = bytehook_hook_all_p(NULL, "SDL_DestroyWindow", (void *) &custom_SDL_DestroyWindow_Func, NULL, NULL);
-    LOG_TO_I("SDL_Hook: Successfully initialized SDL hooks, stubs: InitSubSystem=%p GetWindowFromEvent=%p GetWindowFromID=%p CreateWindow=%p CreateWindowWithProps=%p LoadFunction=%p EGLGetProcAddress=%p LoadObject=%p UnloadObject=%p DestroyWindow=%p", stub_SDL_InitSubSystem, stub_SDL_GetWindowFromEvent, stub_SDL_GetWindowFromID, stub_SDL_CreateWindow, stub_SDL_CreateWindowWithProperties, stub_SDL_LoadFunction, stub_SDL_EGLGetProcAddress, stub_SDL_LoadObject, stub_SDL_UnloadObject, stub_SDL_DestroyWindow);
+    LOG_TO_I("SDL_Hook: Successfully initialized SDL hooks, stubs: Init=%p InitSubSystem=%p GetWindowFromEvent=%p GetWindowFromID=%p CreateWindow=%p CreateWindowWithProps=%p LoadFunction=%p EGLGetProcAddress=%p LoadObject=%p UnloadObject=%p DestroyWindow=%p", stub_SDL_Init, stub_SDL_InitSubSystem, stub_SDL_GetWindowFromEvent, stub_SDL_GetWindowFromID, stub_SDL_CreateWindow, stub_SDL_CreateWindowWithProperties, stub_SDL_LoadFunction, stub_SDL_EGLGetProcAddress, stub_SDL_LoadObject, stub_SDL_UnloadObject, stub_SDL_DestroyWindow);
 }
 
 /** customDlsym exit: swap an SDL symbol's resolution for the dlsym-layer proxy; NULL means "don't intercept". */
 void *sdlDlsymProxy(const char *symbol, void *real) {
+    if (strcmp(symbol, "SDL_Init") == 0) {
+        if (realSdlInit == NULL) realSdlInit = (sdlInit_t) real;
+        return (void *) proxy_SDL_Init;
+    }
     if (strcmp(symbol, "SDL_InitSubSystem") == 0) {
         if (realSdlInitSubSystem == NULL) realSdlInitSubSystem = (sdlInitSubSystem_t) real;
         return (void *) proxy_SDL_InitSubSystem;

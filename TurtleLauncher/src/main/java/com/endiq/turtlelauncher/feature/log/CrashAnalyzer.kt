@@ -118,6 +118,33 @@ object CrashAnalyzer {
                     )
                 )
             ),
+            // Fabric/Quilt/Forge on 26.3+: the launcher entry point initialized LWJGL - and with
+            // it liblwjgl.so - in the host classloader before the mod loader's own copy ran.
+            // Checked before "native_library_path" below, because that generic rule would
+            // otherwise suggest clearing the natives cache for a file that was never missing.
+            Rule(
+                title = "lwjgl_library_init_host_classloader",
+                matches = { has(it, "Could not initialize class org.lwjgl.system.Library") },
+                diagnosis = fixed(
+                    "liblwjgl.so was already loaded by the launcher's classloader (fixed in v14)",
+                    "SDL launches used to go through SdlMainReadyBootstrap, which called " +
+                        "org.lwjgl.sdl.SDLMain.SDL_SetMainReady() from the guest JVM's system " +
+                        "classloader. Initializing that class loads LWJGL's core library there, and " +
+                        "the JVM forbids loading the same native library into a second classloader - " +
+                        "so the game's own classloader (Fabric/Quilt Knot, Forge/NeoForge) could never " +
+                        "load liblwjgl.so and reported “Failed to load a library” even though the " +
+                        "arm64 liblwjgl.so sat on both search paths the whole time. On 26.3 the crash " +
+                        "report's own diagnostic line “java.library.path = <not a directory>” is a red " +
+                        "herring: Minecraft prints it for any colon-separated multi-folder path.",
+                    listOf(
+                        "Update to v14 or newer - the guest no longer touches any LWJGL class, and " +
+                            "SDL_SetMainReady() is called by libsdlhook.so's SDL_Init hook instead.",
+                        "Check the launch log line “natives path: cache=… app=…” - both folders should " +
+                            "report dir=true, and the app folder should report liblwjgl.so=true.",
+                        "Do not clear the natives cache for this one: no file was missing or corrupt."
+                    )
+                )
+            ),
             // Checked before "native_library_path" below: this crash ALSO ends in
             // "Failed to locate library: liblwjgl-legacy.so", but the library was
             // never missing - clearing the natives cache cannot help.
