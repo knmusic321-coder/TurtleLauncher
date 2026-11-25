@@ -303,57 +303,20 @@ class ModsFragment : FragmentWithAnim(R.layout.fragment_mods) {
                     if (!auto) Toast.makeText(appContext, R.string.profile_mods_analyze_no_log, Toast.LENGTH_LONG).show()
                     return@ended
                 }
-                TipDialog.Builder(requireContext())
-                    .setTitle(if (auto) R.string.profile_mods_analyze_auto_title else R.string.profile_mods_analyze_title)
-                    .setMessage(buildAnalysisMessage(report, explanation))
-                    .setCenterMessage(false)
-                    .setSelectable(true)
-                    .setShowCancel(false)
-                    .setConfirm(R.string.generic_ok)
-                    .showDialog()
+                // One dialog, four answers (thiếu / thêm / lỗi / cách fix) plus the AI key
+                // field, instead of a wall of English rule-engine text.
+                com.endiq.turtlelauncher.ui.dialog.ModAnalysisDialog(
+                    requireContext(),
+                    report = report,
+                    explanation = explanation,
+                    auto = auto
+                ).show()
             }
             .onThrowable { error ->
                 runCatching { dialog?.dismiss() }
                 if (isAdded) Tools.showErrorRemote(error)
             }
             .execute()
-    }
-
-    private fun buildAnalysisMessage(
-        report: ModCrashAnalyzer.Report,
-        explanation: CrashExplainer.Explanation? = null
-    ): String {
-        val logFile = report.logFile ?: return getString(R.string.profile_mods_analyze_no_log)
-        val text = StringBuilder()
-        text.append(getString(R.string.profile_mods_analyze_log_line, logFile.name))
-        if (explanation != null && explanation.findings.isNotEmpty()) {
-            // Plain-language causes and fixes, in the launcher's language (Vietnamese or English).
-            text.append("\n\n").append(CrashExplainer.render(explanation))
-        } else if (report.hasDiagnosis) {
-            report.diagnoses.take(3).forEach { diagnosis ->
-                text.append("\n\n• ").append(diagnosis.title)
-                if (diagnosis.cause.isNotBlank()) {
-                    text.append("\n  ").append(diagnosis.cause.take(400))
-                }
-            }
-        } else {
-            text.append("\n\n").append(getString(R.string.profile_mods_analyze_no_cause))
-        }
-
-        text.append("\n\n")
-        if (report.suspects.isEmpty()) {
-            text.append(getString(R.string.profile_mods_analyze_no_suspect))
-        } else {
-            text.append(getString(R.string.profile_mods_analyze_suspects_header))
-            report.suspects.forEach { suspect ->
-                text.append("\n• ").append(suspect.jar.name)
-                    .append(" (").append(getString(R.string.profile_mods_analyze_hits, suspect.hits))
-                if (suspect.disabled) text.append(", ").append(getString(R.string.profile_mods_analyze_disabled))
-                text.append(')')
-            }
-            text.append("\n\n").append(getString(R.string.profile_mods_analyze_hint))
-        }
-        return text.toString()
     }
 
     /**

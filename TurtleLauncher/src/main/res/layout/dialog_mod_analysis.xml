@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/_4sdp"
+    android:paddingTop="@dimen/_4sdp">
+
+    <!-- The four answers (missing / add / broken / fix). Fixed height so the dialog itself
+         stays a dialog: the text scrolls, the API-key row below always stays reachable. -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:scrollbars="vertical">
+
+        <TextView
+            android:id="@+id/analysis_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="2dp"
+            android:textColor="@color/turtle_text_primary"
+            android:textIsSelectable="true"
+            android:textSize="13sp" />
+
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:background="@color/game_panel_overlay" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:text="@string/mod_analysis_api_key_title"
+        android:textColor="@color/turtle_text_primary"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/api_key_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:hint="@string/mod_analysis_api_key_hint"
+        android:importantForAutofill="no"
+        android:inputType="textVisiblePassword"
+        android:maxLines="1"
+        android:textSize="12sp" />
+
+    <Button
+        android:id="@+id/ai_analyze_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:text="@string/mod_analysis_ai_button" />
+
+    <TextView
+        android:id="@+id/ai_status_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:textColor="@color/turtle_text_secondary"
+        android:textSize="11sp"
+        android:visibility="gone" />
+
+</LinearLayout>

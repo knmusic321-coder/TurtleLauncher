@@ -52,6 +52,14 @@ class LaunchArgs(
         val lwjglAbiOverrideClasspath = Tools.getLwjglAbiOverrideClasspath(versionInfo)
         val lwjglClasspathSuffix = if (lwjglAbiOverrideClasspath.isNotEmpty()) ":$lwjglAbiOverrideClasspath" else ""
 
+        // One line that decides native-loading questions from a log alone: which LWJGL mode was
+        // detected, and which bridge jars the launch actually got. "liblwjgl.so not found" is a
+        // classpath question, so the answer has to be in the log before the game starts.
+        Logging.i(
+            "LaunchArgs",
+            "LWJGL mode=${Tools.resolveLwjglMode(versionInfo)} bridge=${Tools.getLWJGL3ClassPath()}"
+        )
+
         argsList.add("-cp")
         // Sealed LWJGL jars (LWJGL 2 seals org.lwjgl) cannot share a package with the bridge and
         // ABI-override jars, which also provide org.lwjgl classes. Handing the JVM unsealed copies

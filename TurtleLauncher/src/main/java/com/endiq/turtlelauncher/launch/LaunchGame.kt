@@ -53,6 +53,13 @@ class LaunchGame {
          */
         @JvmStatic
         fun preLaunch(context: Context, version: Version) {
+            // LWJGL on Android only works through the bundled bridge jar (patched
+            // org.lwjgl.system.Library + linux/arm64 native markers). If it is missing, the game
+            // falls back to the stock LWJGL jar and dies with "Failed to locate library:
+            // liblwjgl.so". Put it back before anything reads the classpath.
+            runCatching { LwjglBridgeRepair.ensureInstalled(context) }
+                .onFailure { error -> Logging.w("LaunchGame", "LWJGL bridge repair failed", error) }
+
             // Warm the unsealed-jar cache while the game files are still being prepared: the
             // rewrite copies the sealed LWJGL jars once, and doing it here keeps that off the
             // launch path (LaunchArgs would otherwise do the same work synchronously).

@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.OvershootInterpolator;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -752,6 +753,9 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
 
     private class MenuSettingsInitListener implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, CompoundButton.OnCheckedChangeListener, OnSpinnerItemSelectedListener<HotbarType>, DrawerLayout.DrawerListener {
         private final ViewGameMenuBinding binding;
+        /** Last group icon selected in the liquid island, so re-selecting it does not replay the
+         *  open animation (only a real group change grows the island open). */
+        private View selectedMenuGroup;
 
         public MenuSettingsInitListener(ViewGameMenuBinding binding) {
             this.binding = binding;
@@ -1181,15 +1185,74 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
             }
         }
 
-        private void selectTab(TextView selected) {
-            TextView[] buttons = { binding.tabBtnDebug, binding.tabBtnRecording, binding.tabBtnControl, binding.tabBtnHotbar };
+        /**
+         * Liquid-island group switch. The chips are icon capsules now (no text typeface to
+         * flip), so selection is shown by android:selected on the chip drawable plus a short
+         * squish-and-pop on the tapped icon, and the chosen group's page grows open instead of
+         * simply appearing.
+         */
+        private void selectTab(View selected) {
+            View[] buttons = { binding.tabBtnDebug, binding.tabBtnRecording, binding.tabBtnControl, binding.tabBtnHotbar };
             View[] pages = { binding.tabPageDebug, binding.tabPageRecording, binding.tabPageControl, binding.tabPageHotbar };
+            boolean groupChanged = selectedMenuGroup != selected;
+            selectedMenuGroup = selected;
             for (int i = 0; i < buttons.length; i++) {
                 boolean isSelected = buttons[i] == selected;
                 buttons[i].setSelected(isSelected);
-                buttons[i].setTypeface(null, isSelected ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
-                pages[i].setVisibility(isSelected ? View.VISIBLE : View.GONE);
+                View page = pages[i];
+                if (isSelected) {
+                    page.setVisibility(View.VISIBLE);
+                    if (groupChanged) {
+                        popChip(buttons[i]);
+                        growPageOpen(page);
+                    }
+                } else {
+                    page.setVisibility(View.GONE);
+                }
             }
+        }
+
+        /** The tapped group icon squishes down then springs back - the island reacting to a touch. */
+        private void popChip(View chip) {
+            chip.animate().cancel();
+            float dip = 0.86f;
+            chip.setScaleX(dip);
+            chip.setScaleY(dip);
+            chip.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(260)
+                    .setInterpolator(new OvershootInterpolator(2.6f))
+                    .start();
+        }
+
+        /** The feature page unfolds out of the island (fade + a small rise). */
+        private void growPageOpen(View page) {
+            page.animate().cancel();
+            page.setAlpha(0f);
+            page.setTranslationY(10f * getResources().getDisplayMetrics().density);
+            page.animate()
+                    .alpha(1f)
+                    .translationY(0f)
+                    .setDuration(220)
+                    .start();
+        }
+
+        /** Called when the drawer opens: the island itself springs open from its middle. */
+        private void animateLiquidIslandOpen() {
+            View island = binding.menuIsland;
+            if (island == null) return;
+            island.animate().cancel();
+            island.setScaleX(0.82f);
+            island.setScaleY(0.82f);
+            island.setAlpha(0f);
+            island.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .alpha(1f)
+                    .setDuration(280)
+                    .setInterpolator(new OvershootInterpolator(1.7f))
+                    .start();
         }
 
         @Override public void onItemSelected(int i, @Nullable HotbarType t, int i1, HotbarType t1) {
@@ -1209,6 +1272,7 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
         @Override public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {}
         @Override public void onDrawerOpened(@NonNull View drawerView) {
             refreshRecordingButtons();
+            animateLiquidIslandOpen();
         }
         @Override public void onDrawerClosed(@NonNull View drawerView) {}
         @Override public void onDrawerStateChanged(int newState) {

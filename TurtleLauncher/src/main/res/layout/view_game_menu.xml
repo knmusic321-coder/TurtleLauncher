@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/background_card"
+    android:background="@drawable/background_liquid_panel"
     android:padding="@dimen/_8sdp"
     tools:ignore="UseSwitchCompatOrMaterialXml">
 
@@ -35,81 +35,154 @@
 
     </LinearLayout>
 
-    <HorizontalScrollView
+    <!-- Liquid island: one fluid capsule holding a small icon per function group. Tapping an
+         icon grows the island open into that group's feature page (MainActivity.selectTab),
+         so the menu opens as a shape with group icons instead of four text tabs. -->
+    <LinearLayout
+        android:id="@+id/menu_island"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_4sdp"
-        android:scrollbars="none"
-        android:fillViewport="true">
+        android:layout_marginTop="@dimen/_6sdp"
+        android:background="@drawable/background_liquid_island"
+        android:orientation="horizontal"
+        android:padding="4dp">
 
         <LinearLayout
-            android:id="@+id/menu_tab_bar"
-            android:layout_width="wrap_content"
+            android:id="@+id/tab_btn_debug"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/background_menu_tab_bar"
-            android:orientation="horizontal"
-            android:padding="3dp">
+            android:layout_marginEnd="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/background_liquid_chip"
+            android:clickable="true"
+            android:contentDescription="@string/option_category_debug"
+            android:focusable="true"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingVertical="@dimen/_5sdp">
+
+            <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_profile_logs"
+                android:tint="@color/turtle_primary_text" />
 
             <TextView
-                android:id="@+id/tab_btn_debug"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="2dp"
-                android:background="@drawable/background_menu_tab"
-                android:paddingVertical="@dimen/_5sdp"
-                android:paddingHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:gravity="center_horizontal"
+                android:maxLines="1"
+                android:text="@string/option_category_debug"
                 android:textColor="@color/turtle_primary_text"
-                android:textSize="11sp"
-                android:textStyle="bold"
-                android:clickable="true"
-                android:focusable="true"
-                android:text="@string/option_category_debug"/>
-
-            <TextView
-                android:id="@+id/tab_btn_recording"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="2dp"
-                android:background="@drawable/background_menu_tab"
-                android:paddingVertical="@dimen/_5sdp"
-                android:paddingHorizontal="@dimen/_10sdp"
-                android:textColor="@color/turtle_primary_text"
-                android:textSize="11sp"
-                android:clickable="true"
-                android:focusable="true"
-                android:text="@string/option_category_recording"/>
-
-            <TextView
-                android:id="@+id/tab_btn_control"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="2dp"
-                android:background="@drawable/background_menu_tab"
-                android:paddingVertical="@dimen/_5sdp"
-                android:paddingHorizontal="@dimen/_10sdp"
-                android:textColor="@color/turtle_primary_text"
-                android:textSize="11sp"
-                android:clickable="true"
-                android:focusable="true"
-                android:text="@string/option_category_control"/>
-
-            <TextView
-                android:id="@+id/tab_btn_hotbar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="2dp"
-                android:background="@drawable/background_menu_tab"
-                android:paddingVertical="@dimen/_5sdp"
-                android:paddingHorizontal="@dimen/_10sdp"
-                android:textColor="@color/turtle_primary_text"
-                android:textSize="11sp"
-                android:clickable="true"
-                android:focusable="true"
-                android:text="@string/option_category_hotbar"/>
+                android:textSize="9sp" />
 
         </LinearLayout>
 
-    </HorizontalScrollView>
+        <LinearLayout
+            android:id="@+id/tab_btn_recording"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/background_liquid_chip"
+            android:clickable="true"
+            android:contentDescription="@string/option_category_recording"
+            android:focusable="true"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingVertical="@dimen/_5sdp">
+
+            <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_setting_recording"
+                android:tint="@color/turtle_primary_text" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:gravity="center_horizontal"
+                android:maxLines="1"
+                android:text="@string/option_category_recording"
+                android:textColor="@color/turtle_primary_text"
+                android:textSize="9sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tab_btn_control"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/background_liquid_chip"
+            android:clickable="true"
+            android:contentDescription="@string/option_category_control"
+            android:focusable="true"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingVertical="@dimen/_5sdp">
+
+            <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_menu_custom_controls"
+                android:tint="@color/turtle_primary_text" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:gravity="center_horizontal"
+                android:maxLines="1"
+                android:text="@string/option_category_control"
+                android:textColor="@color/turtle_primary_text"
+                android:textSize="9sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tab_btn_hotbar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/background_liquid_chip"
+            android:clickable="true"
+            android:contentDescription="@string/option_category_hotbar"
+            android:focusable="true"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingVertical="@dimen/_5sdp">
+
+            <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_setting_hud"
+                android:tint="@color/turtle_primary_text" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:gravity="center_horizontal"
+                android:maxLines="1"
+                android:text="@string/option_category_hotbar"
+                android:textColor="@color/turtle_primary_text"
+                android:textSize="9sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <!-- Fills the panel and scrolls: with wrap_content a long tab used to be measured at its
          full height and the lower rows were simply clipped away by the panel. -->
