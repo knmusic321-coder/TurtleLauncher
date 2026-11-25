@@ -113,7 +113,10 @@ class LaunchArgs(
             //   java.lang.NoClassDefFoundError: Could not initialize class org.lwjgl.system.Library
             // SDL main-ready is now set by libsdlhook's SDL_Init hook instead (classloader-neutral,
             // see sdl_hook.c's ensureSdlMainReady), so the guest never touches LWJGL before the
-            // game classloader gets to.
+            // game classloader gets to. This needs the rebuilt libsdlhook.so from the
+            // "Build libsdlhook.so" workflow - an older prebuilt .so has no SDL_Init hook and the
+            // game would then die with "Unable to initialize SDL: Application didn't initialize
+            // properly".
             Logging.i("LaunchArgs", "SDL launch: guest stays out of LWJGL; SDL main-ready is set by libsdlhook")
         }
         // Renderer debug logging opts the guest into LWJGL Debug/DebugLoader (see
