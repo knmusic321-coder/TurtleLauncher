@@ -106,7 +106,6 @@ jobs:
           python3 tests/check_social.py
           python3 tests/check_discord_presence.py
           python3 tests/check_dual_channel.py
-          python3 tests/check_lwjgl_java_pair.py
           tests/native/run.sh
           tests/native/run-discord.sh
 

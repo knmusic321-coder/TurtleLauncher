@@ -74,12 +74,6 @@ import java.util.List;
 
 @SuppressWarnings("IOStreamConstructor")
 public final class Tools {
-    /** Packaged Android-patched LWJGL jar: {@code org.lwjgl.system.*} and the GLFW bindings. */
-    public static final String BRIDGE_JAR = "lwjgl-glfw-classes.jar";
-    /** Packaged {@code org.lwjgl.sdl.*}, built from the same LWJGL release as the bridge jar. */
-    public static final String SDL_JAR = "lwjgl-sdl-3.4.1.jar";
-    /** Prefix used to put any lwjgl-sdl jar right after the bridge on the launch classpath. */
-    public static final String SDL_JAR_PREFIX = "lwjgl-sdl";
     public static final String NOTIFICATION_CHANNEL_DEFAULT = "channel_id";
     public static final float BYTE_TO_MB = 1024f * 1024f;
     public static final Gson GLOBAL_GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -172,25 +166,10 @@ public final class Tools {
         File lwjgl3Folder = new File(PathManager.DIR_GAME_HOME, "lwjgl3");
         File[] lwjgl3Files = lwjgl3Folder.listFiles();
         if (lwjgl3Files != null) {
-            // Order must not depend on File.listFiles(): org.lwjgl.system.* has to come from the
-            // Android-patched bridge jar, and lwjgl-sdl from the packaged 3.4.1 jar that was
-            // verified against it (see tests/check_lwjgl_java_pair.py). Anything else is sorted.
-            List<String> names = new ArrayList<>();
             for (File file: lwjgl3Files) {
-                if (file.getName().endsWith(".jar")) names.add(file.getName());
-            }
-            names.sort(null);
-            List<String> ordered = new ArrayList<>();
-            if (names.remove(BRIDGE_JAR)) ordered.add(BRIDGE_JAR);
-            for (String name : new ArrayList<>(names)) {
-                if (name.startsWith(SDL_JAR_PREFIX)) {
-                    ordered.add(name);
-                    names.remove(name);
+                if (file.getName().endsWith(".jar")) {
+                    libStr.append(file.getAbsolutePath()).append(":");
                 }
-            }
-            ordered.addAll(names);
-            for (String name: ordered) {
-                libStr.append(new File(lwjgl3Folder, name).getAbsolutePath()).append(":");
             }
         }
         // Remove the ':' at the end
@@ -525,37 +504,7 @@ public final class Tools {
         return versionUsesLwjglSdl(info) ? LwjglMode.NEW_SDL : LwjglMode.LEGACY;
     }
 
-    /**
-     * True for a Mojang *desktop natives* artifact, e.g.
-     * {@code org.lwjgl:lwjgl:3.4.3:natives-linux} or
-     * {@code org.lwjgl:lwjgl-sdl:3.4.3:natives-linux}.
-     *
-     * <p>Those jars hold linux/x64 binaries and a {@code LWJGL-Platform: linux/x64}
-     * manifest entry. On Android they are useless at best and fatal at worst: Minecraft
-     * 26.3+ (SDL backend, LWJGL 3.4.x) reads that platform tag, pins native loading to
-     * linux/x64 and then dies while loading the core library with</p>
-     *
-     * <pre>
-     * [LWJGL] Platform/architecture mismatch detected for module: org.lwjgl
-     * [LWJGL] Platform available on classpath: linux/x64
-     * java.lang.UnsatisfiedLinkError: Failed to locate library: liblwjgl.so
-     * </pre>
-     *
-     * <p>even though the real arm64 {@code liblwjgl.so} is sitting on
-     * {@code java.library.path} the whole time. LWJGL only reports the mismatch while a
-     * natives jar is on the classpath, so keeping them off {@code -cp} is enough. The
-     * matching *Java* jars (lwjgl, lwjgl-sdl) must stay: 26.3 needs lwjgl-sdl classes the
-     * bundled Android bridge does not contain.</p>
-     */
-    private static boolean isDesktopNativesArtifact(String libName) {
-        if (libName == null) return false;
-        String[] parts = libName.split(":");
-        return parts.length >= 4 && parts[3].startsWith("natives-");
-    }
-
     private static boolean isLwjglAbiCriticalModule(String libName, boolean versionUsesSdl) {
-        // Never treat a desktop natives jar as the "Java classes" the SDL launch needs.
-        if (isDesktopNativesArtifact(libName)) return false;
         if (libName.startsWith("org.lwjgl:lwjgl-sdl:")) return true;
         return versionUsesSdl && libName.startsWith("org.lwjgl:lwjgl:");
     }
@@ -568,14 +517,6 @@ public final class Tools {
 
             String libName = libItem.name;
             if (libName == null) continue;
-
-            if (isDesktopNativesArtifact(libName)) {
-                // See isDesktopNativesArtifact(): a linux/x64 natives jar on the classpath
-                // makes LWJGL 3.4 pin itself to linux/x64 and lose the bundled arm64 native.
-                Logging.i(InfoDistributor.LAUNCHER_NAME,
-                        "Ignored desktop natives jar (Android uses its own ABI natives): " + libName);
-                continue;
-            }
 
             if ((libName.startsWith("org.lwjgl:") && !isLwjglAbiCriticalModule(libName, versionUsesSdl)) ||
                 libName.contains("jinput-platform") ||
@@ -592,49 +533,13 @@ public final class Tools {
         return libDir.toArray(new String[0]);
     }
 
-    /**
-     * Absolute path of the packaged {@code lwjgl-sdl} Java jar the bridge was built against.
-     *
-     * <p>SDL launches take <em>both</em> halves of LWJGL from the packaged component: the patched
-     * bridge jar provides {@code org.lwjgl.system.*} (native loading on Android) and this jar
-     * provides {@code org.lwjgl.sdl.*}. They were built from the same release, which is what keeps
-     * the callback API consistent. See [getLwjglAbiOverrideClasspath].</p>
-     */
-    public static String getBundledLwjglSdlJar() {
-        return new File(new File(PathManager.DIR_GAME_HOME, "lwjgl3"), SDL_JAR).getAbsolutePath();
-    }
-
-    /**
-     * Extra LWJGL Java jars from the version JSON, appended after the bridge jar.
-     *
-     * <p>Empty for SDL launches (26.3+). Mixing the JSON's {@code org.lwjgl:lwjgl} and
-     * {@code org.lwjgl:lwjgl-sdl} jars with the bridge used to resolve
-     * {@code org.lwjgl.system.CallbackDescriptor} from one build and
-     * {@code org.lwjgl.sdl.SDL_LogOutputFunction} from another, so the game died in
-     * {@code RenderSystem.initBackendSystem} with</p>
-     *
-     * <pre>
-     * java.lang.InternalError: java.lang.NoSuchMethodError:
-     *   'void org.lwjgl.system.CallbackDescriptor.&lt;init&gt;(java.lang.Class, java.lang.Class,
-     *   java.lang.reflect.Method)'
-     * </pre>
-     *
-     * <p>Both halves now come from the packaged pair (bridge + {@code lwjgl-sdl-3.4.1.jar}), and
-     * {@code tests/check_lwjgl_java_pair.py} fails the build if a future update breaks that.</p>
-     */
     public static String getLwjglAbiOverrideClasspath(JMinecraftVersionList.Version info) {
-        boolean versionUsesSdl = resolveLwjglMode(info) == LwjglMode.NEW_SDL;
-        if (versionUsesSdl) {
-            Logging.i(InfoDistributor.LAUNCHER_NAME,
-                    "SDL: LWJGL Java classes come from the packaged bridge + " + SDL_JAR +
-                    "; ignoring the version JSON's lwjgl/lwjgl-sdl jars so both halves share one callback API");
-            return "";
-        }
         List<String> paths = new ArrayList<>();
+        boolean versionUsesSdl = resolveLwjglMode(info) == LwjglMode.NEW_SDL;
         for (DependentLibrary libItem : info.libraries) {
             if (!checkRules(libItem.rules)) continue;
             String libName = libItem.name;
-            if (libName == null || !isLwjglAbiCriticalModule(libName, false)) continue;
+            if (libName == null || !isLwjglAbiCriticalModule(libName, versionUsesSdl)) continue;
 
             String libArtifactPath = artifactToPath(libItem);
             if (libArtifactPath == null) continue;

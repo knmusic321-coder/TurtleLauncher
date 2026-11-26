@@ -36,21 +36,10 @@ class LaunchArgs(
         argsList.addAll(getMinecraftJVMArgs())
         argsList.addAll(getCdsArgs())
 
-        argsList.removeAll {
-            it.startsWith("-Djava.library.path=") || it.startsWith("-Djna.boot.library.path=") ||
-                it.startsWith("-Dorg.lwjgl.librarypath=")
-        }
+        argsList.removeAll { it.startsWith("-Djava.library.path=") || it.startsWith("-Djna.boot.library.path=") }
         val nativeLibraryPath = resolveNativeLibraryPath()
         argsList.add("-Djava.library.path=$nativeLibraryPath")
         argsList.add("-Djna.boot.library.path=$nativeLibraryPath")
-        // LWJGL's own search path (org.lwjgl.librarypath / Configuration.LIBRARY_PATH) takes
-        // priority over java.library.path inside org.lwjgl.system.Library, and it is the only
-        // one the game reports as "org.lwjgl.librarypath = <not set>" in its crash report when
-        // a native cannot be located. Setting both means a launch still finds the app's own
-        // arm64 liblwjgl.so even if Minecraft's JSON re-asserts -Djava.library.path later, and
-        // a crash report says exactly where LWJGL looked. LWJGL splits it on File.pathSeparator,
-        // so a multi-directory value is fine (same shape as java.library.path above).
-        argsList.add("-Dorg.lwjgl.librarypath=$nativeLibraryPath")
 
         // The bridge jar (jre_lwjgl3glfw -> lwjgl-glfw-classes.jar) carries an
         // Android-patched org.lwjgl.system.Library/LibFFI that knows how to load
@@ -66,7 +55,6 @@ class LaunchArgs(
         // One line that decides native-loading questions from a log alone: which LWJGL mode was
         // detected, and which bridge jars the launch actually got. "liblwjgl.so not found" is a
         // classpath question, so the answer has to be in the log before the game starts.
-        // (See resolveNativeLibraryPath() for the matching natives-path line.)
         Logging.i(
             "LaunchArgs",
             "LWJGL mode=${Tools.resolveLwjglMode(versionInfo)} bridge=${Tools.getLWJGL3ClassPath()}"
@@ -103,39 +91,7 @@ class LaunchArgs(
                 argsList.add("-Dorg.lwjgl.sdl.libname=${pinnedSdl3.absolutePath}")
             }
 
-            // The Java half of SDL comes from the packaged jar, not from the version JSON (see
-            // Tools.getLwjglAbiOverrideClasspath). Say so, and say it loudly when it is missing:
-            // without it org.lwjgl.sdl.* is absent entirely and 26.3 fails at loadSdl().
-            val sdlJar = File(Tools.getBundledLwjglSdlJar())
-            if (sdlJar.isFile) {
-                Logging.i(
-                    "LaunchArgs",
-                    "SDL Java bindings: ${sdlJar.absolutePath} (${sdlJar.length()} bytes, packaged 3.4.1 " +
-                        "pair with the bridge); version JSON's lwjgl jars are not on the classpath"
-                )
-            } else {
-                Logging.e(
-                    "LaunchArgs",
-                    "SDL Java bindings missing: ${sdlJar.absolutePath} - launch will fail in " +
-                        "org.lwjgl.sdl.SDL.<clinit>; LwjglBridgeRepair should have restored it"
-                )
-            }
-
-            // Deliberately NOT -Dturtlelauncher.sdlBootstrap=true any more. That routed the launch
-            // through SdlMainReadyBootstrap, which called org.lwjgl.sdl.SDLMain.SDL_SetMainReady()
-            // from the guest JVM's SYSTEM classloader. Initializing that class loads LWJGL's core
-            // library in the system classloader, and the JVM refuses to load liblwjgl.so a second
-            // time from the game's own classloader - which is exactly what Fabric's Knot does. The
-            // modded 26.3 launch then died at startup with
-            //   [LWJGL] Failed to load a library
-            //   java.lang.NoClassDefFoundError: Could not initialize class org.lwjgl.system.Library
-            // SDL main-ready is now set by libsdlhook's SDL_Init hook instead (classloader-neutral,
-            // see sdl_hook.c's ensureSdlMainReady), so the guest never touches LWJGL before the
-            // game classloader gets to. This needs the rebuilt libsdlhook.so from the
-            // "Build libsdlhook.so" workflow - an older prebuilt .so has no SDL_Init hook and the
-            // game would then die with "Unable to initialize SDL: Application didn't initialize
-            // properly".
-            Logging.i("LaunchArgs", "SDL launch: guest stays out of LWJGL; SDL main-ready is set by libsdlhook")
+            argsList.add("-Dturtlelauncher.sdlBootstrap=true")
         }
         // Renderer debug logging opts the guest into LWJGL Debug/DebugLoader (see
         // GameFileDialogs). Off by default: LWJGL debug mode's per-call checks and
@@ -192,16 +148,7 @@ class LaunchArgs(
     private fun resolveNativeLibraryPath(): String {
         val versionSpecificNativesDir = File(PathManager.DIR_CACHE, "natives/${minecraftVersion.getVersionName()}")
         if (!versionSpecificNativesDir.exists()) versionSpecificNativesDir.mkdirs()
-        val appNativeDir = File(PathManager.DIR_NATIVE_LIB)
-        // Log the real state of both directories: Minecraft's "Library directory contents" crash
-        // section only prints "<not a directory>" for a multi-entry java.library.path (it checks
-        // Path.of(wholeProperty)), so the launcher has to say itself whether the paths exist.
-        Logging.i(
-            "LaunchArgs",
-            "natives path: cache=${versionSpecificNativesDir.absolutePath} (dir=${versionSpecificNativesDir.isDirectory}) " +
-                "app=${appNativeDir.absolutePath} (dir=${appNativeDir.isDirectory}, liblwjgl.so=${File(appNativeDir, "liblwjgl.so").isFile})"
-        )
-        return "${versionSpecificNativesDir.absolutePath}:${appNativeDir.absolutePath}"
+        return "${versionSpecificNativesDir.absolutePath}:${PathManager.DIR_NATIVE_LIB}"
     }
 
     private fun getCdsArgs(): List<String> {

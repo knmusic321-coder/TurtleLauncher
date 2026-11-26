@@ -3,22 +3,6 @@ package com.endiq.turtlelauncher.launch;
 import java.lang.reflect.Method;
 
 /**
- * RETIRED in v14: no launch routes through this class any more.
- *
- * LaunchArgs no longer sets -Dturtlelauncher.sdlBootstrap, because this class's
- * SDL_SetMainReady() call goes through org.lwjgl.sdl.SDLMain - and initializing that class loads
- * LWJGL's core library (liblwjgl.so) in the guest JVM's SYSTEM classloader. The JVM refuses to
- * load one native library into two classloaders, so every mod-loader launch (Fabric/Quilt Knot,
- * Forge/NeoForge) then failed with:
- *
- *   [LWJGL] Failed to load a library
- *   java.lang.NoClassDefFoundError: Could not initialize class org.lwjgl.system.Library
- *
- * even though the arm64 liblwjgl.so was on java.library.path and org.lwjgl.librarypath the whole
- * time. SDL main-ready is now set classloader-neutrally by libsdlhook.so's SDL_Init hook
- * (TurtleLauncher/src/main/jni/sdlhook/sdl_hook.c, ensureSdlMainReady()). The compiled class is
- * still inside lwjgl-glfw-classes.jar and harmless if it is ever invoked again.
- *
  * TurtleLauncher CRASH FIX (MC 26.3+): Minecraft's own bootstrap calls
  * org.lwjgl.sdl.SDL's SDL_Init() directly as a library call from inside a
  * normal JVM - never through SDL's own hijacked main() entry point. SDL's

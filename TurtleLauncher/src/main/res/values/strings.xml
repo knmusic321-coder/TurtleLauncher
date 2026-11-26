@@ -1466,33 +1466,33 @@
     <string name="music_delete_track">Remove</string>
 
     <string name="whats_new_title">🐢 What\'s New in TurtleLauncher</string>
-    <string name="whats_new_version">v16</string>
-    <string name="whats_new_feature_1">🧩 Minecraft 26.3 gets past RenderSystem.initBackendSystem</string>
-    <string name="whats_new_feature_1_desc">The Java side of LWJGL now comes from one packaged 3.4.1 pair: the patched bridge jar plus lwjgl-sdl-3.4.1.jar. The version JSON\'s lwjgl jars are no longer mixed in, so SDL_LogOutputFunction can no longer call a CallbackDescriptor constructor that does not exist and kill the game while it creates the window.</string>
-    <string name="whats_new_feature_2">🧱 v15\'s SDL3 fixes stay</string>
-    <string name="whats_new_feature_2_desc">The self-contained libSDL3.so, the SDL_SetMainReady/SDL_Init hook and the -Dorg.lwjgl.sdl.libname pinning are untouched - SDL still initializes on Android exactly as in v15.</string>
-    <string name="whats_new_feature_3">🔒 The build now checks this pairing</string>
-    <string name="whats_new_feature_3_desc">A new test compares the packaged bridge and lwjgl-sdl jars and fails the build if they ever come from different LWJGL releases, so this class of crash cannot ship again unnoticed.</string>
+    <string name="whats_new_version">v12</string>
+    <string name="whats_new_feature_1">🎭 Emotes: dependencies install themselves</string>
+    <string name="whats_new_feature_1_desc">Installing the Emotecraft mod now automatically fetches its required Player Animation Library dependency (read straight from the mod\'s own metadata), so the game no longer crashes on launch with a missing-dependency error.</string>
+    <string name="whats_new_feature_2">📜 Game logs are finally saved</string>
+    <string name="whats_new_feature_2_desc">The game\'s own output — mod loaders, console messages, crash traces — is captured into the launcher log, and the Assistant can read it when you ask why the game crashed.</string>
+    <string name="whats_new_feature_3">📤 Share logs straight into the Assistant</string>
+    <string name="whats_new_feature_3_desc">Turtle Launcher now appears in Android\'s share menu. Share any game log (file or text) from any app and the Assistant analyzes it on the spot — no copy-paste.</string>
     <!-- In-game change notice -->
     <string name="game_notice_title">🐢 What changed in this update</string>
     <string name="game_notice_close">Got it</string>
     <string name="game_notice_fixed_header">Fixed and changed</string>
     <string name="game_notice_new_header">New features and where to find them</string>
 
-    <string name="game_notice_item_1_title">26.3 no longer dies at “Initializing game”</string>
-    <string name="game_notice_item_1_desc">v15 got SDL loading, and the next failure was inside LWJGL\'s callback API: java.lang.NoSuchMethodError: \'void org.lwjgl.system.CallbackDescriptor.&lt;init&gt;(Class, Class, Method)\', thrown while creating the SDL log callback in RenderSystem.initBackendSystem.</string>
-    <string name="game_notice_item_2_title">Why it happened</string>
-    <string name="game_notice_item_2_desc">Two different LWJGL builds were on the classpath: the launcher\'s patched core jar (nested Callback.Descriptor, the 3.4.1 API) and the version JSON\'s lwjgl-sdl build, which still used the older top-level CallbackDescriptor. The class and its caller came from different releases, so the constructor lookup failed.</string>
-    <string name="game_notice_item_3_title">Both halves now come from the same release</string>
-    <string name="game_notice_item_3_desc">v16 packages lwjgl-sdl-3.4.1.jar next to the bridge jar and stops adding the version JSON\'s org.lwjgl:lwjgl / lwjgl-sdl jars to the launch classpath. The bridge\'s org.lwjgl.system.* and this org.lwjgl.sdl.* are from the same LWJGL release, so their callback descriptors match.</string>
-    <string name="game_notice_item_4_title">The launch log says which jars it used</string>
-    <string name="game_notice_item_4_desc">Look for “SDL: LWJGL Java classes come from the packaged bridge + lwjgl-sdl-3.4.1.jar” and “SDL Java bindings: &lt;path&gt; (… bytes, packaged 3.4.1 pair with the bridge)” before the game starts. If a jar is missing, there is now an explicit error line instead of a silent crash.</string>
-    <string name="game_notice_item_5_title">A build check guards the pairing</string>
-    <string name="game_notice_item_5_desc">tests/check_lwjgl_java_pair.py reads both jars, rejects any reference to the old top-level CallbackDescriptor, and fails the build when the two halves use different Callback.Descriptor constructors.</string>
-    <string name="game_notice_item_6_title">26.1, 26.2 and older versions: unchanged</string>
-    <string name="game_notice_item_6_desc">Only SDL launches use lwjgl-sdl; GLFW versions run on the same bridge as before, and the native files (libSDL3.so, libsdlhook.so) are identical to v15.</string>
-    <string name="game_notice_item_7_title">Version name: v16</string>
-    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one: v1, v2, ... The build you are running is v16. Check it in Settings, About.</string>
+    <string name="game_notice_item_1_title">Tidier custom-background layout</string>
+    <string name="game_notice_item_1_desc">The controls pane is now close to half the screen instead of a third, and it scrolls, so the switch rows no longer overlap or disappear under the bottom edge. The preview is smaller and labelled, and the three tabs scroll instead of clipping their text.</string>
+    <string name="game_notice_item_2_title">A liquid-island in-game menu</string>
+    <string name="game_notice_item_2_desc">The menu button is 30dp now. Tapping it springs a soft liquid island open, filled with one icon per function group; tapping a group makes that icon squish and bounce while its feature page unfolds underneath.</string>
+    <string name="game_notice_item_3_title">Mod error analysis in your language</string>
+    <string name="game_notice_item_3_desc">The analysis now answers exactly four things: MISSING MOD, ADD MOD, BROKEN MOD, HOW TO FIX, plus the jars the newest log actually mentions. No more wall of English rule-engine text to read through.</string>
+    <string name="game_notice_item_4_title">AI API key right inside the mod analysis</string>
+    <string name="game_notice_item_4_desc">Paste a Gemini API key at the bottom of the analysis and tap Analyze with AI: the model reads the log tail and answers in the same four sections. The key is remembered, and the offline answer is always shown even without one.</string>
+    <string name="game_notice_item_5_title">Self-healing LWJGL natives on arm64</string>
+    <string name="game_notice_item_5_desc">If the LWJGL bridge file under lwjgl3/ is missing or damaged, the launcher copies it back from the APK before every launch. That is a common cause of “Failed to locate library: liblwjgl.so” when running Minecraft 26.3 with Fabric on arm64.</string>
+    <string name="game_notice_item_6_title">The log now says which LWJGL it loaded</string>
+    <string name="game_notice_item_6_desc">Every launch logs the detected LWJGL mode and the bridge paths on the classpath, so the next report can say which native was missing instead of guessing at it.</string>
+    <string name="game_notice_item_7_title">Version name: v12</string>
+    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one: v1, v2, ... The build you are running is v12. Check it in Settings, About.</string>
 
     <string name="whats_new_warning">🧩 Renderer plugin apps (e.g. MobileGlues) show up in the renderer list right after you install them — no restart needed — and their supported Minecraft version range is honored like any built-in renderer.</string>
 
