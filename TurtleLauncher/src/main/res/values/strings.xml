@@ -1466,33 +1466,33 @@
     <string name="music_delete_track">Remove</string>
 
     <string name="whats_new_title">🐢 What\'s New in TurtleLauncher</string>
-    <string name="whats_new_version">v15</string>
-    <string name="whats_new_feature_1">🔧 Minecraft 26.3 loads SDL again</string>
-    <string name="whats_new_feature_1_desc">The libSDL3.so bundled in v14 was a MojoLauncher build that needs libmojoexec.so - a file this APK never contained. So dlopen failed (“Loading library SDL”), org.lwjgl.sdl.SDL could not initialize, and the game closed before the window opened. v15 ships the self-contained SDL3 build again (system libraries only) for all four ABIs.</string>
-    <string name="whats_new_feature_2">🧱 Everything v14 fixed stays fixed</string>
-    <string name="whats_new_feature_2_desc">The guest still never touches LWJGL before handing over to the game classloader (Fabric/Quilt/Knot loads liblwjgl.so itself), SDL main-ready is still set by libsdlhook before SDL_Init, and -Dorg.lwjgl.librarypath still points at both native folders.</string>
-    <string name="whats_new_feature_3">🔎 The crash report now names this failure</string>
-    <string name="whats_new_feature_3_desc">“Failed to dynamically load library … libSDL3.so” and “Could not initialize class org.lwjgl.sdl.SDL” get a diagnosis with the missing dependency and the reminder that no cache wipe helps.</string>
+    <string name="whats_new_version">v16</string>
+    <string name="whats_new_feature_1">🧩 Minecraft 26.3 gets past RenderSystem.initBackendSystem</string>
+    <string name="whats_new_feature_1_desc">The Java side of LWJGL now comes from one packaged 3.4.1 pair: the patched bridge jar plus lwjgl-sdl-3.4.1.jar. The version JSON's lwjgl jars are no longer mixed in, so SDL_LogOutputFunction can no longer call a CallbackDescriptor constructor that does not exist and kill the game while it creates the window.</string>
+    <string name="whats_new_feature_2">🧱 v15's SDL3 fixes stay</string>
+    <string name="whats_new_feature_2_desc">The self-contained libSDL3.so, the SDL_SetMainReady/SDL_Init hook and the -Dorg.lwjgl.sdl.libname pinning are untouched - SDL still initializes on Android exactly as in v15.</string>
+    <string name="whats_new_feature_3">🔒 The build now checks this pairing</string>
+    <string name="whats_new_feature_3_desc">A new test compares the packaged bridge and lwjgl-sdl jars and fails the build if they ever come from different LWJGL releases, so this class of crash cannot ship again unnoticed.</string>
     <!-- In-game change notice -->
     <string name="game_notice_title">🐢 What changed in this update</string>
     <string name="game_notice_close">Got it</string>
     <string name="game_notice_fixed_header">Fixed and changed</string>
     <string name="game_notice_new_header">New features and where to find them</string>
 
-    <string name="game_notice_item_1_title">26.3 crashed at “Loading library SDL” - now fixed</string>
-    <string name="game_notice_item_1_desc">SDL3 is a separate native library (libSDL3.so). The build packaged in v14 came from MojoLauncher and declares a dependency on libmojoexec.so, which TurtleLauncher does not ship - so the system linker refused to load it, org.lwjgl.sdl.SDL failed to initialize, and Minecraft 26.3 exited before the window was created.</string>
-    <string name="game_notice_item_2_title">SDL3 in the APK is self-contained again</string>
-    <string name="game_notice_item_2_desc">v15 restores the previous SDL3 build for arm64-v8a, armeabi-v7a, x86 and x86_64. It only needs Android system libraries (liblog, libandroid, libOpenSLES, libGLESv1_CM, libGLESv2, libdl, libm, libc), so the linker can load it on any device without extra files.</string>
-    <string name="game_notice_item_3_title">SDL main-ready still handled in the native hook</string>
-    <string name="game_notice_item_3_desc">SDL_SetMainReady() keeps running inside libsdlhook.so right before SDL_Init/SDL_InitSubSystem, on the one SDL3 instance the launcher loads on the Android side - no Java classloader involved.</string>
-    <string name="game_notice_item_4_title">The v14 LWJGL fixes are unchanged</string>
-    <string name="game_notice_item_4_desc">Mod loaders still get to load liblwjgl.so in their own classloader, and -Dorg.lwjgl.librarypath still points at the version natives cache plus the APK native directory. Nothing about that path was reverted.</string>
-    <string name="game_notice_item_5_title">A new crash diagnosis for this exact failure</string>
-    <string name="game_notice_item_5_desc">If a future build ships a native with an unpackaged dependency, the crash screen now explains it directly instead of suggesting a cache wipe.</string>
+    <string name="game_notice_item_1_title">26.3 no longer dies at “Initializing game”</string>
+    <string name="game_notice_item_1_desc">v15 got SDL loading, and the next failure was inside LWJGL's callback API: java.lang.NoSuchMethodError: 'void org.lwjgl.system.CallbackDescriptor.&lt;init&gt;(Class, Class, Method)', thrown while creating the SDL log callback in RenderSystem.initBackendSystem.</string>
+    <string name="game_notice_item_2_title">Why it happened</string>
+    <string name="game_notice_item_2_desc">Two different LWJGL builds were on the classpath: the launcher's patched core jar (nested Callback.Descriptor, the 3.4.1 API) and the version JSON's lwjgl-sdl build, which still used the older top-level CallbackDescriptor. The class and its caller came from different releases, so the constructor lookup failed.</string>
+    <string name="game_notice_item_3_title">Both halves now come from the same release</string>
+    <string name="game_notice_item_3_desc">v16 packages lwjgl-sdl-3.4.1.jar next to the bridge jar and stops adding the version JSON's org.lwjgl:lwjgl / lwjgl-sdl jars to the launch classpath. The bridge's org.lwjgl.system.* and this org.lwjgl.sdl.* are from the same LWJGL release, so their callback descriptors match.</string>
+    <string name="game_notice_item_4_title">The launch log says which jars it used</string>
+    <string name="game_notice_item_4_desc">Look for “SDL: LWJGL Java classes come from the packaged bridge + lwjgl-sdl-3.4.1.jar” and “SDL Java bindings: &lt;path&gt; (… bytes, packaged 3.4.1 pair with the bridge)” before the game starts. If a jar is missing, there is now an explicit error line instead of a silent crash.</string>
+    <string name="game_notice_item_5_title">A build check guards the pairing</string>
+    <string name="game_notice_item_5_desc">tests/check_lwjgl_java_pair.py reads both jars, rejects any reference to the old top-level CallbackDescriptor, and fails the build when the two halves use different Callback.Descriptor constructors.</string>
     <string name="game_notice_item_6_title">26.1, 26.2 and older versions: unchanged</string>
-    <string name="game_notice_item_6_desc">Only SDL launches (26.3+) use libSDL3.so; GLFW versions never load it and run exactly as before.</string>
-    <string name="game_notice_item_7_title">Version name: v15</string>
-    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one: v1, v2, ... The build you are running is v15. Check it in Settings, About.</string>
+    <string name="game_notice_item_6_desc">Only SDL launches use lwjgl-sdl; GLFW versions run on the same bridge as before, and the native files (libSDL3.so, libsdlhook.so) are identical to v15.</string>
+    <string name="game_notice_item_7_title">Version name: v16</string>
+    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one: v1, v2, ... The build you are running is v16. Check it in Settings, About.</string>
 
     <string name="whats_new_warning">🧩 Renderer plugin apps (e.g. MobileGlues) show up in the renderer list right after you install them — no restart needed — and their supported Minecraft version range is honored like any built-in renderer.</string>
 

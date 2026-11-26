@@ -103,6 +103,24 @@ class LaunchArgs(
                 argsList.add("-Dorg.lwjgl.sdl.libname=${pinnedSdl3.absolutePath}")
             }
 
+            // The Java half of SDL comes from the packaged jar, not from the version JSON (see
+            // Tools.getLwjglAbiOverrideClasspath). Say so, and say it loudly when it is missing:
+            // without it org.lwjgl.sdl.* is absent entirely and 26.3 fails at loadSdl().
+            val sdlJar = File(Tools.getBundledLwjglSdlJar())
+            if (sdlJar.isFile) {
+                Logging.i(
+                    "LaunchArgs",
+                    "SDL Java bindings: ${sdlJar.absolutePath} (${sdlJar.length()} bytes, packaged 3.4.1 " +
+                        "pair with the bridge); version JSON's lwjgl jars are not on the classpath"
+                )
+            } else {
+                Logging.e(
+                    "LaunchArgs",
+                    "SDL Java bindings missing: ${sdlJar.absolutePath} - launch will fail in " +
+                        "org.lwjgl.sdl.SDL.<clinit>; LwjglBridgeRepair should have restored it"
+                )
+            }
+
             // Deliberately NOT -Dturtlelauncher.sdlBootstrap=true any more. That routed the launch
             // through SdlMainReadyBootstrap, which called org.lwjgl.sdl.SDLMain.SDL_SetMainReady()
             // from the guest JVM's SYSTEM classloader. Initializing that class loads LWJGL's core
