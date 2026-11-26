@@ -1468,8 +1468,8 @@
     <string name="whats_new_title">🐢 What\'s New in TurtleLauncher</string>
     <string name="whats_new_version">v16</string>
     <string name="whats_new_feature_1">🧩 Minecraft 26.3 gets past RenderSystem.initBackendSystem</string>
-    <string name="whats_new_feature_1_desc">The Java side of LWJGL now comes from one packaged 3.4.1 pair: the patched bridge jar plus lwjgl-sdl-3.4.1.jar. The version JSON's lwjgl jars are no longer mixed in, so SDL_LogOutputFunction can no longer call a CallbackDescriptor constructor that does not exist and kill the game while it creates the window.</string>
-    <string name="whats_new_feature_2">🧱 v15's SDL3 fixes stay</string>
+    <string name="whats_new_feature_1_desc">The Java side of LWJGL now comes from one packaged 3.4.1 pair: the patched bridge jar plus lwjgl-sdl-3.4.1.jar. The version JSON\'s lwjgl jars are no longer mixed in, so SDL_LogOutputFunction can no longer call a CallbackDescriptor constructor that does not exist and kill the game while it creates the window.</string>
+    <string name="whats_new_feature_2">🧱 v15\'s SDL3 fixes stay</string>
     <string name="whats_new_feature_2_desc">The self-contained libSDL3.so, the SDL_SetMainReady/SDL_Init hook and the -Dorg.lwjgl.sdl.libname pinning are untouched - SDL still initializes on Android exactly as in v15.</string>
     <string name="whats_new_feature_3">🔒 The build now checks this pairing</string>
     <string name="whats_new_feature_3_desc">A new test compares the packaged bridge and lwjgl-sdl jars and fails the build if they ever come from different LWJGL releases, so this class of crash cannot ship again unnoticed.</string>
@@ -1480,11 +1480,11 @@
     <string name="game_notice_new_header">New features and where to find them</string>
 
     <string name="game_notice_item_1_title">26.3 no longer dies at “Initializing game”</string>
-    <string name="game_notice_item_1_desc">v15 got SDL loading, and the next failure was inside LWJGL's callback API: java.lang.NoSuchMethodError: 'void org.lwjgl.system.CallbackDescriptor.&lt;init&gt;(Class, Class, Method)', thrown while creating the SDL log callback in RenderSystem.initBackendSystem.</string>
+    <string name="game_notice_item_1_desc">v15 got SDL loading, and the next failure was inside LWJGL\'s callback API: java.lang.NoSuchMethodError: \'void org.lwjgl.system.CallbackDescriptor.&lt;init&gt;(Class, Class, Method)\', thrown while creating the SDL log callback in RenderSystem.initBackendSystem.</string>
     <string name="game_notice_item_2_title">Why it happened</string>
-    <string name="game_notice_item_2_desc">Two different LWJGL builds were on the classpath: the launcher's patched core jar (nested Callback.Descriptor, the 3.4.1 API) and the version JSON's lwjgl-sdl build, which still used the older top-level CallbackDescriptor. The class and its caller came from different releases, so the constructor lookup failed.</string>
+    <string name="game_notice_item_2_desc">Two different LWJGL builds were on the classpath: the launcher\'s patched core jar (nested Callback.Descriptor, the 3.4.1 API) and the version JSON\'s lwjgl-sdl build, which still used the older top-level CallbackDescriptor. The class and its caller came from different releases, so the constructor lookup failed.</string>
     <string name="game_notice_item_3_title">Both halves now come from the same release</string>
-    <string name="game_notice_item_3_desc">v16 packages lwjgl-sdl-3.4.1.jar next to the bridge jar and stops adding the version JSON's org.lwjgl:lwjgl / lwjgl-sdl jars to the launch classpath. The bridge's org.lwjgl.system.* and this org.lwjgl.sdl.* are from the same LWJGL release, so their callback descriptors match.</string>
+    <string name="game_notice_item_3_desc">v16 packages lwjgl-sdl-3.4.1.jar next to the bridge jar and stops adding the version JSON\'s org.lwjgl:lwjgl / lwjgl-sdl jars to the launch classpath. The bridge\'s org.lwjgl.system.* and this org.lwjgl.sdl.* are from the same LWJGL release, so their callback descriptors match.</string>
     <string name="game_notice_item_4_title">The launch log says which jars it used</string>
     <string name="game_notice_item_4_desc">Look for “SDL: LWJGL Java classes come from the packaged bridge + lwjgl-sdl-3.4.1.jar” and “SDL Java bindings: &lt;path&gt; (… bytes, packaged 3.4.1 pair with the bridge)” before the game starts. If a jar is missing, there is now an explicit error line instead of a silent crash.</string>
     <string name="game_notice_item_5_title">A build check guards the pairing</string>

@@ -1417,7 +1417,7 @@
     <string name="game_notice_new_header">Tính năng mới và chỗ tìm thấy</string>
 
     <string name="game_notice_item_1_title">26.3 không còn văng ở “Initializing game”</string>
-    <string name="game_notice_item_1_desc">v15 đã nạp được SDL, và lỗi tiếp theo nằm trong API callback của LWJGL: java.lang.NoSuchMethodError: 'void org.lwjgl.system.CallbackDescriptor.&lt;init&gt;(Class, Class, Method)', ném ra khi tạo callback log của SDL trong RenderSystem.initBackendSystem.</string>
+    <string name="game_notice_item_1_desc">v15 đã nạp được SDL, và lỗi tiếp theo nằm trong API callback của LWJGL: java.lang.NoSuchMethodError: \'void org.lwjgl.system.CallbackDescriptor.&lt;init&gt;(Class, Class, Method)\', ném ra khi tạo callback log của SDL trong RenderSystem.initBackendSystem.</string>
     <string name="game_notice_item_2_title">Vì sao lại thế</string>
     <string name="game_notice_item_2_desc">Có hai bản LWJGL khác nhau trên classpath: jar core đã vá của launcher (Callback.Descriptor lồng nhau, API 3.4.1) và bản lwjgl-sdl lấy từ version JSON vẫn dùng CallbackDescriptor kiểu cũ (top-level). Class và chỗ gọi nó thuộc hai bản khác nhau nên không tìm thấy constructor.</string>
     <string name="game_notice_item_3_title">Hai nửa giờ cùng một phiên bản</string>
