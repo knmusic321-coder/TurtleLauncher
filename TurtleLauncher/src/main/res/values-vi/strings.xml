@@ -1403,33 +1403,33 @@
     <string name="discord_rpc_preview_button_hidden">bị ẩn - cần cả nhãn và liên kết hợp lệ</string>
     <string name="music_delete_track">Gỡ bỏ</string>
     <string name="whats_new_title">🐢 Có gì mới trong TurtleLauncher</string>
-    <string name="whats_new_version">v14</string>
-    <string name="whats_new_feature_1">🛠️ Fabric + Minecraft 26.3 không còn văng ở liblwjgl.so</string>
-    <string name="whats_new_feature_1_desc">Fabric và Quilt chạy game trong classloader riêng của chúng. Trước đây launcher gọi SDL_SetMainReady() qua LWJGL từ classloader của tiến trình chính, kéo theo việc nạp liblwjgl.so ở đó, nên mod loader không nạp lại được: “Failed to load a library” rồi “NoClassDefFoundError: Could not initialize class org.lwjgl.system.Library”. Giờ phần chạy game không đụng tới LWJGL trước khi chuyển giao - SDL main-ready được đặt ngay trong hook SDL.</string>
-    <string name="whats_new_feature_2">📚 -Dorg.lwjgl.librarypath đã trỏ tới natives arm64</string>
-    <string name="whats_new_feature_2_desc">Mỗi lần chạy SDL đều có -Dorg.lwjgl.librarypath=&lt;cache natives&gt;:&lt;thư mục native của app&gt;, đúng đường dẫn mà LWJGL kiểm tra trước java.library.path. Báo cáo lỗi không còn ghi “org.lwjgl.librarypath = &lt;not set&gt;”, và log in thêm dòng natives path cho biết thư mục có thật hay không và có liblwjgl.so hay không.</string>
-    <string name="whats_new_feature_3">🧩 Vì sao báo cáo ghi “java.library.path = &lt;not a directory&gt;”</string>
-    <string name="whats_new_feature_3_desc">Đó là dòng chẩn đoán của chính Minecraft 26.3: nó chỉ hiểu một thư mục hoặc danh sách ngăn bằng dấu chấm phẩy, nên đường dẫn hai thư mục ngăn bằng dấu hai chấm của launcher luôn bị in thành “&lt;not a directory&gt;”. Nó không phải nguyên nhân - lỗi thật là dòng nạp LWJGL ngay phía trên.</string>
+    <string name="whats_new_version">v15</string>
+    <string name="whats_new_feature_1">🔧 Minecraft 26.3 nạp được SDL trở lại</string>
+    <string name="whats_new_feature_1_desc">Tệp libSDL3.so đóng trong v14 là bản build của MojoLauncher, cần thêm libmojoexec.so - tệp mà APK này không hề có. Vì thế dlopen thất bại (“Loading library SDL”), org.lwjgl.sdl.SDL không khởi tạo được và game thoát trước khi mở cửa sổ. v15 đóng lại bản SDL3 tự chứa (chỉ cần thư viện hệ thống) cho cả bốn ABI.</string>
+    <string name="whats_new_feature_2">🧱 Những gì v14 sửa vẫn giữ nguyên</string>
+    <string name="whats_new_feature_2_desc">Phần chạy game vẫn không đụng LWJGL trước khi chuyển giao cho classloader của game (Fabric/Quilt/Knot tự nạp liblwjgl.so), SDL main-ready vẫn do libsdlhook đặt trước SDL_Init, và -Dorg.lwjgl.librarypath vẫn trỏ tới cả hai thư mục native.</string>
+    <string name="whats_new_feature_3">🔎 Báo cáo lỗi giờ gọi đúng tên lỗi này</string>
+    <string name="whats_new_feature_3_desc">“Failed to dynamically load library … libSDL3.so” và “Could not initialize class org.lwjgl.sdl.SDL” sẽ có chẩn đoán nêu rõ thư viện phụ thuộc bị thiếu, kèm nhắc rằng xoá cache không giúp gì.</string>
     <!-- In-game change notice -->
     <string name="game_notice_title">🐢 Bản cập nhật này thay đổi gì</string>
     <string name="game_notice_close">Đã hiểu</string>
     <string name="game_notice_fixed_header">Đã sửa và thay đổi</string>
     <string name="game_notice_new_header">Tính năng mới và chỗ tìm thấy</string>
 
-    <string name="game_notice_item_1_title">Fabric 26.3: hết “Could not initialize class org.lwjgl.system.Library”</string>
-    <string name="game_notice_item_1_desc">Fabric, Quilt, Forge và NeoForge khởi động Minecraft trong một classloader con. Trước đây điểm vào của launcher khởi tạo LWJGL - tức là nạp liblwjgl.so - ngay ở classloader chính với các bản SDL, mà JVM không cho nạp cùng một native library vào classloader thứ hai. Mod loader vì thế báo “Failed to load a library” dù liblwjgl.so vẫn nằm trong APK. Giờ phần chạy game chuyển giao cho mod loader mà không đụng class LWJGL nào.</string>
-    <string name="game_notice_item_2_title">SDL main-ready do hook SDL native đặt</string>
-    <string name="game_notice_item_2_desc">Minecraft 26.3 gọi thẳng SDL_Init(), và SDL từ chối khởi động nếu chưa gọi SDL_SetMainReady(). Lệnh này giờ chạy trong libsdlhook.so, ngay tại SDL_Init/SDL_InitSubSystem và trên đúng một thực thể SDL3 mà launcher đã nạp sẵn - nên dùng được cho cả bản vanilla lẫn bản mod, không liên quan classloader.</string>
-    <string name="game_notice_item_3_title">-Dorg.lwjgl.librarypath được đặt ở mọi lần chạy SDL</string>
-    <string name="game_notice_item_3_desc">LWJGL kiểm tra org.lwjgl.librarypath trước java.library.path, và đây chính là thuộc tính mà báo cáo lỗi ghi “not set” khi không tìm thấy native. Nó giờ trỏ tới cả hai thư mục (cache natives của phiên bản và thư mục native của APK), nên vẫn tìm được liblwjgl.so arm64 kể cả khi game ghi đè java.library.path.</string>
-    <string name="game_notice_item_4_title">“java.library.path = &lt;not a directory&gt;” thật ra nghĩa là gì</string>
-    <string name="game_notice_item_4_desc">Không có gì hỏng ở đường dẫn. Minecraft 26.3 in dấu hiệu đó khi giá trị không phải một thư mục duy nhất hoặc danh sách ngăn bằng dấu chấm phẩy - đường dẫn ngăn bằng dấu hai chấm như của launcher luôn rơi vào trường hợp này. Nguyên nhân luôn là dòng ngay phía trên, và ở lần văng này đó là lỗi nạp thư viện LWJGL.</string>
-    <string name="game_notice_item_5_title">Log ghi đường dẫn natives ở mọi lần chạy</string>
-    <string name="game_notice_item_5_desc">Mỗi lần chạy đều ghi “natives path: cache=… (dir=…) app=… (dir=…, liblwjgl.so=…)”, cạnh dòng LWJGL mode sẵn có, để báo cáo lỗi cho biết thư mục và tệp native arm64 có thật hay không.</string>
+    <string name="game_notice_item_1_title">26.3 văng ở “Loading library SDL” - đã sửa</string>
+    <string name="game_notice_item_1_desc">SDL3 là một thư viện native riêng (libSDL3.so). Bản đóng trong v14 lấy từ MojoLauncher và khai báo phụ thuộc libmojoexec.so, tệp TurtleLauncher không có - nên linker của hệ thống từ chối nạp, org.lwjgl.sdl.SDL không khởi tạo được, và Minecraft 26.3 thoát trước khi tạo cửa sổ.</string>
+    <string name="game_notice_item_2_title">SDL3 trong APK lại tự chứa</string>
+    <string name="game_notice_item_2_desc">v15 khôi phục bản SDL3 trước đó cho arm64-v8a, armeabi-v7a, x86 và x86_64. Nó chỉ cần thư viện hệ thống Android (liblog, libandroid, libOpenSLES, libGLESv1_CM, libGLESv2, libdl, libm, libc), nên máy nào cũng nạp được mà không cần tệp phụ.</string>
+    <string name="game_notice_item_3_title">SDL main-ready vẫn do hook native đảm nhận</string>
+    <string name="game_notice_item_3_desc">SDL_SetMainReady() vẫn chạy trong libsdlhook.so ngay trước SDL_Init/SDL_InitSubSystem, trên đúng một thực thể SDL3 mà launcher nạp ở phía Android - không liên quan classloader Java.</string>
+    <string name="game_notice_item_4_title">Các sửa lỗi LWJGL của v14 không đổi</string>
+    <string name="game_notice_item_4_desc">Mod loader vẫn tự nạp liblwjgl.so trong classloader của nó, và -Dorg.lwjgl.librarypath vẫn trỏ tới cache natives của phiên bản cùng thư mục native của APK. Không có phần nào bị hoàn tác.</string>
+    <string name="game_notice_item_5_title">Thêm chẩn đoán cho đúng lỗi này</string>
+    <string name="game_notice_item_5_desc">Nếu bản sau lỡ đóng một native có phụ thuộc không được gói kèm, màn hình lỗi sẽ nói thẳng điều đó thay vì gợi ý xoá cache.</string>
     <string name="game_notice_item_6_title">26.1, 26.2 và các bản cũ: không đổi</string>
-    <string name="game_notice_item_6_desc">Các bản dùng GLFW chưa bao giờ đi qua bootstrap SDL và vẫn chạy y như trước. Chỉ các bản SDL (26.3 trở lên) dùng đường chạy mới.</string>
-    <string name="game_notice_item_7_title">Tên phiên bản: v14</string>
-    <string name="game_notice_item_7_desc">Mỗi bản có thay đổi lớn đều tăng một bậc: v1, v2, ... Bạn đang dùng v14, xem ở Cài đặt, Giới thiệu.</string>
+    <string name="game_notice_item_6_desc">Chỉ các bản SDL (26.3 trở lên) dùng libSDL3.so; các bản GLFW không nạp nó và chạy y như trước.</string>
+    <string name="game_notice_item_7_title">Tên phiên bản: v15</string>
+    <string name="game_notice_item_7_desc">Mỗi bản có thay đổi lớn đều tăng một bậc: v1, v2, ... Bạn đang dùng v15, xem ở Cài đặt, Giới thiệu.</string>
 
     <string name="whats_new_warning">🧩 Ứng dụng plugin trình kết xuất (ví dụ MobileGlues) hiện trong danh sách ngay sau khi bạn cài — không cần khởi động lại — và khoảng phiên bản Minecraft được hỗ trợ của nó được tôn trọng như mọi trình kết xuất tích hợp.</string>
     <string name="preset_pvp_title">Cấu hình PvP</string>

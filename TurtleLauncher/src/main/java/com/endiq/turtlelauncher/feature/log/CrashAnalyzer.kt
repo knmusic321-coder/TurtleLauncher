@@ -118,6 +118,30 @@ object CrashAnalyzer {
                     )
                 )
             ),
+            // 26.3: the bundled libSDL3.so could not be dlopen'ed at all, so every SDL class init
+            // failed and Minecraft died at "Loading library SDL". Checked before the generic
+            // native_library_path rule, which would otherwise suggest clearing caches.
+            Rule(
+                title = "sdl3_bundled_library_broken_dependency",
+                matches = {
+                    has(it, "Failed to dynamically load library") && has(it, "libSDL3.so") ||
+                        has(it, "Could not initialize class org.lwjgl.sdl.SDL")
+                },
+                diagnosis = fixed(
+                    "The SDL3 shipped in the APK needed a library that was not packaged (fixed in v15)",
+                    "libSDL3.so was a MojoLauncher build that links against libmojoexec.so. " +
+                        "TurtleLauncher ships no such file, so dlopen failed with “library \"libmojoexec.so\" " +
+                        "not found: needed by …/libSDL3.so”, org.lwjgl.sdl.SDL could not initialize, and " +
+                        "the game died at “Loading library SDL” before the window ever opened.",
+                    listOf(
+                        "Update to v15 or newer - it restores the self-contained SDL3 build (system " +
+                            "libraries only) for all four ABIs.",
+                        "No cache wipe or renderer change is needed for this one.",
+                        "If it still happens, send the “Loading library SDL” crash report: the missing " +
+                            "library name in the dlopen error says exactly what is absent."
+                    )
+                )
+            ),
             // Fabric/Quilt/Forge on 26.3+: the launcher entry point initialized LWJGL - and with
             // it liblwjgl.so - in the host classloader before the mod loader's own copy ran.
             // Checked before "native_library_path" below, because that generic rule would

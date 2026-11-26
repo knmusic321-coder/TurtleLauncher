@@ -1466,33 +1466,33 @@
     <string name="music_delete_track">Remove</string>
 
     <string name="whats_new_title">🐢 What\'s New in TurtleLauncher</string>
-    <string name="whats_new_version">v14</string>
-    <string name="whats_new_feature_1">🛠️ Fabric + Minecraft 26.3 gets past liblwjgl.so</string>
-    <string name="whats_new_feature_1_desc">Fabric and Quilt run the game in their own classloader. The launcher used to call SDL_SetMainReady() through LWJGL from the host classloader first, which loaded liblwjgl.so there, so the mod loader could not load it a second time: “Failed to load a library” followed by “NoClassDefFoundError: Could not initialize class org.lwjgl.system.Library”. The guest no longer touches LWJGL before handing over - SDL main-ready is now set inside the SDL hook.</string>
-    <string name="whats_new_feature_2">📚 -Dorg.lwjgl.librarypath now points at the arm64 natives</string>
-    <string name="whats_new_feature_2_desc">Every SDL launch gets -Dorg.lwjgl.librarypath=&lt;cache natives&gt;:&lt;app native dir&gt;, the path LWJGL checks before java.library.path. Crash reports no longer say “org.lwjgl.librarypath = &lt;not set&gt;”, and the log prints a natives-path line with the real directory state and whether liblwjgl.so is there.</string>
-    <string name="whats_new_feature_3">🧩 Why the report said “java.library.path = &lt;not a directory&gt;”</string>
-    <string name="whats_new_feature_3_desc">That line is Minecraft 26.3 own diagnostic: it only understands one directory or a semicolon list, so the launcher two-folder colon path always prints “&lt;not a directory&gt;”. It was never the cause - the real failure was the LWJGL load error printed just above it.</string>
+    <string name="whats_new_version">v15</string>
+    <string name="whats_new_feature_1">🔧 Minecraft 26.3 loads SDL again</string>
+    <string name="whats_new_feature_1_desc">The libSDL3.so bundled in v14 was a MojoLauncher build that needs libmojoexec.so - a file this APK never contained. So dlopen failed (“Loading library SDL”), org.lwjgl.sdl.SDL could not initialize, and the game closed before the window opened. v15 ships the self-contained SDL3 build again (system libraries only) for all four ABIs.</string>
+    <string name="whats_new_feature_2">🧱 Everything v14 fixed stays fixed</string>
+    <string name="whats_new_feature_2_desc">The guest still never touches LWJGL before handing over to the game classloader (Fabric/Quilt/Knot loads liblwjgl.so itself), SDL main-ready is still set by libsdlhook before SDL_Init, and -Dorg.lwjgl.librarypath still points at both native folders.</string>
+    <string name="whats_new_feature_3">🔎 The crash report now names this failure</string>
+    <string name="whats_new_feature_3_desc">“Failed to dynamically load library … libSDL3.so” and “Could not initialize class org.lwjgl.sdl.SDL” get a diagnosis with the missing dependency and the reminder that no cache wipe helps.</string>
     <!-- In-game change notice -->
     <string name="game_notice_title">🐢 What changed in this update</string>
     <string name="game_notice_close">Got it</string>
     <string name="game_notice_fixed_header">Fixed and changed</string>
     <string name="game_notice_new_header">New features and where to find them</string>
 
-    <string name="game_notice_item_1_title">Fabric 26.3: no more “Could not initialize class org.lwjgl.system.Library”</string>
-    <string name="game_notice_item_1_desc">Fabric, Quilt, Forge and NeoForge start Minecraft in a child classloader. The launcher entry point used to initialize LWJGL - and therefore load liblwjgl.so - in the host classloader for SDL versions, and the JVM refuses to load the same native library into a second classloader. The mod loader then failed with “Failed to load a library” while liblwjgl.so was sitting in the APK all along. The guest now hands over to the mod loader without touching any LWJGL class.</string>
-    <string name="game_notice_item_2_title">SDL main-ready is set by the native SDL hook</string>
-    <string name="game_notice_item_2_desc">Minecraft 26.3 calls SDL_Init() directly, and SDL refuses to start until SDL_SetMainReady() has run. That call now happens inside libsdlhook.so, on the SDL_Init/SDL_InitSubSystem entry points and on the one SDL3 instance the launcher already loaded - so it works for vanilla and modded launches alike, with no classloader involved.</string>
-    <string name="game_notice_item_3_title">-Dorg.lwjgl.librarypath is set on every SDL launch</string>
-    <string name="game_notice_item_3_desc">LWJGL checks org.lwjgl.librarypath before java.library.path, and this is the property a crash report shows as “not set” when it cannot find a native. It now points at the same two folders (the version natives cache and the APK native library directory), so a launch still finds the arm64 liblwjgl.so even if the game re-asserts java.library.path.</string>
-    <string name="game_notice_item_4_title">What “java.library.path = &lt;not a directory&gt;” really means</string>
-    <string name="game_notice_item_4_desc">Nothing about the path is broken. Minecraft 26.3 prints that marker when the property is not a single directory or a semicolon-separated list - a colon-separated path like ours always lands in that branch. The cause is always the line above it, and in this crash that line was the LWJGL library load failure.</string>
-    <string name="game_notice_item_5_title">The log shows the natives path on every launch</string>
-    <string name="game_notice_item_5_desc">Every launch logs “natives path: cache=… (dir=…) app=… (dir=…, liblwjgl.so=…)” next to the existing LWJGL mode line, so a crash report says whether the folders and the arm64 native were really there.</string>
+    <string name="game_notice_item_1_title">26.3 crashed at “Loading library SDL” - now fixed</string>
+    <string name="game_notice_item_1_desc">SDL3 is a separate native library (libSDL3.so). The build packaged in v14 came from MojoLauncher and declares a dependency on libmojoexec.so, which TurtleLauncher does not ship - so the system linker refused to load it, org.lwjgl.sdl.SDL failed to initialize, and Minecraft 26.3 exited before the window was created.</string>
+    <string name="game_notice_item_2_title">SDL3 in the APK is self-contained again</string>
+    <string name="game_notice_item_2_desc">v15 restores the previous SDL3 build for arm64-v8a, armeabi-v7a, x86 and x86_64. It only needs Android system libraries (liblog, libandroid, libOpenSLES, libGLESv1_CM, libGLESv2, libdl, libm, libc), so the linker can load it on any device without extra files.</string>
+    <string name="game_notice_item_3_title">SDL main-ready still handled in the native hook</string>
+    <string name="game_notice_item_3_desc">SDL_SetMainReady() keeps running inside libsdlhook.so right before SDL_Init/SDL_InitSubSystem, on the one SDL3 instance the launcher loads on the Android side - no Java classloader involved.</string>
+    <string name="game_notice_item_4_title">The v14 LWJGL fixes are unchanged</string>
+    <string name="game_notice_item_4_desc">Mod loaders still get to load liblwjgl.so in their own classloader, and -Dorg.lwjgl.librarypath still points at the version natives cache plus the APK native directory. Nothing about that path was reverted.</string>
+    <string name="game_notice_item_5_title">A new crash diagnosis for this exact failure</string>
+    <string name="game_notice_item_5_desc">If a future build ships a native with an unpackaged dependency, the crash screen now explains it directly instead of suggesting a cache wipe.</string>
     <string name="game_notice_item_6_title">26.1, 26.2 and older versions: unchanged</string>
-    <string name="game_notice_item_6_desc">GLFW versions never routed through the SDL bootstrap and keep launching exactly as before. Only SDL launches (26.3+) use the new path.</string>
-    <string name="game_notice_item_7_title">Version name: v14</string>
-    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one: v1, v2, ... The build you are running is v14. Check it in Settings, About.</string>
+    <string name="game_notice_item_6_desc">Only SDL launches (26.3+) use libSDL3.so; GLFW versions never load it and run exactly as before.</string>
+    <string name="game_notice_item_7_title">Version name: v15</string>
+    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one: v1, v2, ... The build you are running is v15. Check it in Settings, About.</string>
 
     <string name="whats_new_warning">🧩 Renderer plugin apps (e.g. MobileGlues) show up in the renderer list right after you install them — no restart needed — and their supported Minecraft version range is honored like any built-in renderer.</string>
 
