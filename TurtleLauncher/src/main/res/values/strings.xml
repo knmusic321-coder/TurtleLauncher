@@ -1472,7 +1472,7 @@
     <string name="whats_new_feature_2">🇻🇳 Vietnamese chat, end to end</string>
     <string name="whats_new_feature_2_desc">Starter prompts, greetings, confirmation lists and the new dialogs all speak Vietnamese, and the assistant follows whichever language you type in.</string>
     <string name="whats_new_feature_3">🗂️ Log files, read for you</string>
-    <string name="whats_new_feature_3_desc">/log reads the newest game log - or any file you point it at - runs the launcher's own rules, then hands the tail to the AI for a written analysis when the brain is on.</string>
+    <string name="whats_new_feature_3_desc">/log reads the newest game log - or any file you point it at - runs the launcher\'s own rules, then hands the tail to the AI for a written analysis when the brain is on.</string>
     <!-- In-game change notice -->
     <string name="game_notice_title">🐢 What changed in this update</string>
     <string name="game_notice_close">Got it</string>
@@ -1480,15 +1480,15 @@
     <string name="game_notice_new_header">New features and where to find them</string>
 
     <string name="game_notice_item_1_title">An assistant that can change things</string>
-    <string name="game_notice_item_1_desc">Ask in words: "turn off vsync", "switch to Holy GL4ES", "set 2GB RAM", "add -XX:+UseSerialGC", "find a mod for FPS". The chat lists exactly what will change, and nothing is written until you tap Apply on that list.</string>
+    <string name="game_notice_item_1_desc">Ask in words: \"turn off vsync\", \"switch to Holy GL4ES\", \"set 2GB RAM\", \"add -XX:+UseSerialGC\", \"find a mod for FPS\". The chat lists exactly what will change, and nothing is written until you tap Apply on that list.</string>
     <string name="game_notice_item_2_title">Your API key, on the chat screen</string>
-    <string name="game_notice_item_2_desc">The key button at the top right of the chat opens the key field. Paste a Gemini key from aistudio.google.com/apikey and tick "Use the AI brain". The key is stored on this device only, and Cancel leaves everything as it was.</string>
+    <string name="game_notice_item_2_desc">The key button at the top right of the chat opens the key field. Paste a Gemini key from aistudio.google.com/apikey and tick \"Use the AI brain\". The key is stored on this device only, and Cancel leaves everything as it was.</string>
     <string name="game_notice_item_3_title">Vietnamese, end to end</string>
-    <string name="game_notice_item_3_desc">The starter chips, the greeting, the confirmation list and the key dialog all follow the launcher's language, and the assistant answers in the language you actually type.</string>
+    <string name="game_notice_item_3_desc">The starter chips, the greeting, the confirmation list and the key dialog all follow the launcher\'s language, and the assistant answers in the language you actually type.</string>
     <string name="game_notice_item_4_title">Read a log file</string>
-    <string name="game_notice_item_4_desc">"/log" reads the newest game log and "/log &lt;path&gt;" reads a specific file. The launcher's rules run offline; with a key the AI adds a written analysis of the same log tail, in your language.</string>
+    <string name="game_notice_item_4_desc">\"/log\" reads the newest game log and \"/log &lt;path&gt;\" reads a specific file. The launcher\'s rules run offline; with a key the AI adds a written analysis of the same log tail, in your language.</string>
     <string name="game_notice_item_5_title">Mods and JVM flags from the chat</string>
-    <string name="game_notice_item_5_desc">The assistant searches Modrinth for the selected game version and loader and installs the matching build into that version's mods folder after you confirm. JVM flags you name are appended to the launcher's arguments the same way.</string>
+    <string name="game_notice_item_5_desc">The assistant searches Modrinth for the selected game version and loader and installs the matching build into that version\'s mods folder after you confirm. JVM flags you name are appended to the launcher\'s arguments the same way.</string>
     <string name="game_notice_item_6_title">History kept honest</string>
     <string name="game_notice_item_6_desc">The chat never edits a setting quietly: an action that was not confirmed is not applied, and the assistant is told not to claim a change it did not make.</string>
     <string name="game_notice_item_7_title">Version name: v14</string>
