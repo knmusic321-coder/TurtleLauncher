@@ -60,7 +60,10 @@ data class MiuixColorScheme(
     @ColorInt val onErrorContainer: Int,
     @ColorInt val sliderKeyPoint: Int,
     @ColorInt val sliderKeyPointForeground: Int,
-    @ColorInt val sliderBackground: Int
+    @ColorInt val sliderBackground: Int,
+    /** Soft halo painted behind primary surfaces when Advanced appearance -> accent glow is on.
+     *  Zero when the halo is off, so callers can check `!= 0` instead of carrying a second flag. */
+    @ColorInt val accentGlow: Int
 )
 
 object MiuixTheme {
@@ -122,7 +125,8 @@ object MiuixTheme {
         onErrorContainer = 0xFFFFDAD6.toInt(),
         sliderKeyPoint = 0x4D7A9C86,
         sliderKeyPointForeground = 0xFFA7E8BD.toInt(),
-        sliderBackground = 0x26FFFFFF
+        sliderBackground = 0x26FFFFFF,
+        accentGlow = 0
     )
 
     /**
@@ -147,16 +151,82 @@ object MiuixTheme {
 
     /**
      * Standard Miuix component corner radii in dp.
+     *
+     * One ladder, used by every code-built surface: a chip is 10, an item 14, a card 18, a
+     * floating panel 24, a dialog 30 and the home island 32. Keeping the steps proportional to
+     * the surface's own size is what stops a large sheet from reading as a small card that was
+     * stretched. [com.endiq.turtlelauncher.feature.theme.ThemeManager.cornerDp] scales these by
+     * the pack, the icon pack and Advanced appearance.
      */
     object CornerRadiiDp {
-        const val CARD = 16f
-        const val BUTTON = 16f
+        const val CHIP = 10f
+        const val CARD = 18f
+        const val BUTTON = 18f
         const val TEXT_FIELD = 16f
-        const val TAB_ROW = 12f
-        const val TAB_INDICATOR = 8f
-        const val DIALOG = 32f
-        const val POPUP = 20f
+        const val TAB_ROW = 14f
+        const val TAB_INDICATOR = 10f
+        const val DIALOG = 30f
+        const val POPUP = 22f
+        const val PANEL = 24f
+        const val ISLAND = 32f
     }
+
+    /**
+     * Spacing ladder in dp (4-based). Screens built in code ask for a step, not a number, so
+     * the density setting can retime the whole screen from one place.
+     */
+    object SpacingDp {
+        const val HAIRLINE = 1f
+        const val XXS = 2f
+        const val XS = 4f
+        const val S = 8f
+        const val M = 12f
+        const val L = 16f
+        const val XL = 24f
+        const val XXL = 32f
+    }
+
+    /**
+     * Type scale in sp, with the tracking each size wants.
+     *
+     * Tracking is size-specific, never one value for every size: large text reads too loose and
+     * wants negative tracking, small text wants a touch of positive tracking to stay legible.
+     * Leading moves the other way - tight on display sizes, roomy on body copy.
+     */
+    object TypeScale {
+        data class Style(val sizeSp: Float, val tracking: Float, val lineSpacingMult: Float)
+
+        val DISPLAY = Style(28f, -0.02f, 1.05f)
+        val TITLE = Style(20f, -0.01f, 1.15f)
+        val HEADLINE = Style(16f, -0.005f, 1.25f)
+        val BODY = Style(14f, 0f, 1.4f)
+        val CAPTION = Style(12f, 0.01f, 1.35f)
+        val OVERLINE = Style(11f, 0.08f, 1.2f)
+    }
+
+    /**
+     * Motion ladder, in milliseconds, for the launcher's own (non-gesture) transitions.
+     *
+     * Press feedback is the shortest thing on screen because it must feel instantaneous; a
+     * sheet is the longest because it travels the furthest. Durations are then scaled by
+     * Advanced appearance -> motion, so one setting governs the whole app.
+     */
+    object MotionMs {
+        const val PRESS = 120L
+        const val SMALL = 180L
+        const val MEDIUM = 240L
+        const val LARGE = 320L
+    }
+
+    /** Strong ease-out used for anything entering the screen (fast start, soft landing). */
+    @JvmField
+    val EASE_OUT: android.view.animation.Interpolator =
+        android.view.animation.PathInterpolator(0.23f, 1f, 0.32f, 1f)
+
+    /** Strong ease-in-out for elements moving between two on-screen positions. */
+    @JvmField
+    val EASE_IN_OUT: android.view.animation.Interpolator =
+        android.view.animation.PathInterpolator(0.77f, 0f, 0.175f, 1f)
 
     /**
      * Standard Miuix indication overlay alphas from `MiuixIndication.kt`.

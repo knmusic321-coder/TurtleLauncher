@@ -218,15 +218,28 @@ class ThemeStudioDialog(private val activity: FragmentActivity) :
             ).apply { marginEnd = dp(8) }
         }
 
-    /** Random and reset: one tap to explore, one tap back to the shipped look. */
+    /**
+     * Surprise, reset, and the door to Advanced appearance.
+     *
+     * The studio owns colour; the advanced sheet owns shape, spacing, type, surfaces and motion.
+     * Keeping the two one tap apart is what lets a pack stay a palette instead of growing fifty
+     * sliders of its own.
+     */
     private fun buildToolsRow(): View {
         val row = LinearLayout(activity).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
         }
+        row.addView(buildToolButton(R.string.theme_studio_advanced) { openAdvanced() })
         row.addView(buildToolButton(R.string.theme_studio_random) { randomize() })
         row.addView(buildToolButton(R.string.theme_studio_reset) { resetToDefaults() })
         return row
+    }
+
+    /** Hands over to the advanced sheet; the studio closes so only one sheet is ever open. */
+    private fun openAdvanced() {
+        dismiss()
+        AppearanceDialog.show(activity)
     }
 
     private fun buildToolButton(labelRes: Int, onClick: () -> Unit): TextView =
@@ -323,20 +336,32 @@ class ThemeStudioDialog(private val activity: FragmentActivity) :
             return
         }
         val accent = resolvedAccent()
-        previewContainer.background = rounded(effectiveBackground(), 18f, baseColors.outline)
+        previewContainer.background = rounded(
+            effectiveBackground(),
+            MiuixTheme.CornerRadiiDp.PANEL,
+            baseColors.outline
+        )
         previewTitle.setTextColor(baseColors.onBackgroundVariant)
-        previewCard.background = rounded(previewCardColor(), 12f, baseColors.outline)
+        previewCard.background = rounded(
+            previewCardColor(),
+            MiuixTheme.CornerRadiiDp.CARD,
+            baseColors.outline
+        )
         (previewCard.getChildAt(0) as? TextView)?.setTextColor(previewInk())
         previewBody.setTextColor(previewInkSecondary())
         previewButton.setTextColor(onAccent())
         // Nether Dark keeps a warm halo around the button; every other pack uses a flat fill.
-        previewButton.background = rounded(accent, 12f, if (selectedPack.glow) accent else null)
+        previewButton.background = rounded(
+            accent,
+            MiuixTheme.CornerRadiiDp.BUTTON,
+            if (selectedPack.glow) accent else null
+        )
 
         packGrid.children().forEach { card ->
             val pack = card.tag as? ThemePack ?: return@forEach
             card.background = rounded(
                 if (pack == selectedPack) baseColors.surfaceContainerHigh else baseColors.surfaceContainer,
-                14f,
+                MiuixTheme.CornerRadiiDp.CARD,
                 if (pack == selectedPack) accent else baseColors.outline
             )
             ((card as? ViewGroup)?.getChildAt(1) as? TextView)?.setTextColor(
@@ -366,7 +391,7 @@ class ThemeStudioDialog(private val activity: FragmentActivity) :
         chip.setTextColor(if (selected) onAccent() else baseColors.onSurfaceVariantSummary)
         chip.background = rounded(
             if (selected) accent else baseColors.surfaceContainer,
-            14f,
+            MiuixTheme.CornerRadiiDp.TAB_ROW,
             if (selected) accent else baseColors.outline
         )
     }

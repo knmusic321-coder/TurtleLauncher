@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Page surface for the launcher's own screens.
 
-     This used to be a solid #0D0D0D sheet, which is what showed up as a black board over
-     the background video. It is now a translucent glass gradient: the clip keeps playing
-     through the page, and only a light tint is added so text stays readable.
+     A translucent glass gradient rather than a solid sheet: the wallpaper/video keeps playing
+     through the page and only a light tint is added so text stays readable. The top edge is
+     deliberately softer than the bottom, which is what makes the content read as floating in
+     front of the background instead of sitting on a flat slab.
 
-     It stays a shape drawable (not a plain @color) so PageTransparency can mutate its
-     alpha per view: at 100% the tint is fully applied, at 0% the page is completely
-     transparent and only the content is left floating over the video. -->
+     It stays a shape drawable (not a plain @color) so PageTransparency can mutate its alpha per
+     view: at 100% the tint is fully applied, at 0% the page is completely transparent. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <gradient

@@ -12,21 +12,25 @@
     <dimen name="padding_medium">@dimen/padding_small</dimen>
 
     <!-- Miuix Design System Corner Radii & Elevations -->
-    <dimen name="radius_card">16dp</dimen>
-    <dimen name="radius_button">16dp</dimen>
-    <dimen name="radius_dialog">28dp</dimen>
+    <!-- One radius ladder, proportional to the surface's own size: a chip is 10, an item 14, a
+         card 20, a floating panel 24, a dialog 30, the home island 32. Keeping the steps
+         proportional is what stops a large sheet from reading as a small card that was stretched.
+         Advanced appearance scales the code-built surfaces on top of these. -->
+    <dimen name="radius_card">20dp</dimen>
+    <dimen name="radius_button">18dp</dimen>
+    <dimen name="radius_dialog">30dp</dimen>
     <dimen name="radius_pill">999dp</dimen>
     <dimen name="elevation_card">0dp</dimen>
     <dimen name="elevation_dialog">12dp</dimen>
     <dimen name="stroke_subtle">1dp</dimen>
 
     <!-- Corner radii still referenced by the list-item / edit-box / glass-card selectors. -->
-    <dimen name="radius_chip">8dp</dimen>
-    <dimen name="radius_item">12dp</dimen>
-    <dimen name="radius_panel">20dp</dimen>
+    <dimen name="radius_chip">10dp</dimen>
+    <dimen name="radius_item">14dp</dimen>
+    <dimen name="radius_panel">24dp</dimen>
     <!-- Dynamic island: the outer capsule and the tap targets inside it. -->
-    <dimen name="radius_island">28dp</dimen>
-    <dimen name="radius_island_inner">22dp</dimen>
+    <dimen name="radius_island">32dp</dimen>
+    <dimen name="radius_island_inner">24dp</dimen>
 
     <!-- 4dp baseline spacing scale, referenced by the gallery and settings layouts. -->
     <dimen name="space_xs">4dp</dimen>

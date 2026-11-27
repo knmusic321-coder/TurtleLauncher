@@ -129,7 +129,9 @@ abstract class ModListFragment : FragmentWithAnim(R.layout.fragment_mod_download
 
             parentElementAnimPlayer.clearEntries()
             parentElementAnimPlayer
-                .duration((AllSettings.animationSpeed.getValue() * 0.7).toLong())
+                .duration(com.endiq.turtlelauncher.feature.theme.Appearance.duration(
+                    (AllSettings.animationSpeed.getValue() * 0.7).toLong()
+                ))
                 .apply(AnimPlayer.Entry(selectTitle, if (hide) Animations.FadeIn else Animations.FadeOut))
                 .apply(AnimPlayer.Entry(refreshButton, if (hide) Animations.FadeOut else Animations.FadeIn))
 

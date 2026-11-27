@@ -68,6 +68,7 @@ object TurtleTransitions {
     fun isEnabled(): Boolean =
         AllSettings.animation.getValue() &&
         AllSettings.animationSpeed.getValue() > 0 &&
+        com.endiq.turtlelauncher.feature.theme.Appearance.motionEnabled() &&
         !TaskExecutors.isGameSessionActive &&
         systemAllowsAnimations()
 

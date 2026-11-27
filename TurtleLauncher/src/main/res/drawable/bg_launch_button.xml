@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Primary action: an accent gradient pill. The gradient runs light-to-accent rather than
+     accent-to-accent so the button reads as a lit surface, and the pressed state deepens the
+     same two stops instead of switching to a flat fill. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
             <gradient
-                android:angle="0"
-                android:endColor="@color/palette_secondary"
-                android:startColor="@color/palette_primary" />
+                android:angle="270"
+                android:endColor="@color/palette_primary"
+                android:startColor="@color/palette_secondary" />
             <corners android:radius="@dimen/radius_pill" />
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
             <gradient
-                android:angle="0"
+                android:angle="270"
                 android:centerColor="@color/accent_primary"
                 android:endColor="@color/palette_secondary"
                 android:startColor="#E8F5DC" />

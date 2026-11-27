@@ -40,7 +40,9 @@ class AnimUtils {
             if (view.visibility == targetVisibility) return
 
             setViewAnim(view, if (visible) TurtleTransitions.enter() else TurtleTransitions.exit(),
-                (AllSettings.animationSpeed.getValue() * 0.7).toLong(),
+                com.endiq.turtlelauncher.feature.theme.Appearance.duration(
+                    (AllSettings.animationSpeed.getValue() * 0.7).toLong()
+                ),
                 { view.visibility = View.VISIBLE },
                 { view.visibility = if (visible) View.VISIBLE else View.GONE })
         }

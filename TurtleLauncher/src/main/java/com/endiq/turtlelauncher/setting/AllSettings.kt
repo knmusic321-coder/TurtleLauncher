@@ -279,6 +279,24 @@ class AllSettings {
         @JvmStatic val launcherAccentColor      = StringSettingUnit("launcherAccentColor", "")
         /** Icon presentation pack: classic (Turtle artwork), minimal, pixel. */
         @JvmStatic val launcherIconPack         = StringSettingUnit("launcherIconPack", "classic")
+
+        // ── Advanced appearance (Settings -> Launcher -> Advanced appearance) ───
+        /** Corner multiplier in percent (40-180): how round cards, chips and dialogs are. */
+        @JvmStatic val appearanceCornerScale    = IntSettingUnit("appearanceCornerScale", 100)
+        /** Spacing rhythm: compact, comfortable, spacious. Multiplies every spacing token. */
+        @JvmStatic val appearanceDensity        = StringSettingUnit("appearanceDensity", "comfortable")
+        /** Type multiplier in percent (85-130), applied on top of the device font scale. */
+        @JvmStatic val appearanceTextScale      = IntSettingUnit("appearanceTextScale", 100)
+        /** Surface depth: flat, soft (shipped), elevated. */
+        @JvmStatic val appearanceSurfaces       = StringSettingUnit("appearanceSurfaces", "soft")
+        /** Outline and divider strength in percent (0-150). */
+        @JvmStatic val appearanceOutline        = IntSettingUnit("appearanceOutline", 100)
+        /** Contrast: normal or high (thicker ink, stronger dividers). */
+        @JvmStatic val appearanceContrast       = StringSettingUnit("appearanceContrast", "normal")
+        /** Motion budget: full, reduced, off. Scales every launcher-owned duration. */
+        @JvmStatic val appearanceMotion         = StringSettingUnit("appearanceMotion", "full")
+        /** Draw a soft accent halo behind primary buttons instead of a flat fill. */
+        @JvmStatic val appearanceAccentGlow     = BooleanSettingUnit("appearanceAccentGlow", false)
         /** Language for the crash explainer: "auto" follows the launcher language, or "vi"/"en". */
         @JvmStatic val crashExplainerLanguage   = StringSettingUnit("crashExplainerLanguage", "auto")
         /** Translate a crash log into a plain-language explanation with fix suggestions. */

@@ -12,6 +12,7 @@ import com.endiq.turtlelauncher.event.single.PageOpacityChangeEvent
 import com.endiq.turtlelauncher.feature.network.DualChannelNetwork
 import com.endiq.turtlelauncher.feature.update.UpdateUtils
 import com.endiq.turtlelauncher.setting.AllSettings
+import com.endiq.turtlelauncher.ui.dialog.AppearanceDialog
 import com.endiq.turtlelauncher.ui.dialog.ThemeStudioDialog
 import com.endiq.turtlelauncher.ui.fragment.CustomBackgroundFragment
 import com.endiq.turtlelauncher.ui.fragment.FragmentWithAnim
@@ -166,6 +167,18 @@ class LauncherSettingsFragment() : AbstractSettingsFragment(R.layout.settings_fr
             }
         }
         binding.launcherThemeValue.text = ThemeStudioDialog.currentPackLabel(context)
+
+        // Advanced appearance: corner radius, spacing, type, surfaces, contrast and motion. Its
+        // value line names the current rhythm and multipliers so the row is not a mystery door.
+        BaseSettingsWrapper(
+            context,
+            binding.appearanceAdvancedLayout
+        ) {
+            (activity as? androidx.fragment.app.FragmentActivity)?.let { host ->
+                AppearanceDialog.show(host)
+            }
+        }
+        binding.appearanceAdvancedValue.text = AppearanceDialog.summary(context)
 
         BaseSettingsWrapper(
             context,

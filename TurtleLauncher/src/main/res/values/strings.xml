@@ -1466,33 +1466,33 @@
     <string name="music_delete_track">Remove</string>
 
     <string name="whats_new_title">🐢 What\'s New in TurtleLauncher</string>
-    <string name="whats_new_version">v12</string>
-    <string name="whats_new_feature_1">🎭 Emotes: dependencies install themselves</string>
-    <string name="whats_new_feature_1_desc">Installing the Emotecraft mod now automatically fetches its required Player Animation Library dependency (read straight from the mod\'s own metadata), so the game no longer crashes on launch with a missing-dependency error.</string>
-    <string name="whats_new_feature_2">📜 Game logs are finally saved</string>
-    <string name="whats_new_feature_2_desc">The game\'s own output — mod loaders, console messages, crash traces — is captured into the launcher log, and the Assistant can read it when you ask why the game crashed.</string>
-    <string name="whats_new_feature_3">📤 Share logs straight into the Assistant</string>
-    <string name="whats_new_feature_3_desc">Turtle Launcher now appears in Android\'s share menu. Share any game log (file or text) from any app and the Assistant analyzes it on the spot — no copy-paste.</string>
+    <string name="whats_new_version">v13</string>
+    <string name="whats_new_feature_1">🎛️ Advanced appearance, one screen</string>
+    <string name="whats_new_feature_1_desc">Settings → Launcher → Advanced appearance now holds corner radius, spacing rhythm, text size, surface depth, outline strength, contrast and motion. Every value is a multiplier over the theme pack, so Sakura can be rounder or Redstone flatter without losing its colours.</string>
+    <string name="whats_new_feature_2">🎨 A redesigned interface</string>
+    <string name="whats_new_feature_2_desc">One radius ladder (chips 10, items 14, cards 20, panels 24, dialogs 30), gradient glass cards with a hairline edge, stronger pressed states, a taller home island, roomier quick-action tiles and a bigger launch panel.</string>
+    <string name="whats_new_feature_3">🎬 Motion you control</string>
+    <string name="whats_new_feature_3_desc">Motion has three budgets — Full, Reduced and Off — and every duration the launcher computes follows it. Text size stacks on top of Android’s own font scale instead of replacing it.</string>
     <!-- In-game change notice -->
     <string name="game_notice_title">🐢 What changed in this update</string>
     <string name="game_notice_close">Got it</string>
     <string name="game_notice_fixed_header">Fixed and changed</string>
     <string name="game_notice_new_header">New features and where to find them</string>
 
-    <string name="game_notice_item_1_title">Tidier custom-background layout</string>
-    <string name="game_notice_item_1_desc">The controls pane is now close to half the screen instead of a third, and it scrolls, so the switch rows no longer overlap or disappear under the bottom edge. The preview is smaller and labelled, and the three tabs scroll instead of clipping their text.</string>
-    <string name="game_notice_item_2_title">A liquid-island in-game menu</string>
-    <string name="game_notice_item_2_desc">The menu button is 30dp now. Tapping it springs a soft liquid island open, filled with one icon per function group; tapping a group makes that icon squish and bounce while its feature page unfolds underneath.</string>
-    <string name="game_notice_item_3_title">Mod error analysis in your language</string>
-    <string name="game_notice_item_3_desc">The analysis now answers exactly four things: MISSING MOD, ADD MOD, BROKEN MOD, HOW TO FIX, plus the jars the newest log actually mentions. No more wall of English rule-engine text to read through.</string>
-    <string name="game_notice_item_4_title">AI API key right inside the mod analysis</string>
-    <string name="game_notice_item_4_desc">Paste a Gemini API key at the bottom of the analysis and tap Analyze with AI: the model reads the log tail and answers in the same four sections. The key is remembered, and the offline answer is always shown even without one.</string>
-    <string name="game_notice_item_5_title">Self-healing LWJGL natives on arm64</string>
-    <string name="game_notice_item_5_desc">If the LWJGL bridge file under lwjgl3/ is missing or damaged, the launcher copies it back from the APK before every launch. That is a common cause of “Failed to locate library: liblwjgl.so” when running Minecraft 26.3 with Fabric on arm64.</string>
-    <string name="game_notice_item_6_title">The log now says which LWJGL it loaded</string>
-    <string name="game_notice_item_6_desc">Every launch logs the detected LWJGL mode and the bridge paths on the classpath, so the next report can say which native was missing instead of guessing at it.</string>
-    <string name="game_notice_item_7_title">Version name: v12</string>
-    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one: v1, v2, ... The build you are running is v12. Check it in Settings, About.</string>
+    <string name="game_notice_item_1_title">Advanced appearance</string>
+    <string name="game_notice_item_1_desc">Open Settings → Launcher → Advanced appearance. It sits under the theme packs: the pack chooses the colours, this screen chooses the shape, spacing, type, surfaces, contrast and motion. Reset and Surprise me are one tap away, and Apply recreates the launcher so every screen picks it up at once.</string>
+    <string name="game_notice_item_2_title">One corner ladder</string>
+    <string name="game_notice_item_2_desc">Chips are 10, items 14, cards 20, floating panels 24 and dialogs 30, so a large sheet no longer reads as a small card that was stretched. The corner slider moves the whole ladder between 40% and 180%.</string>
+    <string name="game_notice_item_3_title">Spacing rhythm</string>
+    <string name="game_notice_item_3_desc">Compact, Comfortable or Spacious retimes every spacing token the launcher builds itself. Compact fits more rows on a small phone; Spacious is calmer on a tablet.</string>
+    <string name="game_notice_item_4_title">Text size that respects Android</string>
+    <string name="game_notice_item_4_desc">The type slider (85-130%) multiplies your Android font scale instead of replacing it, so a phone already set to large text stays large.</string>
+    <string name="game_notice_item_5_title">Surfaces, outline and contrast</string>
+    <string name="game_notice_item_5_desc">Flat, Soft or Elevated changes how far a card lifts off the page; the outline slider controls the hairline edge; High contrast thickens ink and dividers for direct sunlight.</string>
+    <string name="game_notice_item_6_title">Motion: Full, Reduced, Off</string>
+    <string name="game_notice_item_6_desc">Reduced keeps every transition but shortens it, which is what reduced motion should be. Off is the escape hatch for a device that cannot hold 60fps.</string>
+    <string name="game_notice_item_7_title">Version name: v13</string>
+    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one: v1, v2, ... The build you are running is v13. Check it in Settings, About.</string>
 
     <string name="whats_new_warning">🧩 Renderer plugin apps (e.g. MobileGlues) show up in the renderer list right after you install them — no restart needed — and their supported Minecraft version range is honored like any built-in renderer.</string>
 
@@ -1872,4 +1872,40 @@
     <string name="theme_pack_sakura">Sakura</string>
     <string name="theme_studio_random">Surprise me</string>
     <string name="theme_studio_reset">Reset to default</string>
+    <string name="theme_studio_advanced">Advanced appearance</string>
+
+    <!-- Advanced appearance: the layer under the theme packs (shape, spacing, type, surfaces, motion). -->
+    <string name="setting_appearance_advanced_title">Advanced appearance</string>
+    <string name="setting_appearance_advanced_desc">Shape, spacing, text size, surfaces, contrast and motion</string>
+    <string name="appearance_title">Advanced appearance</string>
+    <string name="appearance_subtitle">Shape, spacing, type, surfaces and motion — applied to every screen.</string>
+    <string name="appearance_section_shape">Shape</string>
+    <string name="appearance_corner">Corner radius</string>
+    <string name="appearance_density">Spacing rhythm</string>
+    <string name="appearance_density_compact">Compact</string>
+    <string name="appearance_density_comfortable">Comfortable</string>
+    <string name="appearance_density_spacious">Spacious</string>
+    <string name="appearance_section_type">Type</string>
+    <string name="appearance_text_scale">Text size</string>
+    <string name="appearance_section_surfaces">Surfaces</string>
+    <string name="appearance_surfaces_flat">Flat</string>
+    <string name="appearance_surfaces_soft">Soft</string>
+    <string name="appearance_surfaces_elevated">Elevated</string>
+    <string name="appearance_outline">Outline strength</string>
+    <string name="appearance_contrast">Contrast</string>
+    <string name="appearance_contrast_normal">Normal</string>
+    <string name="appearance_contrast_high">High</string>
+    <string name="appearance_section_motion">Motion</string>
+    <string name="appearance_motion_full">Full</string>
+    <string name="appearance_motion_reduced">Reduced</string>
+    <string name="appearance_motion_off">Off</string>
+    <string name="appearance_accent_glow">Accent glow</string>
+    <string name="appearance_accent_glow_summary">Soft halo behind primary buttons</string>
+    <string name="appearance_reset">Reset</string>
+    <string name="appearance_surprise">Surprise me</string>
+    <string name="appearance_apply">Apply</string>
+    <string name="appearance_preview_title">TurtleLauncher</string>
+    <string name="appearance_preview_card_title">Selected version</string>
+    <string name="appearance_preview_body">Cards, buttons and text follow these settings.</string>
+    <string name="appearance_preview_button">Play</string>
 </resources>

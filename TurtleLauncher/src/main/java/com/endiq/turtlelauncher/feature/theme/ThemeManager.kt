@@ -115,7 +115,12 @@ object ThemeManager {
         val explicitAccent = accentOverride()
         val accent = explicitAccent ?: pack.accent
         val dark = isDark(context)
-        val key = "${pack.key}|${Integer.toHexString(accent)}|$dark"
+        val surfaces = Appearance.surfaces()
+        val contrast = Appearance.contrast()
+        val outlineScale = Appearance.outlineScale()
+        val glow = Appearance.accentGlow()
+        val key = "${pack.key}|${Integer.toHexString(accent)}|$dark|${surfaces.key}|" +
+            "${contrast.key}|$outlineScale|$glow"
 
         cacheScheme?.let { cached -> if (cacheKey == key && cacheDark == dark) return cached }
 
@@ -124,7 +129,11 @@ object ThemeManager {
             accent = accent,
             accentAlt = if (explicitAccent != null) accent.rotateHue(18f) else pack.accentAlt,
             background = background,
-            dark = dark
+            dark = dark,
+            surfaces = surfaces,
+            outlineScale = outlineScale,
+            highContrast = contrast == Appearance.ContrastStyle.HIGH,
+            accentGlow = glow
         )
         cacheKey = key
         cacheDark = dark
@@ -133,12 +142,50 @@ object ThemeManager {
     }
 
     /**
+     * A scheme built from explicit inputs instead of the saved settings.
+     *
+     * Advanced appearance edits several settings at once, so its preview has to render the
+     * *draft* rather than what is on disk. Sharing [PaletteBuilder] keeps the preview honest: a
+     * chip cannot promise a colour the real screen will not produce.
+     */
+    @JvmStatic
+    fun previewScheme(
+        @ColorInt accent: Int,
+        @ColorInt accentAlt: Int,
+        @ColorInt background: Int,
+        dark: Boolean,
+        surfaces: Appearance.SurfaceStyle,
+        outlineScale: Float,
+        highContrast: Boolean,
+        accentGlow: Boolean
+    ): MiuixColorScheme = PaletteBuilder.build(
+        accent = accent,
+        accentAlt = accentAlt,
+        background = background,
+        dark = dark,
+        surfaces = surfaces,
+        outlineScale = outlineScale,
+        highContrast = highContrast,
+        accentGlow = accentGlow
+    )
+
+    /**
      * Corner radius in dp, honouring the theme pack's softness and the icon pack's shape language.
      * Clamped so no pack can turn a card into a circle or into a stray sliver.
      */
     @JvmStatic
     fun cornerDp(context: Context, baseDp: Float): Float =
-        (baseDp * pack().cornerScale * iconPack().cornerScale).coerceIn(baseDp * 0.1f, baseDp * 2f)
+        (baseDp * pack().cornerScale * iconPack().cornerScale * Appearance.cornerScale())
+            .coerceIn(baseDp * 0.1f, baseDp * 2.4f)
+
+    /**
+     * Spacing token in pixels for code-built screens, honouring the density rhythm picked in
+     * Advanced appearance. Static layouts keep their own dimens; this is what lets the studio,
+     * the advanced sheet and the home chrome breathe together.
+     */
+    @JvmStatic
+    fun spacingPx(context: Context, baseDp: Float): Int =
+        Appearance.spacing(context, baseDp).coerceAtLeast(0)
 
     /** Keeps AppCompat's night mode in sync with the chosen theme mode. */
     @JvmStatic
@@ -267,16 +314,46 @@ object ThemeManager {
             @ColorInt accent: Int,
             @ColorInt accentAlt: Int,
             @ColorInt background: Int,
-            dark: Boolean
+            dark: Boolean,
+            surfaces: Appearance.SurfaceStyle,
+            outlineScale: Float,
+            highContrast: Boolean,
+            accentGlow: Boolean
         ): MiuixColorScheme {
             val onAccent = if (accent.luminanceSafe() > 0.55f) inkFor(background) else Color.WHITE
-            val ink = if (dark) INK_DARK else INK_LIGHT
-            val inkSecondary = if (dark) INK_DARK_SECONDARY else INK_LIGHT_SECONDARY
+            // High contrast thickens the ink itself; the surface ladder is untouched so the
+            // layout keeps its hierarchy instead of turning into a wall of white text.
+            val ink = when {
+                highContrast && dark -> Color.WHITE
+                highContrast -> 0xFF070A08.toInt()
+                dark -> INK_DARK
+                else -> INK_LIGHT
+            }
+            val inkSecondary = when {
+                highContrast && dark -> 0xFFDCE5DF.toInt()
+                highContrast -> 0xFF2C3532.toInt()
+                dark -> INK_DARK_SECONDARY
+                else -> INK_LIGHT_SECONDARY
+            }
+            // Depth ladder: FLAT collapses the steps, ELEVATED opens them up.
+            val lift = when (surfaces) {
+                Appearance.SurfaceStyle.FLAT -> 0.4f
+                Appearance.SurfaceStyle.SOFT -> 1f
+                Appearance.SurfaceStyle.ELEVATED -> 1.7f
+            }
             val surface = if (dark) background.mix(Color.BLACK, 0.32f) else background.mix(Color.WHITE, 0.55f)
-            val surfaceVariant = if (dark) background.mix(Color.WHITE, 0.06f) else background.mix(Color.BLACK, 0.04f)
-            val surfaceContainer = if (dark) background.mix(Color.WHITE, 0.10f) else background.mix(Color.WHITE, 0.75f)
-            val surfaceContainerHigh = if (dark) background.mix(Color.WHITE, 0.14f) else background.mix(Color.WHITE, 0.9f)
-            val highest = if (dark) background.mix(Color.WHITE, 0.20f) else background.mix(Color.BLACK, 0.06f)
+            val surfaceVariant =
+                if (dark) background.mix(Color.WHITE, 0.06f * lift) else background.mix(Color.BLACK, 0.04f * lift)
+            val surfaceContainer =
+                if (dark) background.mix(Color.WHITE, 0.10f * lift) else background.mix(Color.WHITE, 0.75f)
+            val surfaceContainerHigh =
+                if (dark) background.mix(Color.WHITE, 0.14f * lift) else background.mix(Color.WHITE, 0.9f)
+            val highest =
+                if (dark) background.mix(Color.WHITE, 0.20f * lift) else background.mix(Color.BLACK, 0.06f * lift)
+            val outline = if (dark) background.mix(Color.WHITE, 0.18f * outlineScale)
+            else background.mix(Color.BLACK, 0.16f * outlineScale)
+            val divider = if (dark) background.mix(Color.WHITE, 0.14f * outlineScale)
+            else background.mix(Color.BLACK, 0.10f * outlineScale)
             val error = if (dark) 0xFFF12522.toInt() else 0xFFB3261E.toInt()
 
             return MiuixColorScheme(
@@ -322,8 +399,8 @@ object ThemeManager {
                 onSurfaceContainerHigh = inkSecondary,
                 surfaceContainerHighest = highest,
                 onSurfaceContainerHighest = ink,
-                outline = if (dark) background.mix(Color.WHITE, 0.18f) else background.mix(Color.BLACK, 0.16f),
-                dividerLine = if (dark) background.mix(Color.WHITE, 0.14f) else background.mix(Color.BLACK, 0.10f),
+                outline = outline,
+                dividerLine = divider,
                 windowDimming = if (dark) 0x99000000.toInt() else 0x66000000,
                 error = error,
                 onError = if (dark) 0xFF690005.toInt() else Color.WHITE,
@@ -331,7 +408,8 @@ object ThemeManager {
                 onErrorContainer = if (dark) 0xFFFFDAD6.toInt() else 0xFF410002.toInt(),
                 sliderKeyPoint = accent.withAlpha(0x4D),
                 sliderKeyPointForeground = accent,
-                sliderBackground = ink.withAlpha(0x26)
+                sliderBackground = ink.withAlpha(0x26),
+                accentGlow = if (accentGlow) accent.withAlpha(0x40) else 0
             )
         }
 

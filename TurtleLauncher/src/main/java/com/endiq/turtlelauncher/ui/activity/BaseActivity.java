@@ -36,7 +36,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(AccessibilityHelper.wrapContext(LocaleHelper.Companion.setLocale(newBase)));
+        // Locale first, then the type scale: the configuration copy keeps the locale, and the
+        // font multiplier stacks on top of the device's own font scale instead of replacing it.
+        super.attachBaseContext(com.endiq.turtlelauncher.feature.theme.Appearance.INSTANCE.wrapTextScale(
+                AccessibilityHelper.wrapContext(LocaleHelper.Companion.setLocale(newBase))));
     }
 
     @Override
