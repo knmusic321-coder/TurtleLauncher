@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.endiq.turtlelauncher.R
 import com.endiq.turtlelauncher.databinding.FragmentAiChatBinding
 import com.endiq.turtlelauncher.feature.ai.AssistantHistory
+import com.endiq.turtlelauncher.feature.ai.TurtleAiAction
 import com.endiq.turtlelauncher.feature.ai.TurtleAiGemini
 import com.endiq.turtlelauncher.feature.ai.TurtleAiModels
 import com.endiq.turtlelauncher.feature.ai.TurtleAiVoice
@@ -22,6 +23,7 @@ import com.endiq.turtlelauncher.feature.ai.TurtleAssistant
 import com.endiq.turtlelauncher.feature.log.Logging
 import com.endiq.turtlelauncher.setting.AllSettings
 import com.endiq.turtlelauncher.task.TaskExecutors
+import com.endiq.turtlelauncher.ui.dialog.AiKeyDialog
 import com.endiq.turtlelauncher.ui.dialog.TipDialog
 import com.endiq.turtlelauncher.ui.subassembly.aichat.ChatMessage
 import com.endiq.turtlelauncher.ui.subassembly.aichat.ChatMessageAdapter
@@ -79,6 +81,8 @@ class AiChatFragment : FragmentWithAnim(R.layout.fragment_ai_chat) {
 
         binding.backButton.setOnClickListener { ZHTools.onBackPressed(requireActivity()) }
         binding.clearButton.setOnClickListener { confirmClear() }
+        // The key lives where the user looks for it: the top-right of the chat header.
+        binding.aiKeyButton.setOnClickListener { AiKeyDialog.show(requireActivity()) }
 
         binding.chatSendButton.setOnClickListener { sendCurrentInput() }
         binding.chatMicButton.setOnClickListener { toggleVoiceSession() }
@@ -114,10 +118,10 @@ class AiChatFragment : FragmentWithAnim(R.layout.fragment_ai_chat) {
 
         if (saved.isEmpty()) {
             appendMessage(greetingMessage())
-            setSuggestions(TurtleAssistant.startingSuggestions())
+            setSuggestions(TurtleAssistant.startingSuggestions(requireContext()))
         } else {
             saved.forEach { appendMessage(it) }
-            setSuggestions(TurtleAssistant.startingSuggestions())
+            setSuggestions(TurtleAssistant.startingSuggestions(requireContext()))
         }
     }
 
@@ -144,20 +148,7 @@ class AiChatFragment : FragmentWithAnim(R.layout.fragment_ai_chat) {
             TaskExecutors.runInUIThread {
                 if (!isAdded || view == null) return@runInUIThread
                 endAnswering()
-                appendMessage(
-                    ChatMessage(
-                        text = reply.text,
-                        isUser = false,
-                        imagePath = reply.imagePath,
-                        mediaPath = reply.mediaPath,
-                        mediaLabel = reply.mediaLabel
-                    )
-                )
-                setSuggestions(
-                    if (reply.suggestions.isNotEmpty()) reply.suggestions
-                    else TurtleAssistant.startingSuggestions()
-                )
-                persist()
+                presentReply(reply)
             }
         }
     }
@@ -189,20 +180,7 @@ class AiChatFragment : FragmentWithAnim(R.layout.fragment_ai_chat) {
                 // after onDestroyView would crash, so check the fragment is still live.
                 if (!isAdded || view == null) return@runInUIThread
                 endAnswering()
-                appendMessage(
-                    ChatMessage(
-                        text = reply.text,
-                        isUser = false,
-                        imagePath = reply.imagePath,
-                        mediaPath = reply.mediaPath,
-                        mediaLabel = reply.mediaLabel
-                    )
-                )
-                setSuggestions(
-                    if (reply.suggestions.isNotEmpty()) reply.suggestions
-                    else TurtleAssistant.startingSuggestions()
-                )
-                persist()
+                presentReply(reply)
             }
         }
     }
@@ -363,10 +341,62 @@ class AiChatFragment : FragmentWithAnim(R.layout.fragment_ai_chat) {
             TaskExecutors.runInUIThread {
                 if (!isAdded || view == null) return@runInUIThread
                 endAnswering()
-                appendMessage(ChatMessage(reply.text, false))
-                setSuggestions(
-                    if (reply.suggestions.isNotEmpty()) reply.suggestions
-                    else TurtleAssistant.startingSuggestions()
+                presentReply(reply)
+            }
+        }
+    }
+
+    /**
+     * Single funnel for "an answer arrived": show it, offer its chips, save it, and - when it
+     * proposes launcher changes - ask before anything is written.
+     */
+    private fun presentReply(reply: TurtleAssistant.Reply) {
+        appendMessage(
+            ChatMessage(
+                text = reply.text,
+                isUser = false,
+                imagePath = reply.imagePath,
+                mediaPath = reply.mediaPath,
+                mediaLabel = reply.mediaLabel
+            )
+        )
+        setSuggestions(
+            if (reply.suggestions.isNotEmpty()) reply.suggestions
+            else TurtleAssistant.startingSuggestions(requireContext())
+        )
+        persist()
+        if (reply.actions.isNotEmpty()) confirmActions(reply.actions)
+    }
+
+    /**
+     * The confirmation the action engine exists for: the list is shown as it was planned, and
+     * nothing is written until the user taps Apply. Cancel leaves every setting untouched.
+     */
+    private fun confirmActions(actions: List<TurtleAiAction>) {
+        if (!isAdded) return
+        val message = actions.joinToString("\n\n") { "• ${it.title}\n  ${it.detail}" }
+        TipDialog.Builder(requireActivity())
+            .setTitle(R.string.ai_action_confirm_title)
+            .setMessage(message)
+            .setConfirm(R.string.ai_action_apply)
+            .setCancel(R.string.cancel)
+            .setConfirmClickListener { _ -> applyActions(actions) }
+            .showDialog()
+    }
+
+    /** Runs every confirmed change off the main thread and reports the result as a message. */
+    private fun applyActions(actions: List<TurtleAiAction>) {
+        beginAnswering()
+        TaskExecutors.getDefault().execute {
+            val results = actions.map { it.apply() }
+            TaskExecutors.runInUIThread {
+                if (!isAdded || view == null) return@runInUIThread
+                endAnswering()
+                appendMessage(
+                    ChatMessage(
+                        getString(R.string.ai_action_applied) + "\n\n" + results.joinToString("\n"),
+                        false
+                    )
                 )
                 persist()
             }

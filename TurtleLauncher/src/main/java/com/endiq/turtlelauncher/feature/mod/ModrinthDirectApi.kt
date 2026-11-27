@@ -44,6 +44,20 @@ internal object ModrinthDirectApi {
         }.onFailure { e -> Logging.e("ModrinthDirectApi", "GET (array) failed: $url", e) }.getOrNull()
     }
 
+    /**
+     * Free-text project search, for the assistant's "find me a mod" flow. Returns up to
+     * [limit] raw hit objects (slug, title, description, downloads) in Modrinth's own order,
+     * or an empty list when the service can't be reached.
+     */
+    fun searchProjects(query: String, limit: Int): List<JsonObject> {
+        val encoded = URLEncoder.encode(query, "UTF-8")
+        val facets = URLEncoder.encode("[[\"project_type:mod\"]]", "UTF-8")
+        val url = "$BASE/search?query=$encoded&facets=$facets&limit=${limit.coerceIn(1, 10)}"
+        val obj = getObject(url) ?: return emptyList()
+        val hits = obj.getAsJsonArray("hits") ?: return emptyList()
+        return hits.mapNotNull { if (it.isJsonObject) it.asJsonObject else null }
+    }
+
     fun findCompatibleVersion(projectIdOrSlug: String, mcVersion: String, loader: ModLoader?): JsonObject? {
         val loaders = loader?.let { encodeJsonStringArray(listOf(it.modrinthName)) }
         val gameVersions = encodeJsonStringArray(listOf(mcVersion))

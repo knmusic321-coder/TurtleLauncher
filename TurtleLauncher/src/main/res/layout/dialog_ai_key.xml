@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The assistant's own key field, opened from the chat header's key button. Two controls and a
+     link: paste the key, decide whether the AI brain should use it, and get a key if there is
+     none. Nothing is saved until Save is tapped. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/_4sdp"
+    android:paddingTop="@dimen/_4sdp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/ai_key_intro"
+        android:textColor="@color/turtle_text_secondary"
+        android:textSize="12sp" />
+
+    <EditText
+        android:id="@+id/ai_key_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:hint="@string/ai_key_hint"
+        android:importantForAutofill="no"
+        android:inputType="textVisiblePassword"
+        android:maxLines="1"
+        android:textSize="12sp"
+        android:textColor="@color/turtle_text_primary"
+        android:textColorHint="@color/turtle_text_secondary" />
+
+    <TextView
+        android:id="@+id/ai_key_get"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:autoLink="web"
+        android:linksClickable="true"
+        android:text="@string/ai_key_get"
+        android:textColor="@color/accent_primary"
+        android:textSize="11sp" />
+
+    <CheckBox
+        android:id="@+id/ai_brain_toggle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:text="@string/ai_key_enable_brain"
+        android:textColor="@color/turtle_text_primary"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/ai_key_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:textColor="@color/turtle_text_secondary"
+        android:textSize="11sp"
+        android:visibility="gone" />
+
+</LinearLayout>

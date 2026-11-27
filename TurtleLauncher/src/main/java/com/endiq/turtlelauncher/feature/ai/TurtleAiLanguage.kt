@@ -35,6 +35,16 @@ object TurtleAiLanguage {
     const val AUTO = "auto"
     const val ENGLISH = "en"
 
+    /** Suggestion chips shown before anything is typed, when a language has no own list. */
+    val DEFAULT_STARTERS: List<String> = listOf(
+        "Status",
+        "Best renderer?",
+        "Why did my game crash?",
+        "FPS is low",
+        "How do I install mods?",
+        "Draw a creeper at sunset"
+    )
+
     /**
      * The short lines the offline engine needs. Long-form topic answers are not here on
      * purpose - see the class doc.
@@ -67,8 +77,12 @@ object TurtleAiLanguage {
             "out of quota, or took too long. Try again with a shorter prompt.",
         /** Speech generation failed (refusal, quota). */
         val speechFailed: String = "I couldn't turn that into speech - the speech model " +
-            "refused or there's no quota left."
+            "refused or there's no quota left.",
+        /** Tappable starter prompts, in this language. */
+        val starters: List<String> = DEFAULT_STARTERS
     )
+
+    /** Selectable languages for the settings picker: tag -> label. [AUTO] first. */
 
     /** Selectable languages for the settings picker: tag -> label. [AUTO] first. */
     val PICKER: List<Pair<String, String>> = listOf(
@@ -563,7 +577,16 @@ object TurtleAiLanguage {
             videoFailed =
                 "Không tạo được video đó - mô hình từ chối, hết hạn mức, hoặc mất quá nhiều thời gian. Thử lại với prompt ngắn hơn.",
             speechFailed =
-                "Không chuyển được thành giọng nói - mô hình từ chối hoặc hết hạn mức."
+                "Không chuyển được thành giọng nói - mô hình từ chối hoặc hết hạn mức.",
+            starters = listOf(
+                "Tình trạng máy",
+                "Renderer nào tốt nhất?",
+                "Vì sao game bị crash?",
+                "FPS thấp",
+                "Cách cài mod",
+                "Tìm mod tăng FPS",
+                "Đọc log giúp tôi"
+            )
         ),
         "th" to Shell(
             greeting = "สวัสดี! ฉันคือ Turtle AI ผู้ช่วยที่มาพร้อมกับตัว launcer นี้ ถามเรื่อง " +

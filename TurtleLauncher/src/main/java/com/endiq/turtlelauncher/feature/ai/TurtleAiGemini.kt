@@ -161,6 +161,8 @@ object TurtleAiGemini {
      *                     engine had one - passed as authoritative context so the model
      *                     translates/expands instead of inventing settings that don't exist.
      * @param deviceFacts  live readings from this device (RAM, renderer, version, storage).
+     * @param extraContext material the question is *about* rather than a fact about the device -
+     *                     the tail of a log file, a mod list. Sent verbatim, so callers cap it.
      * @param history      earlier turns, oldest first, so follow-ups resolve.
      * @param useSearch    attach Google Search grounding to this request.
      * @param task         which model chain to use ([TurtleAiModels.Task.CHAT] by default).
@@ -173,6 +175,7 @@ object TurtleAiGemini {
         languageTag: String,
         localAnswer: String? = null,
         deviceFacts: String? = null,
+        extraContext: String? = null,
         history: List<Exchange> = emptyList(),
         useSearch: Boolean = false,
         task: TurtleAiModels.Task = TurtleAiModels.Task.CHAT
@@ -204,6 +207,11 @@ object TurtleAiGemini {
                 append("\n\nLive readings from this device, gathered just now (facts - use them if the ")
                 append("question needs them, and never contradict or invent other device figures):\n")
                 append(deviceFacts.trim())
+            }
+            if (!extraContext.isNullOrBlank()) {
+                append("\n\nMaterial to analyse (verbatim, from the user's own device - quote it ")
+                append("only where it supports your answer):\n")
+                append(extraContext.trim())
             }
         }
 

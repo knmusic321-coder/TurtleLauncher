@@ -1466,33 +1466,33 @@
     <string name="music_delete_track">Remove</string>
 
     <string name="whats_new_title">🐢 What\'s New in TurtleLauncher</string>
-    <string name="whats_new_version">v13</string>
-    <string name="whats_new_feature_1">🎛️ Advanced appearance, one screen</string>
-    <string name="whats_new_feature_1_desc">Settings → Launcher → Advanced appearance now holds corner radius, spacing rhythm, text size, surface depth, outline strength, contrast and motion. Every value is a multiplier over the theme pack, so Sakura can be rounder or Redstone flatter without losing its colours.</string>
-    <string name="whats_new_feature_2">🎨 A redesigned interface</string>
-    <string name="whats_new_feature_2_desc">One radius ladder (chips 10, items 14, cards 20, panels 24, dialogs 30), gradient glass cards with a hairline edge, stronger pressed states, a taller home island, roomier quick-action tiles and a bigger launch panel.</string>
-    <string name="whats_new_feature_3">🎬 Motion you control</string>
-    <string name="whats_new_feature_3_desc">Motion has three budgets — Full, Reduced and Off — and every duration the launcher computes follows it. Text size stacks on top of Android’s own font scale instead of replacing it.</string>
+    <string name="whats_new_version">v14</string>
+    <string name="whats_new_feature_1">🤖 An assistant that can act</string>
+    <string name="whats_new_feature_1_desc">The chat can now change the launcher for you: switch a feature, change the renderer, set RAM or the resolution scale, add JVM flags, and find or install mods from Modrinth. Every change is shown as a list first and only applied when you tap Apply.</string>
+    <string name="whats_new_feature_2">🇻🇳 Vietnamese chat, end to end</string>
+    <string name="whats_new_feature_2_desc">Starter prompts, greetings, confirmation lists and the new dialogs all speak Vietnamese, and the assistant follows whichever language you type in.</string>
+    <string name="whats_new_feature_3">🗂️ Log files, read for you</string>
+    <string name="whats_new_feature_3_desc">/log reads the newest game log - or any file you point it at - runs the launcher's own rules, then hands the tail to the AI for a written analysis when the brain is on.</string>
     <!-- In-game change notice -->
     <string name="game_notice_title">🐢 What changed in this update</string>
     <string name="game_notice_close">Got it</string>
     <string name="game_notice_fixed_header">Fixed and changed</string>
     <string name="game_notice_new_header">New features and where to find them</string>
 
-    <string name="game_notice_item_1_title">Advanced appearance</string>
-    <string name="game_notice_item_1_desc">Open Settings → Launcher → Advanced appearance. It sits under the theme packs: the pack chooses the colours, this screen chooses the shape, spacing, type, surfaces, contrast and motion. Reset and Surprise me are one tap away, and Apply recreates the launcher so every screen picks it up at once.</string>
-    <string name="game_notice_item_2_title">One corner ladder</string>
-    <string name="game_notice_item_2_desc">Chips are 10, items 14, cards 20, floating panels 24 and dialogs 30, so a large sheet no longer reads as a small card that was stretched. The corner slider moves the whole ladder between 40% and 180%.</string>
-    <string name="game_notice_item_3_title">Spacing rhythm</string>
-    <string name="game_notice_item_3_desc">Compact, Comfortable or Spacious retimes every spacing token the launcher builds itself. Compact fits more rows on a small phone; Spacious is calmer on a tablet.</string>
-    <string name="game_notice_item_4_title">Text size that respects Android</string>
-    <string name="game_notice_item_4_desc">The type slider (85-130%) multiplies your Android font scale instead of replacing it, so a phone already set to large text stays large.</string>
-    <string name="game_notice_item_5_title">Surfaces, outline and contrast</string>
-    <string name="game_notice_item_5_desc">Flat, Soft or Elevated changes how far a card lifts off the page; the outline slider controls the hairline edge; High contrast thickens ink and dividers for direct sunlight.</string>
-    <string name="game_notice_item_6_title">Motion: Full, Reduced, Off</string>
-    <string name="game_notice_item_6_desc">Reduced keeps every transition but shortens it, which is what reduced motion should be. Off is the escape hatch for a device that cannot hold 60fps.</string>
-    <string name="game_notice_item_7_title">Version name: v13</string>
-    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one: v1, v2, ... The build you are running is v13. Check it in Settings, About.</string>
+    <string name="game_notice_item_1_title">An assistant that can change things</string>
+    <string name="game_notice_item_1_desc">Ask in words: "turn off vsync", "switch to Holy GL4ES", "set 2GB RAM", "add -XX:+UseSerialGC", "find a mod for FPS". The chat lists exactly what will change, and nothing is written until you tap Apply on that list.</string>
+    <string name="game_notice_item_2_title">Your API key, on the chat screen</string>
+    <string name="game_notice_item_2_desc">The key button at the top right of the chat opens the key field. Paste a Gemini key from aistudio.google.com/apikey and tick "Use the AI brain". The key is stored on this device only, and Cancel leaves everything as it was.</string>
+    <string name="game_notice_item_3_title">Vietnamese, end to end</string>
+    <string name="game_notice_item_3_desc">The starter chips, the greeting, the confirmation list and the key dialog all follow the launcher's language, and the assistant answers in the language you actually type.</string>
+    <string name="game_notice_item_4_title">Read a log file</string>
+    <string name="game_notice_item_4_desc">"/log" reads the newest game log and "/log &lt;path&gt;" reads a specific file. The launcher's rules run offline; with a key the AI adds a written analysis of the same log tail, in your language.</string>
+    <string name="game_notice_item_5_title">Mods and JVM flags from the chat</string>
+    <string name="game_notice_item_5_desc">The assistant searches Modrinth for the selected game version and loader and installs the matching build into that version's mods folder after you confirm. JVM flags you name are appended to the launcher's arguments the same way.</string>
+    <string name="game_notice_item_6_title">History kept honest</string>
+    <string name="game_notice_item_6_desc">The chat never edits a setting quietly: an action that was not confirmed is not applied, and the assistant is told not to claim a change it did not make.</string>
+    <string name="game_notice_item_7_title">Version name: v14</string>
+    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one. The build you are running is v14. Check it in Settings, About.</string>
 
     <string name="whats_new_warning">🧩 Renderer plugin apps (e.g. MobileGlues) show up in the renderer list right after you install them — no restart needed — and their supported Minecraft version range is honored like any built-in renderer.</string>
 
@@ -1908,4 +1908,25 @@
     <string name="appearance_preview_card_title">Selected version</string>
     <string name="appearance_preview_body">Cards, buttons and text follow these settings.</string>
     <string name="appearance_preview_button">Play</string>
+    <string name="ai_key_title">AI API key</string>
+
+    <string name="ai_key_intro">Turtle AI uses a Google Gemini key. Paste it here, or keep the key built into this build. The key is stored on this device only.</string>
+
+    <string name="ai_key_hint">Paste your Gemini API key</string>
+
+    <string name="ai_key_get">Get a free key at https://aistudio.google.com/apikey</string>
+
+    <string name="ai_key_enable_brain">Use the AI brain (Gemini) for answers</string>
+
+    <string name="ai_key_save">Save</string>
+
+    <string name="ai_key_saved">Key saved</string>
+
+    <string name="ai_key_empty">Paste a key first, then save.</string>
+
+    <string name="ai_action_confirm_title">Apply these changes?</string>
+
+    <string name="ai_action_apply">Apply</string>
+
+    <string name="ai_action_applied">Done - these changes were applied:</string>
 </resources>

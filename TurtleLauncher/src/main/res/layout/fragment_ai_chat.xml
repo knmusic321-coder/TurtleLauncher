@@ -60,6 +60,18 @@
                 android:textColor="@color/turtle_text_secondary"/>
         </LinearLayout>
 
+        <!-- AI API key: top-right, next to the voice button - the key is what turns the AI
+             brain on, so it belongs on this screen and not only in Settings. -->
+        <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
+            android:id="@+id/ai_key_button"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginEnd="@dimen/space_s"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_ai_key"
+            android:tint="@color/turtle_text_secondary"
+            android:contentDescription="@string/ai_key_title"/>
+
         <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
             android:id="@+id/chat_mic_button"
             android:layout_width="28dp"

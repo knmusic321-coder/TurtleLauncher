@@ -221,7 +221,9 @@ object TurtleAssistant {
         /** Absolute path of another generated file (video, speech) and what to call it in the
          *  chat - images get their own slot because the chat renders them inline. */
         val mediaPath: String? = null,
-        val mediaLabel: String? = null
+        val mediaLabel: String? = null,
+        /** Changes this turn proposes. They only run when the user confirms them in the chat. */
+        val actions: List<TurtleAiAction> = emptyList()
     )
 
     /**
@@ -231,18 +233,18 @@ object TurtleAssistant {
     @JvmStatic
     fun greeting(context: Context): Reply {
         val shell = TurtleAiLanguage.shell(TurtleAiLanguage.resolve(context))
-        return Reply(
-            shell.greeting,
-            listOf("Status", "Best renderer?", "Why did my game crash?", "Not enough RAM?")
-        )
+        return Reply(shell.greeting, shell.starters)
     }
 
-    /** Suggestion chips shown before the user has typed anything. */
+    /** Suggestion chips shown before the user has typed anything (English defaults). */
     @JvmStatic
-    fun startingSuggestions(): List<String> = listOf(
-        "Status", "Best renderer?", "Why did my game crash?", "FPS is low",
-        "How do I install mods?", "Draw a creeper at sunset"
-    )
+    fun startingSuggestions(): List<String> = TurtleAiLanguage.DEFAULT_STARTERS
+
+    /** The same chips in the language this device speaks, so a Vietnamese phone opens in
+     *  Vietnamese instead of offering English prompts. */
+    @JvmStatic
+    fun startingSuggestions(context: Context): List<String> =
+        TurtleAiLanguage.shell(TurtleAiLanguage.resolve(context)).starters
 
     /**
      * Answers [input]. [history] is the earlier part of the conversation, oldest first, used
@@ -261,6 +263,8 @@ object TurtleAssistant {
         // falling back to the launcher/device language. See TurtleAiLanguage.
         val language = TurtleAiLanguage.replyLanguage(context, raw)
         val shell = TurtleAiLanguage.shell(language)
+        val lower = raw.lowercase(Locale.ROOT)
+        if (lower.startsWith("/log ")) return logReply(context, raw.substringAfter(' ').trim(), language)
         if (raw.isEmpty()) return Reply("Type a question, or tap one of the suggestions.", startingSuggestions())
 
         // Slash-commands: explicit, so they always win over keyword matching.
@@ -271,8 +275,18 @@ object TurtleAssistant {
             "/renderer", "/renderers" -> return topicReply(context, "renderer")
             "/tips" -> return Reply(tipsAnswer(context), listOf("Best renderer?", "Not enough RAM?"))
             "/about" -> return Reply(aboutAnswer(context))
+            "/log", "/logs" -> return logReply(context, null, language)
             "/language", "/lang" -> return languageReply(context, language)
             "/models", "/model" -> return modelsReply()
+        }
+
+        // A log file the user pointed at, in words rather than a command.
+        if (LOGGING_PHRASES.any { lower.contains(it) }) return logReply(context, null, language)
+
+        // "Change something for me": renderer, a feature toggle, RAM, JVM flags, a mod to
+        // install. The plan lists the changes; the chat applies them only after confirmation.
+        TurtleAiActions.plan(context, raw, TurtleAiLanguage.isEnglish(language))?.let { plan ->
+            return Reply(plan.text, startingSuggestions(context), actions = plan.actions)
         }
 
         // Small talk never needs the network: answer it on-device, instantly.
@@ -419,10 +433,20 @@ object TurtleAssistant {
             task = task
         )
         if (answer != null) {
+            // The model may end its answer with [[action]] lines: turn those into proposals the
+            // chat can confirm, and keep them out of the visible text.
+            val english = TurtleAiLanguage.isEnglish(language)
+            val (clean, actions) = TurtleAiActions.splitModelActions(context, answer.text, english)
+            val body = when {
+                actions.isEmpty() -> clean
+                clean.isBlank() -> TurtleAiActions.planText(actions, english)
+                else -> clean + "\n\n" + TurtleAiActions.planText(actions, english)
+            }
             return Reply(
-                answer.text + sourceFooter(answer.sources, shell) +
+                body + sourceFooter(answer.sources, shell) +
                     modelFooter(answer.modelId, task, shell),
-                suggestions
+                suggestions,
+                actions = actions
             )
         }
 
@@ -701,6 +725,101 @@ object TurtleAssistant {
         )
     }
 
+    /** Words that mean "read the log for me" rather than an ordinary question. */
+    private val LOGGING_PHRASES = listOf(
+        "đọc log", "phân tích log", "kiểm tra log", "xem log", "log file", "tệp log",
+        "analyze the log", "analyze my log", "read the log", "read my log", "check the log",
+        "check my log"
+    )
+
+    /**
+     * "/log" - reads a game log and explains it. With no path it uses the newest session log
+     * (the same file the home screen's log card opens); the launcher's own [CrashAnalyzer] rules
+     * run first, and when the AI brain is on the log tail is handed to it for a deeper, written
+     * analysis in the user's language. No key still gives the rule-engine answer.
+     */
+    private fun logReply(context: Context, path: String?, language: String): Reply {
+        val english = TurtleAiLanguage.isEnglish(language)
+        val file = if (path.isNullOrBlank()) {
+            runCatching { LatestLogResolver.resolveLastGameLogFile() }.getOrNull()
+        } else {
+            File(path).takeIf { it.isFile }
+        }
+        if (file == null) {
+            return Reply(
+                if (english)
+                    "I don't have a log file to read yet. Launch the game once so a log exists, or " +
+                        "give me a path: /log <path>."
+                else
+                    "Mình chưa thấy tệp log nào để đọc. Chạy game một lần để có log, hoặc đưa " +
+                        "đường dẫn: /log <đường dẫn>.",
+                startingSuggestions(context)
+            )
+        }
+        return analyzeLogFile(context, file, language)
+    }
+
+    /** Analyzes [file] with the rule engine, then with the AI brain when one is configured. */
+    @JvmStatic
+    fun analyzeLogFile(
+        context: Context,
+        file: File,
+        language: String = TurtleAiLanguage.ENGLISH
+    ): Reply {
+        val english = TurtleAiLanguage.isEnglish(language)
+        val tail = runCatching { CrashAnalyzer.tailOf(file, LOG_ANALYSIS_BYTES) }.getOrDefault("")
+        if (tail.isBlank()) {
+            return Reply(
+                if (english) "\"" + file.name + "\" is empty, so there's nothing to read."
+                else "\"" + file.name + "\" trống, nên không có gì để đọc.",
+                startingSuggestions(context)
+            )
+        }
+        val diagnoses = runCatching { CrashAnalyzer.analyze(tail) }
+            .onFailure { e -> Logging.e(TAG, "Failed to analyze " + file.name, e) }
+            .getOrDefault(emptyList())
+        val rules = runCatching { CrashAnalyzer.formatForDisplay(diagnoses) }.getOrDefault("")
+        val rulesText = when {
+            rules.isNotBlank() -> rules
+            english -> "The launcher's own rules didn't match anything in this log."
+            else -> "Quy tắc của launcher không khớp gì trong log này."
+        }
+
+        var aiText: String? = null
+        if (TurtleAiGemini.isConfigured()) {
+            aiText = TurtleAiGemini.ask(
+                question = if (english)
+                    "Analyze this log file: what went wrong, why, and what to change - step by step."
+                else
+                    "Phân tích tệp log này: lỗi gì, vì sao và nên sửa gì, từng bước một.",
+                languageTag = language,
+                localAnswer = rulesText,
+                deviceFacts = liveDeviceFacts(context),
+                extraContext = tail.takeLast(AI_LOG_CHARS),
+                task = TurtleAiModels.Task.REASONING
+            )?.text
+        }
+
+        val header = (if (english) "Read " else "Đã đọc ") + file.name +
+            " (" + (file.length() / 1024) + "KB)"
+        val body = buildString {
+            append(header).append("\n\n").append(rulesText)
+            if (!aiText.isNullOrBlank()) {
+                append("\n\n").append(if (english) "Deeper analysis:" else "Phân tích sâu:")
+                append("\n").append(aiText.trim())
+            }
+        }
+        return Reply(
+            body,
+            if (english) listOf("Status", "Best renderer?")
+            else listOf("Tình trạng máy", "Renderer nào tốt nhất?")
+        )
+    }
+
+    /** 200KB covers a whole crash tail; the AI gets the last 40k characters of it. */
+    private const val LOG_ANALYSIS_BYTES = 200 * 1024
+    private const val AI_LOG_CHARS = 40_000
+
     private fun topicReply(context: Context, id: String): Reply {
         val topic = topics.firstOrNull { it.id == id } ?: return helpReply()
         return Reply(safeAnswer(context, topic), topic.followUps)
@@ -727,8 +846,13 @@ object TurtleAssistant {
             "• Video - /video a creeper walking through a flower forest\n" +
             "• Speaking - /speak (reads my last answer), /speak <text>\n" +
             "• Voice conversation - the microphone button in the chat header\n" +
-            "• Transcribing - /transcribe <path>, or share a recording with the launcher\n\n" +
-            "Commands: /status /diagnose /renderer /tips /language /image /video /speak " +
+            "• Transcribing - /transcribe <path>, or share a recording with the launcher\n" +
+            "• Reading a log file - /log (newest) or /log <path>, with a deeper AI analysis " +
+                "when the brain is on\n" +
+            "• Changing things for you - \"tắt vsync\", \"đổi sang Holy GL4ES\", \"đặt 2GB RAM\", " +
+                "\"thêm -XX:+UseSerialGC\", \"tìm mod sodium\". Every change is shown as a list " +
+                "first and only applied when you tap Apply.\n\n" +
+            "Commands: /status /diagnose /log /renderer /tips /language /image /video /speak " +
             "/models /about",
         startingSuggestions()
     )
