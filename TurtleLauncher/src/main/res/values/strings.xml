@@ -1478,7 +1478,7 @@
     <string name="whats_new_feature_2">📐 Settings rebuilt as an inset list</string>
     <string name="whats_new_feature_2_desc">The settings hub is one column of quiet rounded rows with a flat search field on top and small tracked section labels, instead of a grid of floating tiles. Same entries, same order, one tap each.</string>
     <string name="whats_new_feature_3">🧷 One motion per screen</string>
-    <string name="whats_new_feature_3_desc">Navigation used to animate the same view twice, a container fade plus the screen's own slide, which is why a new page felt busy. The transaction owns the whole motion now, and the arriving screen no longer builds a full-screen transparency layer.</string>
+    <string name="whats_new_feature_3_desc">Navigation used to animate the same view twice, a container fade plus the slide the screen played itself, which is why a new page felt busy. The transaction owns the whole motion now, and the arriving screen no longer builds a full-screen transparency layer.</string>
     <!-- In-game change notice -->
     <string name="game_notice_title">🐢 What changed in this update</string>
     <string name="game_notice_close">Got it</string>

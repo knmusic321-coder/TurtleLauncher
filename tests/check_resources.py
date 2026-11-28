@@ -152,6 +152,7 @@ def main():
 
     missing += check_xml(defined)
     missing += check_code(defined)
+    missing += check_values_escaping()
 
     for style, parent, path in implied_parents:
         if parent not in defined.get("style", ()) and not is_external("style", parent):
@@ -162,6 +163,27 @@ def main():
     if missing:
         sys.exit("\n".join(sorted(set(missing))))
     print("Resource references passed (strings, @type/name in XML, R.type.name in code)")
+
+
+def check_values_escaping() -> list:
+    """aapt2 aborts the whole values merge on one unescaped apostrophe or bare `&`.
+
+    The build annotation says only "Can not extract resource from ParsedResource",
+    with no file and no line - a CI run spent on a single character. This is the
+    cheap local version of that failure.
+    """
+    problems = []
+    for path in sorted(res.glob("values*/**/*.xml")):
+        for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            text = line.strip()
+            if not text.startswith(("<string", "<item")):
+                continue
+            where = f"{path.relative_to(root)}:{number}"
+            if re.search(r"(?<!\\)'", text):
+                problems.append(f"{where}: unescaped apostrophe")
+            if re.search(r"&(?!(amp|lt|gt|quot|apos|#\d+);)", text):
+                problems.append(f"{where}: bare &")
+    return problems
 
 
 if __name__ == "__main__":
