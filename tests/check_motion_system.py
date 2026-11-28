@@ -31,6 +31,9 @@ def read(path: Path) -> str:
 
 # ── MotionSpec: one source of truth, short durations, strong curves ──────────────
 spec = read(anim / "MotionSpec.kt")
+assert "import android.animation.TimeInterpolator" in spec, \
+    "TimeInterpolator is android.animation, not android.view.animation"
+assert "android.view.animation.TimeInterpolator" not in spec
 assert "PathInterpolator(0.23f, 1f, 0.32f, 1f)" in spec, "missing the strong ease-out curve"
 assert "PathInterpolator(0.77f, 0f, 0.175f, 1f)" in spec, "missing the on-screen movement curve"
 assert "fun ms(baseMs: Long): Long = Appearance.duration(baseMs)" in spec, \

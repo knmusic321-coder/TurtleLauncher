@@ -1,8 +1,8 @@
 package com.endiq.turtlelauncher.utils.anim
 
+import android.animation.TimeInterpolator
 import android.view.animation.LinearInterpolator
 import android.view.animation.PathInterpolator
-import android.view.animation.TimeInterpolator
 import com.endiq.turtlelauncher.feature.theme.Appearance
 
 /**
