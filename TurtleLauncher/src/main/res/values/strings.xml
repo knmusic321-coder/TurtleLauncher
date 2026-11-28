@@ -1472,33 +1472,33 @@
     <string name="music_delete_track">Remove</string>
 
     <string name="whats_new_title">🐢 What\'s New in TurtleLauncher</string>
-    <string name="whats_new_version">v15</string>
-    <string name="whats_new_feature_1">🧈 Motion rebuilt for steady frames</string>
-    <string name="whats_new_feature_1_desc">Every tap, row change, fade and screen transition now runs on one shared motion spec: shorter durations, stronger easing curves, transform-only properties, and a stagger that stops growing instead of queueing half a list.</string>
-    <string name="whats_new_feature_2">📉 Adaptive motion, in Optimization</string>
-    <string name="whats_new_feature_2_desc">The launcher measures its own frame times and shortens its animations while frames are being dropped, then restores full motion once they are clean. Settings, Tối ưu hóa, Adaptive motion.</string>
-    <string name="whats_new_feature_3">⚡ UI thread priority, in Phone settings</string>
-    <string name="whats_new_feature_3_desc">Runs the interface thread at display priority while the launcher is open, so downloads, mod scans and background indexing cannot take frames away from a tap or a scroll. Settings, Cài đặt điện thoại, CPU.</string>
+    <string name="whats_new_version">v16</string>
+    <string name="whats_new_feature_1">🧭 Screens move like iOS</string>
+    <string name="whats_new_feature_1_desc">Opening a settings page or any other screen now slides it in from the trailing edge while the screen behind steps back a third of its width and dims, and Back plays the same motion in reverse instead of hard-cutting.</string>
+    <string name="whats_new_feature_2">📐 Settings rebuilt as an inset list</string>
+    <string name="whats_new_feature_2_desc">The settings hub is one column of quiet rounded rows with a flat search field on top and small tracked section labels, instead of a grid of floating tiles. Same entries, same order, one tap each.</string>
+    <string name="whats_new_feature_3">🧷 One motion per screen</string>
+    <string name="whats_new_feature_3_desc">Navigation used to animate the same view twice, a container fade plus the screen's own slide, which is why a new page felt busy. The transaction owns the whole motion now, and the arriving screen no longer builds a full-screen transparency layer.</string>
     <!-- In-game change notice -->
     <string name="game_notice_title">🐢 What changed in this update</string>
     <string name="game_notice_close">Got it</string>
     <string name="game_notice_fixed_header">Fixed and changed</string>
     <string name="game_notice_new_header">New features and where to find them</string>
 
-    <string name="game_notice_item_1_title">Taps that feel like taps</string>
-    <string name="game_notice_item_1_desc">Press feedback is 90ms down and 170ms back with no overshoot bounce, and a tap no longer fires its click twice: the touch listener used to call performClick() on top of the framework\'s own click.</string>
-    <string name="game_notice_item_2_title">Lists that settle faster</string>
-    <string name="game_notice_item_2_desc">Added, removed, moved and changed rows now animate in 150-200ms instead of 230-280ms, travel less and no longer rotate. The stagger stops growing after six rows, so a long refresh no longer keeps animating after you have looked away.</string>
-    <string name="game_notice_item_3_title">Rows arrive together</string>
-    <string name="game_notice_item_3_desc">The first-population layout animation was 120ms per child; it is 45ms now. List motion still stays out of the way while you are scrolling.</string>
-    <string name="game_notice_item_4_title">Adaptive motion</string>
-    <string name="game_notice_item_4_desc">New switch in Settings, Optimization. The launcher samples its own frame intervals and halves its animation budget when more than a fifth of frames arrive late, then restores full motion after a clean second.</string>
-    <string name="game_notice_item_5_title">UI thread priority</string>
-    <string name="game_notice_item_5_desc">New switch in Settings, Phone settings, CPU. The interface thread runs at display priority while the launcher is on screen and is handed back on pause.</string>
+    <string name="game_notice_item_1_title">Screens slide in instead of appearing</string>
+    <string name="game_notice_item_1_desc">A page you open now arrives from the trailing edge in 320ms while the page behind it moves a third of its width and dims slightly, so the two read as layers rather than one sheet. It is one curve, the same one taps already use.</string>
+    <string name="game_notice_item_2_title">Back is a real reverse</string>
+    <string name="game_notice_item_2_desc">Popping a page no longer replays the opening motion. The page you are leaving exits the way it came, and the page underneath returns from where it was pushed aside, in 300ms.</string>
+    <string name="game_notice_item_3_title">Settings is a list now</string>
+    <string name="game_notice_item_3_desc">The settings hub is a single column of inset rounded rows with the icon, title, one-line summary and chevron on one line each, with a flat search field fixed above it and letter-spaced section labels. Every entry kept its place.</string>
+    <string name="game_notice_item_4_title">One motion per navigation</string>
+    <string name="game_notice_item_4_desc">The old code faded and scaled the container and then slid the fragment inside it, two transforms on one screen. The fragment transaction now owns the motion, so a push is a single movement and the arriving screen does not allocate a full-screen transparency layer.</string>
+    <string name="game_notice_item_5_title">Search still filters, unchanged</string>
+    <string name="game_notice_item_5_desc">Typing in the search field still hides non-matching rows and the section labels that went empty, and the empty-result line still names what you typed. Only the visuals moved.</string>
     <string name="game_notice_item_6_title">Nothing else changed</string>
-    <string name="game_notice_item_6_desc">No renderer, RAM, resolution or Java argument default was touched by this update: the motion work is launcher UI only.</string>
-    <string name="game_notice_item_7_title">Version name: v15</string>
-    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one. The build you are running is v15. Check it in Settings, About.</string>
+    <string name="game_notice_item_6_desc">No renderer, RAM, resolution, Java argument or gameplay default was touched by this update: it is launcher shell and settings layout only.</string>
+    <string name="game_notice_item_7_title">Version name: v16</string>
+    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one. The build you are running is v16. Check it in Settings, About.</string>
 
     <string name="whats_new_warning">🧩 Renderer plugin apps (e.g. MobileGlues) show up in the renderer list right after you install them — no restart needed — and their supported Minecraft version range is honored like any built-in renderer.</string>
 

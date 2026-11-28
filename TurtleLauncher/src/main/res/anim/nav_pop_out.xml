@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Back: the screen you are leaving exits the way it came, off the trailing edge. -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@interpolator/nav_motion">
+    <translate
+        android:fromXDelta="0"
+        android:toXDelta="100%p"
+        android:duration="300" />
+</set>

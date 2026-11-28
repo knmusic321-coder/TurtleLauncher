@@ -178,9 +178,6 @@ public final class ZHTools {
             @Nullable String fragmentTag,
             @Nullable Bundle bundle
     ) {
-        if (fragment instanceof FragmentWithAnim) {
-            ((FragmentWithAnim) fragment).slideOut();
-        }
         FragmentActivity activity = fragment.requireActivity();
         safeCommit(activity, getFragmentTransaction(activity)
                 .replace(R.id.container_fragment, fragmentClass, bundle, fragmentTag)
@@ -206,9 +203,13 @@ public final class ZHTools {
         // reduced-motion + active game session). The old check only read the setting, so
         // system "Remove animations" still left hard cuts overriding the user's choice.
         if (TurtleTransitions.isEnabled()) {
+            // iOS navigation, not a fade: the opened screen slides in from the trailing
+            // edge, the one being covered steps back a third of its width, and Back plays
+            // the whole thing in reverse. FragmentWithAnim no longer animates the same
+            // view underneath this, so a push is one motion instead of two stacked ones.
             transaction.setCustomAnimations(
-                    R.anim.fragment_in, R.anim.fragment_out,
-                    R.anim.fragment_in, R.anim.fragment_out);
+                    R.anim.nav_push_in, R.anim.nav_push_out,
+                    R.anim.nav_pop_in, R.anim.nav_pop_out);
         }
         return transaction.setReorderingAllowed(true);
     }

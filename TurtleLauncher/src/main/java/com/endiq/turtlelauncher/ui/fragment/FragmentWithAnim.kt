@@ -13,7 +13,11 @@ abstract class FragmentWithAnim : BaseFragment, SlideAnimation {
 
     override fun onStart() {
         super.onStart()
-        slideIn()
+        // Screen motion belongs to the fragment transaction (nav_push/nav_pop in ZHTools).
+        // Animating this same view here as well composed two transforms over one screen,
+        // which is what made a navigation read as busy instead of as an iOS push.
+        // slideIn() stays public for in-place swaps (SettingsPageSwapEvent), it is just no
+        // longer fired automatically on every start.
     }
 
     fun slideIn() {

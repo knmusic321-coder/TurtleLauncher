@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The screen you opened arrives from the trailing edge, on top of the one you left.
+     No alpha on purpose: an opaque full-screen view needs no layer, and iOS does not
+     fade a pushed screen in either. -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@interpolator/nav_motion">
+    <translate
+        android:fromXDelta="100%p"
+        android:toXDelta="0"
+        android:duration="320" />
+</set>

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Settings hub, iOS inset-grouped: one column, one soft card per row, a search field
+     pinned under the title, section labels above each group. The row ids are the ones
+     SettingsFragment binds and filters, so the redesign is layout-only. -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -16,96 +19,89 @@
         android:paddingHorizontal="@dimen/space_l"
         android:paddingTop="@dimen/space_m"
         android:paddingBottom="@dimen/space_s"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
                 android:id="@+id/back_button"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_chevron_down"
+                android:contentDescription="@string/generic_return"
                 android:rotation="90"
-                android:tint="@color/turtle_text_secondary"
-                android:contentDescription="@string/generic_return"/>
-
-            <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_marginStart="@dimen/space_s"
-                android:src="@drawable/ic_setting"
-                android:tint="@color/accent_primary"/>
+                android:src="@drawable/ic_chevron_down"
+                android:tint="@color/turtle_text_secondary" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_s"
+                android:layout_marginStart="6dp"
                 android:text="@string/main_nav_settings"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/turtle_text_primary"/>
+                android:textColor="@color/turtle_text_primary"
+                android:textSize="24sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
             android:layout_marginStart="36dp"
+            android:layout_marginTop="2dp"
             android:text="@string/settings_hub_subtitle"
-            android:textSize="12sp"
-            android:textColor="@color/turtle_text_secondary"/>
+            android:textColor="@color/turtle_text_secondary"
+            android:textSize="12sp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="38dp"
             android:layout_marginTop="@dimen/space_m"
-            android:background="@drawable/background_settings_hub_card">
+            android:background="@drawable/background_settings_search">
 
             <com.endiq.turtlelauncher.ui.view.AnimatedIconView
                 android:id="@+id/search_icon"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/space_m"
-                android:src="@drawable/ic_search"
                 android:alpha="0.6"
-                android:tint="@color/turtle_text_secondary"/>
+                android:src="@drawable/ic_search"
+                android:tint="@color/turtle_text_secondary" />
 
             <com.endiq.turtlelauncher.ui.view.AnimatedIconButton
                 android:id="@+id/search_clear_button"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_centerVertical="true"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:layout_marginEnd="4dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/generic_return"
                 android:src="@drawable/ic_close"
                 android:tint="@color/turtle_text_secondary"
-                android:visibility="gone"
-                android:contentDescription="@string/generic_return"/>
+                android:visibility="gone" />
 
             <com.endiq.turtlelauncher.ui.view.AnimEditText
                 android:id="@+id/search_input"
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/space_s"
                 android:layout_toEndOf="@id/search_icon"
                 android:layout_toStartOf="@id/search_clear_button"
-                android:layout_marginStart="@dimen/space_s"
                 android:background="@null"
                 android:hint="@string/settings_hub_search_hint"
-                android:textColorHint="@color/turtle_text_secondary"
-                android:textColor="@color/turtle_text_primary"
-                android:textSize="14sp"
-                android:maxLines="1"
                 android:imeOptions="actionSearch"
-                android:inputType="text"/>
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/turtle_text_primary"
+                android:textColorHint="@color/turtle_text_secondary"
+                android:textSize="14sp" />
         </RelativeLayout>
     </LinearLayout>
 
@@ -113,1156 +109,1112 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="none"
-        app:layout_constraintTop_toBottomOf="@id/settings_header"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/settings_header">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="@dimen/space_l"
+            android:paddingTop="@dimen/space_xs"
             android:paddingBottom="@dimen/space_xl">
 
             <TextView
                 android:id="@+id/general_section_header"
                 style="@style/SettingsSectionHeader"
-                android:text="@string/settings_section_general"/>
+                android:text="@string/settings_section_general" />
 
             <LinearLayout
                 android:id="@+id/general_section_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="@dimen/space_l">
-                <LinearLayout
+                android:layout_marginBottom="@dimen/space_m"
+                android:orientation="vertical">
+
+            <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
+                android:id="@+id/launcher_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_s"
+                android:background="@drawable/background_settings_row"
+                android:paddingHorizontal="@dimen/space_m"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp">
+
+                <FrameLayout
+                    android:id="@+id/launcher_settings_row_chip"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/background_icon_chip">
+
+                    <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                        android:id="@+id/launcher_icon"
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_setting_launcher"
+                        android:tint="@color/accent_primary" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/launcher_settings_row_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/launcher_settings_row_chip"
+                    android:text="@string/settings_row_launcher_title"
+                    android:textColor="@color/turtle_text_primary"
+                    android:textSize="15sp" />
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="@dimen/space_s">
+                    android:layout_below="@id/launcher_settings_row_title"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/launcher_settings_row_chip"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/settings_row_launcher_desc"
+                    android:textColor="@color/turtle_text_secondary"
+                    android:textSize="11sp" />
 
-                <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
-                    android:id="@+id/launcher_settings_row"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/background_settings_hub_card"
-                    android:padding="@dimen/space_m">
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:alpha="0.35"
+                    android:rotation="-90"
+                    android:src="@drawable/ic_chevron_down"
+                    android:tint="@color/turtle_text_secondary" />
+            </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
 
-                    <FrameLayout
-                        android:id="@+id/launcher_settings_row_chip"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/background_icon_chip">
-                        <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                            android:id="@+id/launcher_icon"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_setting_launcher"
-                            android:tint="@color/accent_primary"/>
-                    </FrameLayout>
+            <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
+                android:id="@+id/account_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_s"
+                android:background="@drawable/background_settings_row"
+                android:paddingHorizontal="@dimen/space_m"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp">
 
-                    <TextView
-                        android:id="@+id/launcher_settings_row_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/launcher_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:text="@string/settings_row_launcher_title"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="16dp"
-                        android:textSize="13sp"
-                        android:textColor="@color/turtle_text_primary"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/launcher_settings_row_title"
-                        android:layout_toEndOf="@id/launcher_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:layout_marginEnd="16dp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/settings_row_launcher_desc"
-                        android:textSize="10sp"
-                        android:textColor="@color/turtle_text_secondary"/>
+                <FrameLayout
+                    android:id="@+id/account_settings_row_chip"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/background_icon_chip">
 
                     <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_chevron_down"
-                        android:rotation="-90"
-                        android:alpha="0.6"
-                        android:tint="@color/turtle_text_secondary"/>
-                </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
+                        android:id="@+id/account_icon"
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_help"
+                        android:tint="@color/accent_primary" />
+                </FrameLayout>
 
-                <View android:layout_width="@dimen/space_s" android:layout_height="1dp"/>
-
-                <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
-                    android:id="@+id/account_settings_row"
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/account_settings_row_title"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/background_settings_hub_card"
-                    android:padding="@dimen/space_m">
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/account_settings_row_chip"
+                    android:text="@string/settings_row_account_title"
+                    android:textColor="@color/turtle_text_primary"
+                    android:textSize="15sp" />
 
-                    <FrameLayout
-                        android:id="@+id/account_settings_row_chip"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/background_icon_chip">
-                        <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                            android:id="@+id/account_icon"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_help"
-                            android:tint="@color/accent_primary"/>
-                    </FrameLayout>
-
-                    <TextView
-                        android:id="@+id/account_settings_row_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/account_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:text="@string/settings_row_account_title"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="16dp"
-                        android:textSize="13sp"
-                        android:textColor="@color/turtle_text_primary"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/account_settings_row_title"
-                        android:layout_toEndOf="@id/account_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:layout_marginEnd="16dp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/settings_row_account_desc"
-                        android:textSize="10sp"
-                        android:textColor="@color/turtle_text_secondary"/>
-
-                    <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_chevron_down"
-                        android:rotation="-90"
-                        android:alpha="0.6"
-                        android:tint="@color/turtle_text_secondary"/>
-                </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="@dimen/space_s">
+                    android:layout_below="@id/account_settings_row_title"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/account_settings_row_chip"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/settings_row_account_desc"
+                    android:textColor="@color/turtle_text_secondary"
+                    android:textSize="11sp" />
 
-                <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
-                    android:id="@+id/shizuku_settings_row"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/background_settings_hub_card"
-                    android:padding="@dimen/space_m">
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:alpha="0.35"
+                    android:rotation="-90"
+                    android:src="@drawable/ic_chevron_down"
+                    android:tint="@color/turtle_text_secondary" />
+            </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
 
-                    <FrameLayout
-                        android:id="@+id/shizuku_settings_row_chip"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/background_icon_chip">
-                        <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                            android:id="@+id/shizuku_icon"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_setting_experimental"
-                            android:tint="@color/accent_primary"/>
-                    </FrameLayout>
+            <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
+                android:id="@+id/shizuku_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_s"
+                android:background="@drawable/background_settings_row"
+                android:paddingHorizontal="@dimen/space_m"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp">
 
-                    <TextView
-                        android:id="@+id/shizuku_settings_row_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/shizuku_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:text="@string/settings_row_shizuku_title"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="16dp"
-                        android:textSize="13sp"
-                        android:textColor="@color/turtle_text_primary"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/shizuku_settings_row_title"
-                        android:layout_toEndOf="@id/shizuku_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:layout_marginEnd="16dp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/settings_row_shizuku_desc"
-                        android:textSize="10sp"
-                        android:textColor="@color/turtle_text_secondary"/>
+                <FrameLayout
+                    android:id="@+id/shizuku_settings_row_chip"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/background_icon_chip">
 
                     <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_chevron_down"
-                        android:rotation="-90"
-                        android:alpha="0.6"
-                        android:tint="@color/turtle_text_secondary"/>
-                </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
+                        android:id="@+id/shizuku_icon"
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_setting_experimental"
+                        android:tint="@color/accent_primary" />
+                </FrameLayout>
 
-                <View android:layout_width="@dimen/space_s" android:layout_height="1dp"/>
-
-                <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
-                    android:id="@+id/discord_settings_row"
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/shizuku_settings_row_title"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/background_settings_hub_card"
-                    android:padding="@dimen/space_m">
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/shizuku_settings_row_chip"
+                    android:text="@string/settings_row_shizuku_title"
+                    android:textColor="@color/turtle_text_primary"
+                    android:textSize="15sp" />
 
-                    <FrameLayout
-                        android:id="@+id/discord_settings_row_chip"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/background_icon_chip">
-                        <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                            android:id="@+id/discord_icon"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_discord"
-                            android:tint="@color/accent_primary"/>
-                    </FrameLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/shizuku_settings_row_title"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/shizuku_settings_row_chip"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/settings_row_shizuku_desc"
+                    android:textColor="@color/turtle_text_secondary"
+                    android:textSize="11sp" />
 
-                    <TextView
-                        android:id="@+id/discord_settings_row_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/discord_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:text="@string/discord_settings_title"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="16dp"
-                        android:textSize="13sp"
-                        android:textColor="@color/turtle_text_primary"/>
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:alpha="0.35"
+                    android:rotation="-90"
+                    android:src="@drawable/ic_chevron_down"
+                    android:tint="@color/turtle_text_secondary" />
+            </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/discord_settings_row_title"
-                        android:layout_toEndOf="@id/discord_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:layout_marginEnd="16dp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/discord_link_account_desc"
-                        android:textSize="10sp"
-                        android:textColor="@color/turtle_text_secondary"/>
+            <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
+                android:id="@+id/discord_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_s"
+                android:background="@drawable/background_settings_row"
+                android:paddingHorizontal="@dimen/space_m"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp">
+
+                <FrameLayout
+                    android:id="@+id/discord_settings_row_chip"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/background_icon_chip">
 
                     <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_chevron_down"
-                        android:rotation="-90"
-                        android:alpha="0.6"
-                        android:tint="@color/turtle_text_secondary"/>
-                </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
+                        android:id="@+id/discord_icon"
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_discord"
+                        android:tint="@color/accent_primary" />
+                </FrameLayout>
 
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/discord_settings_row_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/discord_settings_row_chip"
+                    android:text="@string/discord_settings_title"
+                    android:textColor="@color/turtle_text_primary"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/discord_settings_row_title"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/discord_settings_row_chip"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/discord_link_account_desc"
+                    android:textColor="@color/turtle_text_secondary"
+                    android:textSize="11sp" />
+
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:alpha="0.35"
+                    android:rotation="-90"
+                    android:src="@drawable/ic_chevron_down"
+                    android:tint="@color/turtle_text_secondary" />
+            </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
 
             </LinearLayout>
 
             <TextView
                 android:id="@+id/performance_section_header"
                 style="@style/SettingsSectionHeader"
-                android:text="@string/settings_section_performance"/>
+                android:text="@string/settings_section_performance" />
 
             <LinearLayout
                 android:id="@+id/performance_section_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="@dimen/space_l">
-                <LinearLayout
+                android:layout_marginBottom="@dimen/space_m"
+                android:orientation="vertical">
+
+            <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
+                android:id="@+id/video_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_s"
+                android:background="@drawable/background_settings_row"
+                android:paddingHorizontal="@dimen/space_m"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp">
+
+                <FrameLayout
+                    android:id="@+id/video_settings_row_chip"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/background_icon_chip">
+
+                    <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                        android:id="@+id/video_icon"
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_setting_video"
+                        android:tint="@color/accent_primary" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/video_settings_row_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/video_settings_row_chip"
+                    android:text="@string/settings_row_video_title"
+                    android:textColor="@color/turtle_text_primary"
+                    android:textSize="15sp" />
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="@dimen/space_s">
+                    android:layout_below="@id/video_settings_row_title"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/video_settings_row_chip"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/settings_row_video_desc"
+                    android:textColor="@color/turtle_text_secondary"
+                    android:textSize="11sp" />
 
-                <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
-                    android:id="@+id/video_settings_row"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/background_settings_hub_card"
-                    android:padding="@dimen/space_m">
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:alpha="0.35"
+                    android:rotation="-90"
+                    android:src="@drawable/ic_chevron_down"
+                    android:tint="@color/turtle_text_secondary" />
+            </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
 
-                    <FrameLayout
-                        android:id="@+id/video_settings_row_chip"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/background_icon_chip">
-                        <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                            android:id="@+id/video_icon"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_setting_video"
-                            android:tint="@color/accent_primary"/>
-                    </FrameLayout>
+            <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
+                android:id="@+id/game_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_s"
+                android:background="@drawable/background_settings_row"
+                android:paddingHorizontal="@dimen/space_m"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp">
 
-                    <TextView
-                        android:id="@+id/video_settings_row_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/video_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:text="@string/settings_row_video_title"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="16dp"
-                        android:textSize="13sp"
-                        android:textColor="@color/turtle_text_primary"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/video_settings_row_title"
-                        android:layout_toEndOf="@id/video_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:layout_marginEnd="16dp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/settings_row_video_desc"
-                        android:textSize="10sp"
-                        android:textColor="@color/turtle_text_secondary"/>
+                <FrameLayout
+                    android:id="@+id/game_settings_row_chip"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/background_icon_chip">
 
                     <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_chevron_down"
-                        android:rotation="-90"
-                        android:alpha="0.6"
-                        android:tint="@color/turtle_text_secondary"/>
-                </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
+                        android:id="@+id/game_icon"
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_setting_game"
+                        android:tint="@color/accent_primary" />
+                </FrameLayout>
 
-                <View android:layout_width="@dimen/space_s" android:layout_height="1dp"/>
-
-                <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
-                    android:id="@+id/game_settings_row"
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/game_settings_row_title"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/background_settings_hub_card"
-                    android:padding="@dimen/space_m">
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/game_settings_row_chip"
+                    android:text="@string/settings_row_game_title"
+                    android:textColor="@color/turtle_text_primary"
+                    android:textSize="15sp" />
 
-                    <FrameLayout
-                        android:id="@+id/game_settings_row_chip"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/background_icon_chip">
-                        <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                            android:id="@+id/game_icon"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_setting_game"
-                            android:tint="@color/accent_primary"/>
-                    </FrameLayout>
-
-                    <TextView
-                        android:id="@+id/game_settings_row_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/game_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:text="@string/settings_row_game_title"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="16dp"
-                        android:textSize="13sp"
-                        android:textColor="@color/turtle_text_primary"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/game_settings_row_title"
-                        android:layout_toEndOf="@id/game_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:layout_marginEnd="16dp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/settings_row_game_desc"
-                        android:textSize="10sp"
-                        android:textColor="@color/turtle_text_secondary"/>
-
-                    <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_chevron_down"
-                        android:rotation="-90"
-                        android:alpha="0.6"
-                        android:tint="@color/turtle_text_secondary"/>
-                </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="@dimen/space_s">
+                    android:layout_below="@id/game_settings_row_title"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/game_settings_row_chip"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/settings_row_game_desc"
+                    android:textColor="@color/turtle_text_secondary"
+                    android:textSize="11sp" />
 
-                <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
-                    android:id="@+id/java_settings_row"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/background_settings_hub_card"
-                    android:padding="@dimen/space_m">
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:alpha="0.35"
+                    android:rotation="-90"
+                    android:src="@drawable/ic_chevron_down"
+                    android:tint="@color/turtle_text_secondary" />
+            </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
 
-                    <FrameLayout
-                        android:id="@+id/java_settings_row_chip"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/background_icon_chip">
-                        <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                            android:id="@+id/java_icon"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_setting_java"
-                            android:tint="@color/accent_primary"/>
-                    </FrameLayout>
+            <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
+                android:id="@+id/java_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_s"
+                android:background="@drawable/background_settings_row"
+                android:paddingHorizontal="@dimen/space_m"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp">
 
-                    <TextView
-                        android:id="@+id/java_settings_row_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/java_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:text="@string/settings_row_java_title"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="16dp"
-                        android:textSize="13sp"
-                        android:textColor="@color/turtle_text_primary"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/java_settings_row_title"
-                        android:layout_toEndOf="@id/java_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:layout_marginEnd="16dp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/settings_row_java_desc"
-                        android:textSize="10sp"
-                        android:textColor="@color/turtle_text_secondary"/>
+                <FrameLayout
+                    android:id="@+id/java_settings_row_chip"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/background_icon_chip">
 
                     <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_chevron_down"
-                        android:rotation="-90"
-                        android:alpha="0.6"
-                        android:tint="@color/turtle_text_secondary"/>
-                </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
+                        android:id="@+id/java_icon"
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_setting_java"
+                        android:tint="@color/accent_primary" />
+                </FrameLayout>
 
-                <View android:layout_width="@dimen/space_s" android:layout_height="1dp"/>
-
-                <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
-                    android:id="@+id/hud_settings_row"
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/java_settings_row_title"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/background_settings_hub_card"
-                    android:padding="@dimen/space_m">
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/java_settings_row_chip"
+                    android:text="@string/settings_row_java_title"
+                    android:textColor="@color/turtle_text_primary"
+                    android:textSize="15sp" />
 
-                    <FrameLayout
-                        android:id="@+id/hud_settings_row_chip"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/background_icon_chip">
-                        <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                            android:id="@+id/hud_icon"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_setting_hud"
-                            android:tint="@color/accent_primary"/>
-                    </FrameLayout>
-
-                    <TextView
-                        android:id="@+id/hud_settings_row_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/hud_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:text="@string/settings_row_hud_title"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="16dp"
-                        android:textSize="13sp"
-                        android:textColor="@color/turtle_text_primary"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/hud_settings_row_title"
-                        android:layout_toEndOf="@id/hud_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:layout_marginEnd="16dp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/settings_row_hud_desc"
-                        android:textSize="10sp"
-                        android:textColor="@color/turtle_text_secondary"/>
-
-                    <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_chevron_down"
-                        android:rotation="-90"
-                        android:alpha="0.6"
-                        android:tint="@color/turtle_text_secondary"/>
-                </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="@dimen/space_s">
+                    android:layout_below="@id/java_settings_row_title"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/java_settings_row_chip"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/settings_row_java_desc"
+                    android:textColor="@color/turtle_text_secondary"
+                    android:textSize="11sp" />
 
-                <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
-                    android:id="@+id/controls_settings_row"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/background_settings_hub_card"
-                    android:padding="@dimen/space_m">
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:alpha="0.35"
+                    android:rotation="-90"
+                    android:src="@drawable/ic_chevron_down"
+                    android:tint="@color/turtle_text_secondary" />
+            </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
 
-                    <FrameLayout
-                        android:id="@+id/controls_settings_row_chip"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/background_icon_chip">
-                        <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                            android:id="@+id/controls_icon"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_menu_custom_controls"
-                            android:tint="@color/accent_primary"/>
-                    </FrameLayout>
+            <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
+                android:id="@+id/hud_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_s"
+                android:background="@drawable/background_settings_row"
+                android:paddingHorizontal="@dimen/space_m"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp">
 
-                    <TextView
-                        android:id="@+id/controls_settings_row_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/controls_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:text="@string/settings_row_controls_title"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="16dp"
-                        android:textSize="13sp"
-                        android:textColor="@color/turtle_text_primary"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/controls_settings_row_title"
-                        android:layout_toEndOf="@id/controls_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:layout_marginEnd="16dp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/settings_row_controls_desc"
-                        android:textSize="10sp"
-                        android:textColor="@color/turtle_text_secondary"/>
+                <FrameLayout
+                    android:id="@+id/hud_settings_row_chip"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/background_icon_chip">
 
                     <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_chevron_down"
-                        android:rotation="-90"
-                        android:alpha="0.6"
-                        android:tint="@color/turtle_text_secondary"/>
-                </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
+                        android:id="@+id/hud_icon"
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_setting_hud"
+                        android:tint="@color/accent_primary" />
+                </FrameLayout>
 
-                <View android:layout_width="@dimen/space_s" android:layout_height="1dp"/>
-
-                <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
-                    android:id="@+id/mouse_keyboard_settings_row"
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/hud_settings_row_title"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/background_settings_hub_card"
-                    android:padding="@dimen/space_m">
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/hud_settings_row_chip"
+                    android:text="@string/settings_row_hud_title"
+                    android:textColor="@color/turtle_text_primary"
+                    android:textSize="15sp" />
 
-                    <FrameLayout
-                        android:id="@+id/mouse_keyboard_settings_row_chip"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/background_icon_chip">
-                        <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                            android:id="@+id/mouse_keyboard_icon"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_menu_mouse_keyboard"
-                            android:tint="@color/accent_primary"/>
-                    </FrameLayout>
-
-                    <TextView
-                        android:id="@+id/mouse_keyboard_settings_row_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/mouse_keyboard_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:text="@string/settings_row_mouse_keyboard_title"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="16dp"
-                        android:textSize="13sp"
-                        android:textColor="@color/turtle_text_primary"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/mouse_keyboard_settings_row_title"
-                        android:layout_toEndOf="@id/mouse_keyboard_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:layout_marginEnd="16dp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/settings_row_mouse_keyboard_desc"
-                        android:textSize="10sp"
-                        android:textColor="@color/turtle_text_secondary"/>
-
-                    <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_chevron_down"
-                        android:rotation="-90"
-                        android:alpha="0.6"
-                        android:tint="@color/turtle_text_secondary"/>
-                </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="@dimen/space_s">
+                    android:layout_below="@id/hud_settings_row_title"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/hud_settings_row_chip"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/settings_row_hud_desc"
+                    android:textColor="@color/turtle_text_secondary"
+                    android:textSize="11sp" />
 
-                <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
-                    android:id="@+id/phone_settings_row"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/background_settings_hub_card"
-                    android:padding="@dimen/space_m">
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:alpha="0.35"
+                    android:rotation="-90"
+                    android:src="@drawable/ic_chevron_down"
+                    android:tint="@color/turtle_text_secondary" />
+            </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
 
-                    <FrameLayout
-                        android:id="@+id/phone_settings_row_chip"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/background_icon_chip">
-                        <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                            android:id="@+id/phone_icon"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_setting_phone"
-                            android:tint="@color/accent_primary"/>
-                    </FrameLayout>
+            <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
+                android:id="@+id/controls_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_s"
+                android:background="@drawable/background_settings_row"
+                android:paddingHorizontal="@dimen/space_m"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp">
 
-                    <TextView
-                        android:id="@+id/phone_settings_row_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/phone_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:text="@string/settings_row_phone_title"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="16dp"
-                        android:textSize="13sp"
-                        android:textColor="@color/turtle_text_primary"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/phone_settings_row_title"
-                        android:layout_toEndOf="@id/phone_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:layout_marginEnd="16dp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/settings_row_phone_desc"
-                        android:textSize="10sp"
-                        android:textColor="@color/turtle_text_secondary"/>
+                <FrameLayout
+                    android:id="@+id/controls_settings_row_chip"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/background_icon_chip">
 
                     <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_chevron_down"
-                        android:rotation="-90"
-                        android:alpha="0.6"
-                        android:tint="@color/turtle_text_secondary"/>
-                </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
+                        android:id="@+id/controls_icon"
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_menu_custom_controls"
+                        android:tint="@color/accent_primary" />
+                </FrameLayout>
 
-                <View android:layout_width="@dimen/space_s" android:layout_height="1dp"/>
-
-                <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
-                    android:id="@+id/accessibility_settings_row"
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/controls_settings_row_title"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/background_settings_hub_card"
-                    android:padding="@dimen/space_m">
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/controls_settings_row_chip"
+                    android:text="@string/settings_row_controls_title"
+                    android:textColor="@color/turtle_text_primary"
+                    android:textSize="15sp" />
 
-                    <FrameLayout
-                        android:id="@+id/accessibility_settings_row_chip"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/background_icon_chip">
-                        <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                            android:id="@+id/accessibility_icon"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_setting_accessibility"
-                            android:tint="@color/accent_primary"/>
-                    </FrameLayout>
-
-                    <TextView
-                        android:id="@+id/accessibility_settings_row_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/accessibility_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:text="@string/settings_row_accessibility_title"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="16dp"
-                        android:textSize="13sp"
-                        android:textColor="@color/turtle_text_primary"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/accessibility_settings_row_title"
-                        android:layout_toEndOf="@id/accessibility_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:layout_marginEnd="16dp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/settings_row_accessibility_desc"
-                        android:textSize="10sp"
-                        android:textColor="@color/turtle_text_secondary"/>
-
-                    <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_chevron_down"
-                        android:rotation="-90"
-                        android:alpha="0.6"
-                        android:tint="@color/turtle_text_secondary"/>
-                </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="@dimen/space_s">
+                    android:layout_below="@id/controls_settings_row_title"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/controls_settings_row_chip"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/settings_row_controls_desc"
+                    android:textColor="@color/turtle_text_secondary"
+                    android:textSize="11sp" />
 
-                <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
-                    android:id="@+id/recording_settings_row"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/background_settings_hub_card"
-                    android:padding="@dimen/space_m">
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:alpha="0.35"
+                    android:rotation="-90"
+                    android:src="@drawable/ic_chevron_down"
+                    android:tint="@color/turtle_text_secondary" />
+            </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
 
-                    <FrameLayout
-                        android:id="@+id/recording_settings_row_chip"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/background_icon_chip">
-                        <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                            android:id="@+id/recording_icon"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_setting_recording"
-                            android:tint="@color/accent_primary"/>
-                    </FrameLayout>
+            <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
+                android:id="@+id/mouse_keyboard_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_s"
+                android:background="@drawable/background_settings_row"
+                android:paddingHorizontal="@dimen/space_m"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp">
 
-                    <TextView
-                        android:id="@+id/recording_settings_row_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/recording_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:text="@string/settings_row_recording_title"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="16dp"
-                        android:textSize="13sp"
-                        android:textColor="@color/turtle_text_primary"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/recording_settings_row_title"
-                        android:layout_toEndOf="@id/recording_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:layout_marginEnd="16dp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/settings_row_recording_desc"
-                        android:textSize="10sp"
-                        android:textColor="@color/turtle_text_secondary"/>
+                <FrameLayout
+                    android:id="@+id/mouse_keyboard_settings_row_chip"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/background_icon_chip">
 
                     <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_chevron_down"
-                        android:rotation="-90"
-                        android:alpha="0.6"
-                        android:tint="@color/turtle_text_secondary"/>
-                </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
+                        android:id="@+id/mouse_keyboard_icon"
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_menu_mouse_keyboard"
+                        android:tint="@color/accent_primary" />
+                </FrameLayout>
 
-                <View android:layout_width="@dimen/space_s" android:layout_height="1dp"/>
-
-                <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
-                    android:id="@+id/optimization_settings_row"
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/mouse_keyboard_settings_row_title"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/background_settings_hub_card"
-                    android:padding="@dimen/space_m">
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/mouse_keyboard_settings_row_chip"
+                    android:text="@string/settings_row_mouse_keyboard_title"
+                    android:textColor="@color/turtle_text_primary"
+                    android:textSize="15sp" />
 
-                    <FrameLayout
-                        android:id="@+id/optimization_settings_row_chip"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/background_icon_chip">
-                        <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                            android:id="@+id/optimization_icon"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_setting_optimization"
-                            android:tint="@color/accent_primary"/>
-                    </FrameLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/mouse_keyboard_settings_row_title"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/mouse_keyboard_settings_row_chip"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/settings_row_mouse_keyboard_desc"
+                    android:textColor="@color/turtle_text_secondary"
+                    android:textSize="11sp" />
 
-                    <TextView
-                        android:id="@+id/optimization_settings_row_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/optimization_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:text="@string/settings_row_optimization_title"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="16dp"
-                        android:textSize="13sp"
-                        android:textColor="@color/turtle_text_primary"/>
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:alpha="0.35"
+                    android:rotation="-90"
+                    android:src="@drawable/ic_chevron_down"
+                    android:tint="@color/turtle_text_secondary" />
+            </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/optimization_settings_row_title"
-                        android:layout_toEndOf="@id/optimization_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:layout_marginEnd="16dp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/settings_row_optimization_desc"
-                        android:textSize="10sp"
-                        android:textColor="@color/turtle_text_secondary"/>
+            <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
+                android:id="@+id/phone_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_s"
+                android:background="@drawable/background_settings_row"
+                android:paddingHorizontal="@dimen/space_m"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp">
+
+                <FrameLayout
+                    android:id="@+id/phone_settings_row_chip"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/background_icon_chip">
 
                     <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_chevron_down"
-                        android:rotation="-90"
-                        android:alpha="0.6"
-                        android:tint="@color/turtle_text_secondary"/>
-                </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
+                        android:id="@+id/phone_icon"
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_setting_phone"
+                        android:tint="@color/accent_primary" />
+                </FrameLayout>
 
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/phone_settings_row_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/phone_settings_row_chip"
+                    android:text="@string/settings_row_phone_title"
+                    android:textColor="@color/turtle_text_primary"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/phone_settings_row_title"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/phone_settings_row_chip"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/settings_row_phone_desc"
+                    android:textColor="@color/turtle_text_secondary"
+                    android:textSize="11sp" />
+
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:alpha="0.35"
+                    android:rotation="-90"
+                    android:src="@drawable/ic_chevron_down"
+                    android:tint="@color/turtle_text_secondary" />
+            </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
+
+            <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
+                android:id="@+id/accessibility_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_s"
+                android:background="@drawable/background_settings_row"
+                android:paddingHorizontal="@dimen/space_m"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp">
+
+                <FrameLayout
+                    android:id="@+id/accessibility_settings_row_chip"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/background_icon_chip">
+
+                    <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                        android:id="@+id/accessibility_icon"
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_setting_accessibility"
+                        android:tint="@color/accent_primary" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/accessibility_settings_row_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/accessibility_settings_row_chip"
+                    android:text="@string/settings_row_accessibility_title"
+                    android:textColor="@color/turtle_text_primary"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/accessibility_settings_row_title"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/accessibility_settings_row_chip"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/settings_row_accessibility_desc"
+                    android:textColor="@color/turtle_text_secondary"
+                    android:textSize="11sp" />
+
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:alpha="0.35"
+                    android:rotation="-90"
+                    android:src="@drawable/ic_chevron_down"
+                    android:tint="@color/turtle_text_secondary" />
+            </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
+
+            <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
+                android:id="@+id/recording_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_s"
+                android:background="@drawable/background_settings_row"
+                android:paddingHorizontal="@dimen/space_m"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp">
+
+                <FrameLayout
+                    android:id="@+id/recording_settings_row_chip"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/background_icon_chip">
+
+                    <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                        android:id="@+id/recording_icon"
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_setting_recording"
+                        android:tint="@color/accent_primary" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/recording_settings_row_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/recording_settings_row_chip"
+                    android:text="@string/settings_row_recording_title"
+                    android:textColor="@color/turtle_text_primary"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/recording_settings_row_title"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/recording_settings_row_chip"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/settings_row_recording_desc"
+                    android:textColor="@color/turtle_text_secondary"
+                    android:textSize="11sp" />
+
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:alpha="0.35"
+                    android:rotation="-90"
+                    android:src="@drawable/ic_chevron_down"
+                    android:tint="@color/turtle_text_secondary" />
+            </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
+
+            <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
+                android:id="@+id/optimization_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_s"
+                android:background="@drawable/background_settings_row"
+                android:paddingHorizontal="@dimen/space_m"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp">
+
+                <FrameLayout
+                    android:id="@+id/optimization_settings_row_chip"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/background_icon_chip">
+
+                    <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                        android:id="@+id/optimization_icon"
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_setting_optimization"
+                        android:tint="@color/accent_primary" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/optimization_settings_row_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/optimization_settings_row_chip"
+                    android:text="@string/settings_row_optimization_title"
+                    android:textColor="@color/turtle_text_primary"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/optimization_settings_row_title"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/optimization_settings_row_chip"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/settings_row_optimization_desc"
+                    android:textColor="@color/turtle_text_secondary"
+                    android:textSize="11sp" />
+
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:alpha="0.35"
+                    android:rotation="-90"
+                    android:src="@drawable/ic_chevron_down"
+                    android:tint="@color/turtle_text_secondary" />
+            </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
 
             </LinearLayout>
 
             <TextView
                 android:id="@+id/other_section_header"
                 style="@style/SettingsSectionHeader"
-                android:text="@string/settings_section_other"/>
+                android:text="@string/settings_section_other" />
 
             <LinearLayout
                 android:id="@+id/other_section_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="@dimen/space_l">
+                android:layout_marginBottom="@dimen/space_m"
+                android:orientation="vertical">
 
-                <!-- TurtleLauncher Emotes card. Its own row with an invisible spacer so the
-                     hub grid stays two-up; paired visually with the Experimental/About row. -->
-                <LinearLayout
+            <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
+                android:id="@+id/emotes_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_s"
+                android:background="@drawable/background_settings_row"
+                android:paddingHorizontal="@dimen/space_m"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp">
+
+                <FrameLayout
+                    android:id="@+id/emotes_settings_row_chip"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/background_icon_chip">
+
+                    <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                        android:id="@+id/emotes_icon"
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_menu_emotes"
+                        android:tint="@color/accent_primary" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/emotes_settings_row_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/emotes_settings_row_chip"
+                    android:text="@string/settings_row_emotes_title"
+                    android:textColor="@color/turtle_text_primary"
+                    android:textSize="15sp" />
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="@dimen/space_s">
+                    android:layout_below="@id/emotes_settings_row_title"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/emotes_settings_row_chip"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/settings_row_emotes_desc"
+                    android:textColor="@color/turtle_text_secondary"
+                    android:textSize="11sp" />
 
-                <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
-                    android:id="@+id/emotes_settings_row"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/background_settings_hub_card"
-                    android:padding="@dimen/space_m">
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:alpha="0.35"
+                    android:rotation="-90"
+                    android:src="@drawable/ic_chevron_down"
+                    android:tint="@color/turtle_text_secondary" />
+            </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
 
-                    <FrameLayout
-                        android:id="@+id/emotes_settings_row_chip"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/background_icon_chip">
-                        <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                            android:id="@+id/emotes_icon"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_menu_emotes"
-                            android:tint="@color/accent_primary"/>
-                    </FrameLayout>
+            <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
+                android:id="@+id/experimental_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_s"
+                android:background="@drawable/background_settings_row"
+                android:paddingHorizontal="@dimen/space_m"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp">
 
-                    <TextView
-                        android:id="@+id/emotes_settings_row_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/emotes_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:text="@string/settings_row_emotes_title"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="16dp"
-                        android:textSize="13sp"
-                        android:textColor="@color/turtle_text_primary"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/emotes_settings_row_title"
-                        android:layout_toEndOf="@id/emotes_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:layout_marginEnd="16dp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/settings_row_emotes_desc"
-                        android:textSize="10sp"
-                        android:textColor="@color/turtle_text_secondary"/>
+                <FrameLayout
+                    android:id="@+id/experimental_settings_row_chip"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/background_icon_chip">
 
                     <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_chevron_down"
-                        android:rotation="-90"
-                        android:alpha="0.6"
-                        android:tint="@color/turtle_text_secondary"/>
-                </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
+                        android:id="@+id/experimental_icon"
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_setting_experimental"
+                        android:tint="@color/accent_primary" />
+                </FrameLayout>
 
-                <View android:layout_width="@dimen/space_s" android:layout_height="1dp"/>
+                <TextView
+                    android:id="@+id/experimental_settings_row_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/experimental_settings_row_chip"
+                    android:text="@string/settings_row_advanced_title"
+                    android:textColor="@color/turtle_text_primary"
+                    android:textSize="15sp" />
 
-                <!-- Grid spacer: keeps the Emotes card at half width like every other card. -->
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"/>
-
-                </LinearLayout>
-
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="@dimen/space_s">
+                    android:layout_below="@id/experimental_settings_row_title"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/experimental_settings_row_chip"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/settings_row_advanced_desc"
+                    android:textColor="@color/turtle_text_secondary"
+                    android:textSize="11sp" />
 
-                <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
-                    android:id="@+id/experimental_settings_row"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/background_settings_hub_card"
-                    android:padding="@dimen/space_m">
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:alpha="0.35"
+                    android:rotation="-90"
+                    android:src="@drawable/ic_chevron_down"
+                    android:tint="@color/turtle_text_secondary" />
+            </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
 
-                    <FrameLayout
-                        android:id="@+id/experimental_settings_row_chip"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/background_icon_chip">
-                        <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                            android:id="@+id/experimental_icon"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_setting_experimental"
-                            android:tint="@color/accent_primary"/>
-                    </FrameLayout>
+            <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
+                android:id="@+id/about_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_s"
+                android:background="@drawable/background_settings_row"
+                android:paddingHorizontal="@dimen/space_m"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp">
 
-                    <TextView
-                        android:id="@+id/experimental_settings_row_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/experimental_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:text="@string/settings_row_advanced_title"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="16dp"
-                        android:textSize="13sp"
-                        android:textColor="@color/turtle_text_primary"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/experimental_settings_row_title"
-                        android:layout_toEndOf="@id/experimental_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:layout_marginEnd="16dp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/settings_row_advanced_desc"
-                        android:textSize="10sp"
-                        android:textColor="@color/turtle_text_secondary"/>
+                <FrameLayout
+                    android:id="@+id/about_settings_row_chip"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/background_icon_chip">
 
                     <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_chevron_down"
-                        android:rotation="-90"
-                        android:alpha="0.6"
-                        android:tint="@color/turtle_text_secondary"/>
-                </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
+                        android:id="@+id/about_icon2"
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_about"
+                        android:tint="@color/accent_primary" />
+                </FrameLayout>
 
-                <View android:layout_width="@dimen/space_s" android:layout_height="1dp"/>
-
-                <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
-                    android:id="@+id/about_settings_row"
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/about_settings_row_title"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/background_settings_hub_card"
-                    android:padding="@dimen/space_m">
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/about_settings_row_chip"
+                    android:text="@string/settings_row_about_title"
+                    android:textColor="@color/turtle_text_primary"
+                    android:textSize="15sp" />
 
-                    <FrameLayout
-                        android:id="@+id/about_settings_row_chip"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/background_icon_chip">
-                        <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                            android:id="@+id/about_icon2"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_about"
-                            android:tint="@color/accent_primary"/>
-                    </FrameLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/about_settings_row_title"
+                    android:layout_marginStart="@dimen/space_m"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="26dp"
+                    android:layout_toEndOf="@id/about_settings_row_chip"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/settings_row_about_desc"
+                    android:textColor="@color/turtle_text_secondary"
+                    android:textSize="11sp" />
 
-                    <TextView
-                        android:id="@+id/about_settings_row_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/about_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:text="@string/settings_row_about_title"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="16dp"
-                        android:textSize="13sp"
-                        android:textColor="@color/turtle_text_primary"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/about_settings_row_title"
-                        android:layout_toEndOf="@id/about_settings_row_chip"
-                        android:layout_marginStart="@dimen/space_s"
-                        android:layout_marginEnd="16dp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/settings_row_about_desc"
-                        android:textSize="10sp"
-                        android:textColor="@color/turtle_text_secondary"/>
-
-                    <com.endiq.turtlelauncher.ui.view.AnimatedIconView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_chevron_down"
-                        android:rotation="-90"
-                        android:alpha="0.6"
-                        android:tint="@color/turtle_text_secondary"/>
-                </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
-
-                </LinearLayout>
+                <com.endiq.turtlelauncher.ui.view.AnimatedIconView
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:alpha="0.35"
+                    android:rotation="-90"
+                    android:src="@drawable/ic_chevron_down"
+                    android:tint="@color/turtle_text_secondary" />
+            </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
 
             </LinearLayout>
 
@@ -1273,10 +1225,9 @@
                 android:layout_marginTop="@dimen/space_xl"
                 android:gravity="center"
                 android:text=""
-                android:textSize="13sp"
                 android:textColor="@color/turtle_text_secondary"
-                android:visibility="gone"/>
-
+                android:textSize="13sp"
+                android:visibility="gone" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
