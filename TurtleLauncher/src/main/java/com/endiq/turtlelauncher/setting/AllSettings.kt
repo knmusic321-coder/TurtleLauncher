@@ -313,16 +313,22 @@ class AllSettings {
          *  from R.array.all_game_language_value. See context/LocaleHelper.kt. */
         @JvmStatic val launcherLanguage         = StringSettingUnit("launcherLanguage", "system")
         @JvmStatic val animation                = BooleanSettingUnit("animation", true)
-        @JvmStatic val animationSpeed           = IntSettingUnit("animationSpeed", 300)
-        @JvmStatic val animationEnter           = StringSettingUnit("animationEnter", "slide_up")
+        @JvmStatic val animationSpeed           = IntSettingUnit("animationSpeed", 300)        @JvmStatic val animationEnter           = StringSettingUnit("animationEnter", "slide_up")
         /** Screen exit animation - see com.endiq.turtlelauncher.utils.anim.ExitTransition. */
         @JvmStatic val animationExit            = StringSettingUnit("animationExit", "slide_up")
-        @JvmStatic val pageOpacity              = IntSettingUnit("pageOpacity", 100)
-        /** Frosted-glass backdrop: blur the wallpaper and lay a faint veil over the video. */
+        @JvmStatic val pageOpacity              = IntSettingUnit("pageOpacity", 100)        /** Frosted-glass backdrop: blur the wallpaper and lay a faint veil over the video. */
         @JvmStatic val glassEffect              = BooleanSettingUnit("glassEffect", true)
         @JvmStatic val enableLogOutput          = BooleanSettingUnit("enableLogOutput", false)
         @JvmStatic val quitLauncher             = BooleanSettingUnit("quitLauncher", true)
         @JvmStatic val acceptPreReleaseUpdates  = BooleanSettingUnit("acceptPreReleaseUpdates", false)
+
+        // ── Launcher frame health (Settings -> Optimization / Phone settings) ───
+        /** Optimization: shorten the launcher's own animations when measured frame times
+         *  show jank, and restore them once frames are clean again - see MotionGovernor. */
+        @JvmStatic val adaptiveMotion           = BooleanSettingUnit("adaptiveMotion", true)
+        /** Phone settings: run the launcher's UI thread at display priority while it is on
+         *  screen, so background work cannot take frames from a tap - see MotionGovernor. */
+        @JvmStatic val uiThreadPriority         = BooleanSettingUnit("uiThreadPriority", true)
 
         // ── TurtleLauncher Mod Auto-Maintenance ─────────────────────────────────
         /** Automatically fetch & install a mod's missing mandatory dependencies from Modrinth before launch. */

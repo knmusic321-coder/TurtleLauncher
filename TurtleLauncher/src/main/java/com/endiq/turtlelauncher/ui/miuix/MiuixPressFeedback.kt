@@ -7,7 +7,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.view.MotionEvent
 import android.view.View
-import android.view.animation.LinearInterpolator
+import com.endiq.turtlelauncher.utils.anim.MotionSpec
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -123,8 +123,10 @@ class MiuixPressFeedback(
                 indicationAnimator?.cancel()
                 val startAlpha = currentIndicationAlpha
                 indicationAnimator = ValueAnimator.ofFloat(startAlpha, newAlpha).apply {
-                    duration = 150L
-                    interpolator = LinearInterpolator()
+                    // A tint that fades on a straight line reads as a switch flipping; the
+                    // launcher's shared ease-out makes it read as the surface answering.
+                    duration = MotionSpec.ms(MotionSpec.FADE_MS)
+                    interpolator = MotionSpec.EASE_OUT
                     addUpdateListener { anim ->
                         currentIndicationAlpha = anim.animatedValue as Float
                         view.invalidate()

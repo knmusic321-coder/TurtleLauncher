@@ -83,6 +83,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         // Install the shared list motion on activity-level lists (Splash, Launcher) and
         // on any fragment lists whose view was created after BaseFragment.onStart().
         com.endiq.turtlelauncher.utils.anim.TurtleTransitions.installMotion(getWindow().getDecorView());
+        // Frame health for this window: adaptive motion + UI thread priority.
+        com.endiq.turtlelauncher.utils.anim.MotionGovernor.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Stop the frame sampler and hand the main thread its normal priority back.
+        com.endiq.turtlelauncher.utils.anim.MotionGovernor.onPause();
     }
 
     @Override

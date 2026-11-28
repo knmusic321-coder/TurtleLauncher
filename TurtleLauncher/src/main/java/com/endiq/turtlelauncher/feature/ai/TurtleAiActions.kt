@@ -83,6 +83,14 @@ object TurtleAiActions {
             listOf("renderer debug", "debug log", "log renderer", "nhật ký renderer"), AllSettings.rendererDebugLogging
         ),
         Toggle(
+            "adaptive_motion", "Adaptive motion",
+            listOf("adaptive motion", "hoạt ảnh thích ứng", "adaptive", "giảm hoạt ảnh"), AllSettings.adaptiveMotion
+        ),
+        Toggle(
+            "ui_thread_priority", "UI thread priority",
+            listOf("ui thread", "thread priority", "ưu tiên luồng giao diện", "ưu tiên luồng"), AllSettings.uiThreadPriority
+        ),
+        Toggle(
             "auto_optimizer", "Auto settings optimizer",
             listOf("auto optimizer", "tối ưu tự động", "auto settings", "tự tối ưu"), AllSettings.autoSettingsOptimizer
         ),

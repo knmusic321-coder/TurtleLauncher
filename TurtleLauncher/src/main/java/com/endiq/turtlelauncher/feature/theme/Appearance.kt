@@ -149,11 +149,13 @@ object Appearance {
      * Applies the motion budget to a duration.
      *
      * Kept here rather than in each animation call site so "reduced motion" is one decision,
-     * not a hundred independent ones that can drift apart.
+     * not a hundred independent ones that can drift apart. The adaptive factor from
+     * [com.endiq.turtlelauncher.utils.anim.MotionGovernor] multiplies on top: it is measured
+     * jank, not a preference, so it has to reach every duration without a second code path.
      */
     @JvmStatic
     fun duration(baseMs: Long): Long {
-        val scale = motionScale()
+        val scale = motionScale() * com.endiq.turtlelauncher.utils.anim.MotionGovernor.factor()
         if (scale <= 0f) return 0L
         return (baseMs * scale).toLong().coerceAtLeast(1L)
     }

@@ -159,6 +159,9 @@
     <string name="setting_optimization_benchmark_result">Stability %1$d/100 (%2$s)\nAverage frame %3$.2f ms · worst %4$.2f ms · jitter %5$.1f%%\n≈ %6$d FPS</string>
     <string name="setting_optimization_benchmark_apply">Apply to optimization</string>
     <string name="setting_optimization_benchmark_applied">Optimization toggles updated. Only this page was changed.</string>
+    <!-- Adaptive launcher motion (Optimization) -->
+    <string name="setting_adaptive_motion_title">Adaptive motion</string>
+    <string name="setting_adaptive_motion_desc">Measures the launcher\'s real frame times and shortens its own animations while frames are being dropped, then restores full motion once they are clean. Keeps a weak device from animating itself into a lower frame rate.</string>
     <string name="setting_benchmark_tier_stable">stable</string>
     <string name="setting_benchmark_tier_moderate">moderate</string>
     <string name="setting_benchmark_tier_unstable">unstable</string>
@@ -702,6 +705,9 @@
     <string name="settings_row_mouse_keyboard_desc">Physical mouse, cursor, tap gestures, and keyboard shortcuts</string>
     <string name="settings_row_phone_title">Phone Settings</string>
     <string name="settings_row_phone_desc">CPU, memory, and JNI optimization for this device</string>
+    <!-- UI thread priority (Phone settings) -->
+    <string name="setting_ui_thread_priority_title">UI thread priority</string>
+    <string name="setting_ui_thread_priority_desc">Runs the launcher\'s interface thread at display priority while it is on screen, so downloads, mod scans and background indexing cannot take frames away from a tap or a scroll.</string>
     <string name="settings_row_accessibility_title">Accessibility</string>
     <string name="settings_row_accessibility_desc">Text size, font, and high-contrast display</string>
     <string name="settings_row_advanced_title">Advanced Settings</string>
@@ -1466,33 +1472,33 @@
     <string name="music_delete_track">Remove</string>
 
     <string name="whats_new_title">🐢 What\'s New in TurtleLauncher</string>
-    <string name="whats_new_version">v14</string>
-    <string name="whats_new_feature_1">🤖 An assistant that can act</string>
-    <string name="whats_new_feature_1_desc">The chat can now change the launcher for you: switch a feature, change the renderer, set RAM or the resolution scale, add JVM flags, and find or install mods from Modrinth. Every change is shown as a list first and only applied when you tap Apply.</string>
-    <string name="whats_new_feature_2">🇻🇳 Vietnamese chat, end to end</string>
-    <string name="whats_new_feature_2_desc">Starter prompts, greetings, confirmation lists and the new dialogs all speak Vietnamese, and the assistant follows whichever language you type in.</string>
-    <string name="whats_new_feature_3">🗂️ Log files, read for you</string>
-    <string name="whats_new_feature_3_desc">/log reads the newest game log - or any file you point it at - runs the launcher\'s own rules, then hands the tail to the AI for a written analysis when the brain is on.</string>
+    <string name="whats_new_version">v15</string>
+    <string name="whats_new_feature_1">🧈 Motion rebuilt for steady frames</string>
+    <string name="whats_new_feature_1_desc">Every tap, row change, fade and screen transition now runs on one shared motion spec: shorter durations, stronger easing curves, transform-only properties, and a stagger that stops growing instead of queueing half a list.</string>
+    <string name="whats_new_feature_2">📉 Adaptive motion, in Optimization</string>
+    <string name="whats_new_feature_2_desc">The launcher measures its own frame times and shortens its animations while frames are being dropped, then restores full motion once they are clean. Settings, Tối ưu hóa, Adaptive motion.</string>
+    <string name="whats_new_feature_3">⚡ UI thread priority, in Phone settings</string>
+    <string name="whats_new_feature_3_desc">Runs the interface thread at display priority while the launcher is open, so downloads, mod scans and background indexing cannot take frames away from a tap or a scroll. Settings, Cài đặt điện thoại, CPU.</string>
     <!-- In-game change notice -->
     <string name="game_notice_title">🐢 What changed in this update</string>
     <string name="game_notice_close">Got it</string>
     <string name="game_notice_fixed_header">Fixed and changed</string>
     <string name="game_notice_new_header">New features and where to find them</string>
 
-    <string name="game_notice_item_1_title">An assistant that can change things</string>
-    <string name="game_notice_item_1_desc">Ask in words: \"turn off vsync\", \"switch to Holy GL4ES\", \"set 2GB RAM\", \"add -XX:+UseSerialGC\", \"find a mod for FPS\". The chat lists exactly what will change, and nothing is written until you tap Apply on that list.</string>
-    <string name="game_notice_item_2_title">Your API key, on the chat screen</string>
-    <string name="game_notice_item_2_desc">The key button at the top right of the chat opens the key field. Paste a Gemini key from aistudio.google.com/apikey and tick \"Use the AI brain\". The key is stored on this device only, and Cancel leaves everything as it was.</string>
-    <string name="game_notice_item_3_title">Vietnamese, end to end</string>
-    <string name="game_notice_item_3_desc">The starter chips, the greeting, the confirmation list and the key dialog all follow the launcher\'s language, and the assistant answers in the language you actually type.</string>
-    <string name="game_notice_item_4_title">Read a log file</string>
-    <string name="game_notice_item_4_desc">\"/log\" reads the newest game log and \"/log &lt;path&gt;\" reads a specific file. The launcher\'s rules run offline; with a key the AI adds a written analysis of the same log tail, in your language.</string>
-    <string name="game_notice_item_5_title">Mods and JVM flags from the chat</string>
-    <string name="game_notice_item_5_desc">The assistant searches Modrinth for the selected game version and loader and installs the matching build into that version\'s mods folder after you confirm. JVM flags you name are appended to the launcher\'s arguments the same way.</string>
-    <string name="game_notice_item_6_title">History kept honest</string>
-    <string name="game_notice_item_6_desc">The chat never edits a setting quietly: an action that was not confirmed is not applied, and the assistant is told not to claim a change it did not make.</string>
-    <string name="game_notice_item_7_title">Version name: v14</string>
-    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one. The build you are running is v14. Check it in Settings, About.</string>
+    <string name="game_notice_item_1_title">Taps that feel like taps</string>
+    <string name="game_notice_item_1_desc">Press feedback is 90ms down and 170ms back with no overshoot bounce, and a tap no longer fires its click twice: the touch listener used to call performClick() on top of the framework\'s own click.</string>
+    <string name="game_notice_item_2_title">Lists that settle faster</string>
+    <string name="game_notice_item_2_desc">Added, removed, moved and changed rows now animate in 150-200ms instead of 230-280ms, travel less and no longer rotate. The stagger stops growing after six rows, so a long refresh no longer keeps animating after you have looked away.</string>
+    <string name="game_notice_item_3_title">Rows arrive together</string>
+    <string name="game_notice_item_3_desc">The first-population layout animation was 120ms per child; it is 45ms now. List motion still stays out of the way while you are scrolling.</string>
+    <string name="game_notice_item_4_title">Adaptive motion</string>
+    <string name="game_notice_item_4_desc">New switch in Settings, Optimization. The launcher samples its own frame intervals and halves its animation budget when more than a fifth of frames arrive late, then restores full motion after a clean second.</string>
+    <string name="game_notice_item_5_title">UI thread priority</string>
+    <string name="game_notice_item_5_desc">New switch in Settings, Phone settings, CPU. The interface thread runs at display priority while the launcher is on screen and is handed back on pause.</string>
+    <string name="game_notice_item_6_title">Nothing else changed</string>
+    <string name="game_notice_item_6_desc">No renderer, RAM, resolution or Java argument default was touched by this update: the motion work is launcher UI only.</string>
+    <string name="game_notice_item_7_title">Version name: v15</string>
+    <string name="game_notice_item_7_desc">Every release with a big change bumps the name by one. The build you are running is v15. Check it in Settings, About.</string>
 
     <string name="whats_new_warning">🧩 Renderer plugin apps (e.g. MobileGlues) show up in the renderer list right after you install them — no restart needed — and their supported Minecraft version range is honored like any built-in renderer.</string>
 

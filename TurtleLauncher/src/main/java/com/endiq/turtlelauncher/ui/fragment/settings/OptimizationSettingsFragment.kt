@@ -1,5 +1,6 @@
 package com.endiq.turtlelauncher.ui.fragment.settings
 
+import com.endiq.turtlelauncher.utils.anim.MotionGovernor
 import com.endiq.turtlelauncher.utils.anim.TurtleTransitions
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -52,6 +53,15 @@ class OptimizationSettingsFragment : AbstractSettingsFragment(R.layout.settings_
         SwitchSettingsWrapper(context, AllSettings.autoMemoryCleanup,
             binding.autoMemoryCleanupLayout, binding.autoMemoryCleanup)
 
+        // Adaptive motion: when the launcher itself is dropping frames, its own animations
+        // get shorter instead of stuttering. Applied immediately - no relaunch needed.
+        SwitchSettingsWrapper(context, AllSettings.adaptiveMotion,
+            binding.adaptiveMotionLayout, binding.adaptiveMotion)
+            .setOnCheckedChangeListener { _, _, save ->
+                save.onSave()
+                MotionGovernor.refresh()
+            }
+
         SwitchSettingsWrapper(context, AllSettings.rendererShaderCacheEnabled,
             binding.rendererShaderCacheLayout, binding.rendererShaderCache)
 
@@ -80,6 +90,7 @@ class OptimizationSettingsFragment : AbstractSettingsFragment(R.layout.settings_
         binding.frameSkipping.isChecked = AllSettings.frameSkipping.getValue()
         binding.adaptiveFrameTiming.isChecked = AllSettings.adaptiveFrameTiming.getValue()
         binding.autoMemoryCleanup.isChecked = AllSettings.autoMemoryCleanup.getValue()
+        binding.adaptiveMotion.isChecked = AllSettings.adaptiveMotion.getValue()
         binding.rendererShaderCache.isChecked = AllSettings.rendererShaderCacheEnabled.getValue()
         binding.rendererDebugLogging.isChecked = AllSettings.rendererDebugLogging.getValue()
     }

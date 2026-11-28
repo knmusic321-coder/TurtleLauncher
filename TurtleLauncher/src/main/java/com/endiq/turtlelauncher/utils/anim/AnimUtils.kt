@@ -100,13 +100,18 @@ class AnimUtils {
                 endAction?.let { r -> Task.runTask { r.run() }.execute() }
                 return
             }
+            // Cancel first: a fade that is re-targeted mid-flight used to layer a second
+            // animation on the same property and end on whichever finished last.
+            view.animate().cancel()
             view.visibility = View.VISIBLE
             view.alpha = begin
             view.animate()
                 .alpha(end)
                 .setStartDelay(startDelay)
-                .setDuration(duration.toLong())
+                .setDuration(MotionSpec.ms(duration.toLong()))
+                .setInterpolator(MotionSpec.EASE_OUT)
                 .withEndAction(endAction)
+                .start()
         }
     }
 

@@ -162,6 +162,9 @@
     <string name="setting_optimization_benchmark_result">Độ ổn định %1$d/100 (%2$s)\nKhung trung bình %3$.2f ms · tệ nhất %4$.2f ms · dao động %5$.1f%%\n≈ %6$d FPS</string>
     <string name="setting_optimization_benchmark_apply">Áp dụng cho tối ưu hóa</string>
     <string name="setting_optimization_benchmark_applied">Đã cập nhật các mục tối ưu hóa. Chỉ trang này thay đổi.</string>
+    <!-- Hoạt ảnh thích ứng (Tối ưu hóa) -->
+    <string name="setting_adaptive_motion_title">Hoạt ảnh thích ứng</string>
+    <string name="setting_adaptive_motion_desc">Đo thời gian khung hình thật của trình khởi chạy và tự rút ngắn hoạt ảnh khi bị rớt khung, rồi trả lại hoạt ảnh đầy đủ khi khung hình đã ổn. Máy yếu sẽ không tự làm mình tụt FPS vì hiệu ứng.</string>
     <string name="setting_benchmark_tier_stable">ổn định</string>
     <string name="setting_benchmark_tier_moderate">trung bình</string>
     <string name="setting_benchmark_tier_unstable">không ổn định</string>
@@ -681,6 +684,8 @@
     <string name="settings_row_mouse_keyboard_title">Chuột &amp; Bàn phím</string>
     <string name="settings_row_mouse_keyboard_desc">Chuột vật lý, con trỏ, thao tác chạm và phím tắt bàn phím</string>
     <string name="settings_row_phone_title">Cài đặt điện thoại</string>
+    <string name="setting_ui_thread_priority_title">Ưu tiên luồng giao diện</string>
+    <string name="setting_ui_thread_priority_desc">Cho luồng giao diện chạy ở mức ưu tiên hiển thị khi trình khởi chạy đang mở, để việc tải xuống, quét mod hay lập chỉ mục nền không lấy mất khung hình của một cú chạm hay một lần cuộn.</string>
     <string name="settings_row_phone_desc">Tối ưu CPU, bộ nhớ và JNI cho thiết bị này</string>
     <string name="settings_row_accessibility_title">Trợ năng</string>
     <string name="settings_row_accessibility_desc">Cỡ chữ, phông chữ và hiển thị tương phản cao</string>
@@ -1403,33 +1408,33 @@
     <string name="discord_rpc_preview_button_hidden">bị ẩn - cần cả nhãn và liên kết hợp lệ</string>
     <string name="music_delete_track">Gỡ bỏ</string>
     <string name="whats_new_title">🐢 Có gì mới trong TurtleLauncher</string>
-    <string name="whats_new_version">v14</string>
-    <string name="whats_new_feature_1">🤖 Trợ lý biết hành động</string>
-    <string name="whats_new_feature_1_desc">Chat giờ có thể thay đổi launcher giúp bạn: bật/tắt tính năng, đổi renderer, đặt RAM hay độ phân giải, thêm cờ JVM, tìm và cài mod từ Modrinth. Mọi thay đổi đều hiện thành danh sách trước, chỉ áp dụng khi bạn bấm Áp dụng.</string>
-    <string name="whats_new_feature_2">🇻🇳 Chat tiếng Việt trọn vẹn</string>
-    <string name="whats_new_feature_2_desc">Gợi ý mở đầu, lời chào, danh sách xác nhận và các hộp thoại mới đều bằng tiếng Việt, và trợ lý trả lời theo đúng ngôn ngữ bạn gõ.</string>
-    <string name="whats_new_feature_3">🗂️ Đọc tệp log hộ bạn</string>
-    <string name="whats_new_feature_3_desc">/log đọc log game mới nhất - hoặc bất kỳ tệp nào bạn chỉ - chạy bộ quy tắc của launcher, rồi gửi phần cuối log cho AI phân tích thành văn khi đã bật bộ não AI.</string>
+    <string name="whats_new_version">v15</string>
+    <string name="whats_new_feature_1">🧈 Làm lại toàn bộ chuyển động</string>
+    <string name="whats_new_feature_1_desc">Mọi cú chạm, thay đổi dòng, hiệu ứng mờ dần và chuyển cảnh giờ dùng chung một bộ thông số: thời lượng ngắn hơn, đường cong mạnh hơn, chỉ dùng thuộc tính đồ họa, và độ trễ so le có giới hạn thay vì xếp hàng nửa danh sách.</string>
+    <string name="whats_new_feature_2">📉 Hoạt ảnh thích ứng, trong Tối ưu hóa</string>
+    <string name="whats_new_feature_2_desc">Trình khởi chạy tự đo thời gian khung hình và rút ngắn hoạt ảnh khi rớt khung, rồi trả lại đầy đủ khi khung hình ổn. Vào Cài đặt, Tối ưu hóa, Hoạt ảnh thích ứng.</string>
+    <string name="whats_new_feature_3">⚡ Ưu tiên luồng giao diện, trong Cài đặt điện thoại</string>
+    <string name="whats_new_feature_3_desc">Luồng giao diện chạy ở mức ưu tiên hiển thị khi trình khởi chạy đang mở, để tải xuống, quét mod và lập chỉ mục nền không lấy mất khung hình của một cú chạm hay một lần cuộn. Vào Cài đặt, Cài đặt điện thoại, CPU.</string>
     <!-- Thông báo tính năng khi vào game -->
     <string name="game_notice_title">🐢 Bản cập nhật này có gì thay đổi</string>
     <string name="game_notice_close">Đã hiểu</string>
     <string name="game_notice_fixed_header">Đã sửa và đã thay đổi</string>
     <string name="game_notice_new_header">Tính năng mới và nằm ở đâu</string>
 
-    <string name="game_notice_item_1_title">Trợ lý biết thay đổi launcher</string>
-    <string name="game_notice_item_1_desc">Gõ bằng lời: \"tắt vsync\", \"đổi sang Holy GL4ES\", \"đặt 2GB RAM\", \"thêm -XX:+UseSerialGC\", \"tìm mod tăng FPS\". Chat liệt kê đúng những gì sẽ đổi, và chưa có gì được ghi cho tới khi bạn bấm Áp dụng.</string>
-    <string name="game_notice_item_2_title">Khoá API ngay trên màn chat</string>
-    <string name="game_notice_item_2_desc">Nút khoá ở góc trên bên phải màn chat mở ô nhập khoá. Dán khoá Gemini từ aistudio.google.com/apikey rồi tích \"Dùng bộ não AI\". Khoá chỉ lưu trên máy này, bấm Huỷ là mọi thứ giữ nguyên.</string>
-    <string name="game_notice_item_3_title">Tiếng Việt trọn vẹn</string>
-    <string name="game_notice_item_3_desc">Chip gợi ý, lời chào, danh sách xác nhận và hộp thoại nhập khoá đều theo ngôn ngữ của launcher, và trợ lý trả lời bằng đúng ngôn ngữ bạn gõ.</string>
-    <string name="game_notice_item_4_title">Đọc tệp log</string>
-    <string name="game_notice_item_4_desc">\"/log\" đọc log game mới nhất, \"/log &lt;đường dẫn&gt;\" đọc một tệp cụ thể. Bộ quy tắc của launcher chạy ngoại tuyến; có khoá thì AI viết thêm phần phân tích cho chính phần cuối log đó, bằng tiếng Việt.</string>
-    <string name="game_notice_item_5_title">Mod và cờ JVM ngay trong chat</string>
-    <string name="game_notice_item_5_desc">Trợ lý tìm trên Modrinth theo phiên bản game và mod loader đang chọn, rồi cài bản hợp vào thư mục mods của phiên bản đó sau khi bạn xác nhận. Cờ JVM bạn nêu cũng được thêm vào tham số của launcher theo cùng cách.</string>
-    <string name="game_notice_item_6_title">Không có thay đổi ngầm</string>
-    <string name="game_notice_item_6_desc">Chat không bao giờ sửa cài đặt lặng lẽ: thay đổi chưa xác nhận thì không áp dụng, và trợ lý được dặn không được nói là đã đổi khi chưa đổi.</string>
-    <string name="game_notice_item_7_title">Tên phiên bản: v14</string>
-    <string name="game_notice_item_7_desc">Mỗi bản có thay đổi lớn thì tên tăng một bậc. Bản bạn đang chạy là v14. Xem trong Cài đặt, Giới thiệu.</string>
+    <string name="game_notice_item_1_title">Cú chạm đúng là cú chạm</string>
+    <string name="game_notice_item_1_desc">Phản hồi nhấn là 90ms khi xuống và 170ms khi trả lại, không nảy quá đà, và một cú chạm không còn kích hoạt click hai lần: trình nghe chạm từng gọi performClick() chồng lên click của hệ thống.</string>
+    <string name="game_notice_item_2_title">Danh sách ổn định nhanh hơn</string>
+    <string name="game_notice_item_2_desc">Dòng thêm, xoá, di chuyển và đổi nội dung giờ chạy 150-200ms thay vì 230-280ms, đi ít hơn và không còn xoay. Độ so le dừng tăng sau sáu dòng, nên lần làm mới dài không còn chạy tiếp sau khi bạn đã nhìn đi chỗ khác.</string>
+    <string name="game_notice_item_3_title">Các dòng tới cùng lúc</string>
+    <string name="game_notice_item_3_desc">Hoạt ảnh lần đầu của danh sách từng là 120ms mỗi dòng, giờ là 45ms. Hoạt ảnh danh sách vẫn tạm dừng khi bạn đang cuộn.</string>
+    <string name="game_notice_item_4_title">Hoạt ảnh thích ứng</string>
+    <string name="game_notice_item_4_desc">Công tắc mới trong Cài đặt, Tối ưu hóa. Launcher tự đo khoảng thời gian giữa các khung hình và giảm một nửa ngân sách hoạt ảnh khi hơn một phần năm số khung tới muộn, rồi trả lại đầy đủ sau một giây ổn định.</string>
+    <string name="game_notice_item_5_title">Ưu tiên luồng giao diện</string>
+    <string name="game_notice_item_5_desc">Công tắc mới trong Cài đặt, Cài đặt điện thoại, CPU. Luồng giao diện chạy ở mức ưu tiên hiển thị khi launcher đang mở và được trả lại khi tạm dừng.</string>
+    <string name="game_notice_item_6_title">Không đổi gì khác</string>
+    <string name="game_notice_item_6_desc">Bản này không chạm vào mặc định của renderer, RAM, độ phân giải hay tham số Java: phần chuyển động chỉ là giao diện launcher.</string>
+    <string name="game_notice_item_7_title">Tên phiên bản: v15</string>
+    <string name="game_notice_item_7_desc">Mỗi bản có thay đổi lớn thì tên tăng một bậc. Bản bạn đang chạy là v15. Xem trong Cài đặt, Giới thiệu.</string>
 
     <string name="whats_new_warning">🧩 Ứng dụng plugin trình kết xuất (ví dụ MobileGlues) hiện trong danh sách ngay sau khi bạn cài — không cần khởi động lại — và khoảng phiên bản Minecraft được hỗ trợ của nó được tôn trọng như mọi trình kết xuất tích hợp.</string>
     <string name="preset_pvp_title">Cấu hình PvP</string>

@@ -1,43 +1,32 @@
 package com.endiq.turtlelauncher.utils.anim
 
 import android.view.View
-import android.view.animation.DecelerateInterpolator
-import android.view.animation.OvershootInterpolator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 
 /**
  * RecyclerView item animator used by every list in the launcher.
  *
- * The stock [androidx.recyclerview.widget.DefaultItemAnimator] fades everything; this
- * gives each list operation its own, recognisably different motion:
+ * A list change happens dozens of times a session, so this is deliberately the quietest
+ * motion in the app: an added row rises a few dp into place, a removed row fades out with a
+ * short sideways drift, a move glides between slots, and a content change cross-fades the new
+ * row under the old one. Travel is small, there is no rotation and no overshoot - a bounce on
+ * something seen this often reads as the list fighting the finger.
  *
- *  * add - drops in from above with a small overshoot and squash/stretch,
- *  * remove - tips sideways and fades, alternating direction per position,
- *  * move - glides to its new slot with decelerate easing,
- *  * change - cross-fades the old and new content with a tiny scale pop.
+ * Everything animates alpha/translation/scale only, so it stays on the compositor, and every
+ * duration comes from [MotionSpec] so the motion budget and [MotionGovernor] apply.
  *
- * All work is view-property animation (alpha/translation/scale/rotation), so it is
- * GPU-composited. It obeys [TurtleTransitions.isEnabled] because
- * [TurtleTransitions.installMotion] simply removes the animator when motion is off.
+ * When motion is off, [TurtleTransitions.installMotion] simply removes the animator.
  */
 class TurtleItemAnimator : SimpleItemAnimator() {
 
     private data class MoveInfo(
-        val holder: RecyclerView.ViewHolder,
-        val fromX: Int,
-        val fromY: Int,
-        val toX: Int,
-        val toY: Int
+        val holder: RecyclerView.ViewHolder
     )
 
     private data class ChangeInfo(
         val oldHolder: RecyclerView.ViewHolder,
-        val newHolder: RecyclerView.ViewHolder,
-        val fromX: Int,
-        val fromY: Int,
-        val toX: Int,
-        val toY: Int
+        val newHolder: RecyclerView.ViewHolder
     )
 
     private val pendingAdds = mutableListOf<RecyclerView.ViewHolder>()
@@ -49,20 +38,20 @@ class TurtleItemAnimator : SimpleItemAnimator() {
     private val running = LinkedHashMap<RecyclerView.ViewHolder, () -> Unit>()
 
     init {
-        addDuration = 280L
-        removeDuration = 230L
-        moveDuration = 260L
-        changeDuration = 240L
+        addDuration = MotionSpec.ITEM_ADD_MS
+        removeDuration = MotionSpec.ITEM_REMOVE_MS
+        moveDuration = MotionSpec.ITEM_MOVE_MS
+        changeDuration = MotionSpec.ITEM_CHANGE_MS
         setSupportsChangeAnimations(true)
     }
 
     override fun animateAdd(holder: RecyclerView.ViewHolder): Boolean {
         reset(holder)
-        val v = holder.itemView
-        v.alpha = 0f
-        v.translationY = -dp(v, 22f)
-        v.scaleX = 0.9f
-        v.scaleY = 0.9f
+        val view = holder.itemView
+        view.alpha = 0f
+        view.translationY = -dp(view, 16f)
+        view.scaleX = 0.94f
+        view.scaleY = 0.94f
         pendingAdds.add(holder)
         return true
     }
@@ -81,11 +70,11 @@ class TurtleItemAnimator : SimpleItemAnimator() {
         toY: Int
     ): Boolean {
         reset(holder)
-        val v = holder.itemView
-        // Pre-translate the view back to where it was, then glide to zero.
-        v.translationX = (fromX - toX + v.translationX).toFloat()
-        v.translationY = (fromY - toY + v.translationY).toFloat()
-        pendingMoves.add(MoveInfo(holder, fromX, fromY, toX, toY))
+        val view = holder.itemView
+        // Pre-translate back to where the view was, then glide to zero.
+        view.translationX = (fromX - toX + view.translationX).toFloat()
+        view.translationY = (fromY - toY + view.translationY).toFloat()
+        pendingMoves.add(MoveInfo(holder))
         return true
     }
 
@@ -106,9 +95,7 @@ class TurtleItemAnimator : SimpleItemAnimator() {
         oldHolder.itemView.translationX = (fromX - toX).toFloat()
         oldHolder.itemView.translationY = (fromY - toY).toFloat()
         newHolder.itemView.alpha = 0f
-        newHolder.itemView.scaleX = 0.96f
-        newHolder.itemView.scaleY = 0.96f
-        pendingChanges.add(ChangeInfo(oldHolder, newHolder, fromX, fromY, toX, toY))
+        pendingChanges.add(ChangeInfo(oldHolder, newHolder))
         return true
     }
 
@@ -117,61 +104,75 @@ class TurtleItemAnimator : SimpleItemAnimator() {
             pendingMoves.isEmpty() && pendingChanges.isEmpty()
         ) return
 
+        // Re-read the budget here rather than in init: the animator outlives a settings
+        // change, and a reduced or adaptive budget has to shorten this run, not the next one.
+        addDuration = MotionSpec.ms(MotionSpec.ITEM_ADD_MS)
+        removeDuration = MotionSpec.ms(MotionSpec.ITEM_REMOVE_MS)
+        moveDuration = MotionSpec.ms(MotionSpec.ITEM_MOVE_MS)
+        changeDuration = MotionSpec.ms(MotionSpec.ITEM_CHANGE_MS)
+
         val moves = pendingMoves.toList().also { pendingMoves.clear() }
         val removes = pendingRemoves.toList().also { pendingRemoves.clear() }
         val adds = pendingAdds.toList().also { pendingAdds.clear() }
         val changes = pendingChanges.toList().also { pendingChanges.clear() }
 
-        moves.forEachIndexed { index, info -> startMove(info, index * 12L) }
-        removes.forEachIndexed { index, holder -> startRemove(holder, 20L + index * 18L) }
-        adds.forEachIndexed { index, holder -> startAdd(holder, 60L + index * 22L) }
-        changes.forEachIndexed { index, info -> startChange(info, 80L + index * 20L) }
+        moves.forEachIndexed { index, info -> startMove(info, delayFor(index, 10L)) }
+        removes.forEachIndexed { index, holder -> startRemove(holder, delayFor(index, 8L)) }
+        adds.forEachIndexed { index, holder -> startAdd(holder, delayFor(index, 18L)) }
+        changes.forEachIndexed { index, info -> startChange(info, delayFor(index, 14L)) }
 
         if (running.isEmpty()) dispatchAnimationsFinished()
     }
 
+    /**
+     * Stagger that stops growing after [MotionSpec.MAX_STAGGERED_ROWS]. An unbounded
+     * `index * step` turns a 20-row refresh into a half-second queue where the last rows
+     * animate long after the user has looked away.
+     */
+    private fun delayFor(index: Int, stepMs: Long): Long =
+        MotionSpec.ms(index.coerceAtMost(MotionSpec.MAX_STAGGERED_ROWS) * stepMs)
+
     private fun startAdd(holder: RecyclerView.ViewHolder, delay: Long) {
-        val v = holder.itemView
+        val view = holder.itemView
         track(holder) { dispatchAddFinished(holder) }
-        v.animate()
+        view.animate()
             .alpha(1f)
             .translationY(0f)
             .scaleX(1f)
             .scaleY(1f)
             .setStartDelay(delay)
             .setDuration(addDuration)
-            .setInterpolator(OvershootInterpolator(1.15f))
+            .setInterpolator(MotionSpec.EASE_OUT)
             .withEndAction { finish(holder) { dispatchAddFinished(holder) } }
             .start()
     }
 
     private fun startRemove(holder: RecyclerView.ViewHolder, delay: Long) {
-        val v = holder.itemView
+        val view = holder.itemView
         val direction = if (holder.bindingAdapterPosition % 2 == 0) 1f else -1f
         track(holder) { dispatchRemoveFinished(holder) }
-        v.animate()
+        view.animate()
             .alpha(0f)
-            .translationX(direction * dp(v, 26f))
-            .rotation(direction * 5f)
-            .scaleX(0.92f)
-            .scaleY(0.92f)
+            .translationX(direction * dp(view, 20f))
+            .scaleX(0.96f)
+            .scaleY(0.96f)
             .setStartDelay(delay)
             .setDuration(removeDuration)
-            .setInterpolator(DecelerateInterpolator())
+            .setInterpolator(MotionSpec.EASE_OUT)
             .withEndAction { finish(holder) { dispatchRemoveFinished(holder) } }
             .start()
     }
 
     private fun startMove(info: MoveInfo, delay: Long) {
         val holder = info.holder
-        val v = holder.itemView
+        val view = holder.itemView
         track(holder) { dispatchMoveFinished(holder) }
-        v.animate()
+        view.animate()
             .translationX(0f)
             .translationY(0f)
             .setStartDelay(delay)
             .setDuration(moveDuration)
-            .setInterpolator(DecelerateInterpolator(1.6f))
+            .setInterpolator(MotionSpec.EASE_IN_OUT)
             .withEndAction { finish(holder) { dispatchMoveFinished(holder) } }
             .start()
     }
@@ -185,24 +186,19 @@ class TurtleItemAnimator : SimpleItemAnimator() {
         track(newHolder) { dispatchChangeFinished(newHolder, false) }
         oldView.animate()
             .alpha(0f)
-            .translationX(oldView.translationX + dp(oldView, 12f))
-            .translationY(oldView.translationY - dp(oldView, 8f))
-            .scaleX(0.94f)
-            .scaleY(0.94f)
+            .translationX(oldView.translationX + dp(oldView, 8f))
             .setStartDelay(delay)
             .setDuration(changeDuration)
-            .setInterpolator(DecelerateInterpolator())
+            .setInterpolator(MotionSpec.EASE_OUT)
             .withEndAction { finish(oldHolder) { dispatchChangeFinished(oldHolder, true) } }
             .start()
         newView.animate()
             .alpha(1f)
             .translationX(0f)
             .translationY(0f)
-            .scaleX(1f)
-            .scaleY(1f)
-            .setStartDelay(delay + 30L)
+            .setStartDelay(delay)
             .setDuration(changeDuration)
-            .setInterpolator(OvershootInterpolator(1.08f))
+            .setInterpolator(MotionSpec.EASE_OUT)
             .withEndAction { finish(newHolder) { dispatchChangeFinished(newHolder, false) } }
             .start()
     }
@@ -272,13 +268,12 @@ class TurtleItemAnimator : SimpleItemAnimator() {
         pendingMoves.isNotEmpty() || pendingChanges.isNotEmpty()
 
     private fun reset(holder: RecyclerView.ViewHolder) {
-        val v = holder.itemView
-        v.alpha = 1f
-        v.translationX = 0f
-        v.translationY = 0f
-        v.scaleX = 1f
-        v.scaleY = 1f
-        v.rotation = 0f
+        val view = holder.itemView
+        view.alpha = 1f
+        view.translationX = 0f
+        view.translationY = 0f
+        view.scaleX = 1f
+        view.scaleY = 1f
     }
 
     private fun dp(view: View, value: Float): Float =

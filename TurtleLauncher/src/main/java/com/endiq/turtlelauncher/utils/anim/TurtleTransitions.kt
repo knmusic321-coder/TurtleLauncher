@@ -1,5 +1,6 @@
 package com.endiq.turtlelauncher.utils.anim
 
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.endiq.anim.AnimCallback
@@ -255,7 +256,9 @@ object TurtleTransitions {
         LayoutAnimationController(
             AnimationUtils.loadAnimation(context, animationRes)
         ).apply {
-            delay = 0.12f
+            // Fraction of one child's animation, per child. 0.12 put 120ms between rows, so
+            // the bottom of a list was still arriving a second after the user opened it.
+            delay = 0.045f
             order = LayoutAnimationController.ORDER_NORMAL
         }
 
@@ -310,28 +313,34 @@ object TurtleTransitions {
      * Press feedback for views that aren't an `AnimRelativeLayout` (which already carries a
      * press-scale state list animator). Squashes to [scale] on touch and springs back on
      * release, so tapping a plain button feels like tapping something.
+     *
+     * Asymmetric on purpose: the press is over in [MotionSpec.PRESS_MS] because the finger is
+     * still down and waiting, while the release eases back a little slower.
      */
     @JvmStatic
     @JvmOverloads
-    fun attachPressFeedback(view: View, scale: Float = 0.94f) {
+    fun attachPressFeedback(view: View, scale: Float = 0.96f) {
         if (!isEnabled()) return
         view.setOnTouchListener { v, event ->
             when (event.actionMasked) {
-                android.view.MotionEvent.ACTION_DOWN -> {
-                    v.animate().scaleX(scale).scaleY(scale)
-                        .setDuration(110).setInterpolator(android.view.animation.DecelerateInterpolator()).start()
-                }
-                android.view.MotionEvent.ACTION_UP,
-                android.view.MotionEvent.ACTION_CANCEL -> {
-                    v.animate().scaleX(1f).scaleY(1f)
-                        .setDuration(180)
-                        .setInterpolator(android.view.animation.OvershootInterpolator(2.0f)).start()
-                    // Let the click still happen.
-                    if (event.actionMasked == android.view.MotionEvent.ACTION_UP) v.performClick()
-                }
+                MotionEvent.ACTION_DOWN -> pressTo(v, scale)
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> pressTo(v, 1f)
             }
+            // false, not true: the framework keeps the touch stream and runs its own click.
+            // Calling performClick() from here as well fired every click twice.
             false
         }
+    }
+
+    private fun pressTo(view: View, scale: Float) {
+        view.animate().cancel()
+        val pressed = scale < 1f
+        view.animate()
+            .scaleX(scale)
+            .scaleY(scale)
+            .setDuration(if (pressed) MotionSpec.ms(MotionSpec.PRESS_MS) else MotionSpec.ms(MotionSpec.RELEASE_MS))
+            .setInterpolator(if (pressed) MotionSpec.PRESS_IN else MotionSpec.EASE_OUT)
+            .start()
     }
 
     /** Show/hide a view with the configured transition, including the visibility flip.

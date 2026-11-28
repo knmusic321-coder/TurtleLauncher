@@ -1,5 +1,6 @@
 package com.endiq.turtlelauncher.ui.fragment.settings
 
+import com.endiq.turtlelauncher.utils.anim.MotionGovernor
 import com.endiq.turtlelauncher.utils.anim.TurtleTransitions
 import android.net.Uri
 import android.os.Bundle
@@ -97,6 +98,14 @@ class PhoneSettingsFragment : AbstractSettingsFragment(R.layout.settings_fragmen
 
         SwitchSettingsWrapper(context, AllSettings.schedulerTuning, binding.schedulerTuningLayout, binding.schedulerTuning)
 
+        // UI thread priority: keeps the interface thread ahead of background indexing and
+        // downloads, which is what a tap or a scroll is competing with. Immediate effect.
+        SwitchSettingsWrapper(context, AllSettings.uiThreadPriority, binding.uiThreadPriorityLayout, binding.uiThreadPriority)
+            .setOnCheckedChangeListener { _, _, save ->
+                save.onSave()
+                MotionGovernor.refresh()
+            }
+
         // ── Memory Optimizer ────────────────────────────────────────────────
         SwitchSettingsWrapper(context, AllSettings.autoRamCalculator, binding.autoRamCalculatorLayout, binding.autoRamCalculator)
             .setOnCheckedChangeListener { _, isChecked, save ->
@@ -171,6 +180,7 @@ class PhoneSettingsFragment : AbstractSettingsFragment(R.layout.settings_fragmen
         binding.advancedCpuTuning.isChecked = AllSettings.advancedCpuTuning.getValue()
         binding.bigCoreAffinity.isChecked = AllSettings.bigCoreAffinity.getValue()
         binding.schedulerTuning.isChecked = AllSettings.schedulerTuning.getValue()
+        binding.uiThreadPriority.isChecked = AllSettings.uiThreadPriority.getValue()
         binding.autoRamCalculator.isChecked = AllSettings.autoRamCalculator.getValue()
         binding.equalHeapSizes.isChecked = AllSettings.equalHeapSizes.getValue()
         binding.memoryPressureMonitor.isChecked = AllSettings.memoryPressureMonitor.getValue()

@@ -257,6 +257,43 @@
                         android:layout_centerVertical="true" />
                 </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
 
+                <!-- Adaptive launcher motion: measured jank shortens the launcher's own
+                     animations instead of showing stutter. -->
+                <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
+                    android:id="@+id/adaptiveMotion_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:padding="@dimen/_12sdp">
+
+                    <TextView
+                        android:id="@+id/adaptiveMotion_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="@dimen/_8sdp"
+                        android:layout_toStartOf="@+id/adaptiveMotion"
+                        android:text="@string/setting_adaptive_motion_title"
+                        android:textColor="@color/turtle_primary_text" />
+
+                    <TextView
+                        android:id="@+id/adaptiveMotion_summary"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/adaptiveMotion_title"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="@dimen/_8sdp"
+                        android:layout_toStartOf="@+id/adaptiveMotion"
+                        android:text="@string/setting_adaptive_motion_desc" />
+
+                    <com.endiq.turtlelauncher.ui.miuix.MiuixSwitch
+                        android:id="@+id/adaptiveMotion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true" />
+                </com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout>
+
                 <!-- Auto Memory Cleanup -->
                 <com.endiq.turtlelauncher.ui.layout.AnimRelativeLayout
                     android:id="@+id/autoMemoryCleanup_layout"
