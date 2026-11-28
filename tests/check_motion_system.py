@@ -94,6 +94,10 @@ assert "MotionGovernor.onPause()" in activity
 settings = read(main / "com/endiq/turtlelauncher/setting/AllSettings.kt")
 assert 'BooleanSettingUnit("adaptiveMotion", true)' in settings
 assert 'BooleanSettingUnit("uiThreadPriority", true)' in settings
+# Two declarations on one line compile to "Property getter or setter expected" on CI and
+# nowhere locally - catch the join before it costs a build.
+for line in settings.splitlines():
+    assert line.count("@JvmStatic val") <= 1, f"joined declarations in AllSettings: {line.strip()}"
 
 optimization_layout = read(res / "layout/settings_fragment_optimization.xml")
 assert '@+id/adaptiveMotion_layout' in optimization_layout
